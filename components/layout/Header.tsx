@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -17,14 +18,35 @@ export function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const navLinks = [
-        { name: "Search", href: "/properties" },
-        { name: "Buyers", href: "/buyers" },
-        { name: "Sellers", href: "/sellers" },
+    const navItems = [
+        {
+            name: "Buyers",
+            href: "/buyers",
+            dropdown: [
+                { name: "Search Homes", href: "/properties" },
+                { name: "Buyer Overview", href: "/buyers" },
+                { name: "Neighborhood Guides", href: "/communities" },
+            ]
+        },
+        {
+            name: "Sellers",
+            href: "/sellers",
+            dropdown: [
+                { name: "Home Valuation", href: "/home-valuation" },
+                { name: "Seller Overview", href: "/sellers" },
+                { name: "Market Reports", href: "/blog" },
+            ]
+        },
         { name: "Communities", href: "/communities" },
-        { name: "About", href: "/about-us" },
-        { name: "Team", href: "/our-team" },
-        { name: "Blog", href: "/blog" },
+        {
+            name: "About",
+            href: "/about-us",
+            dropdown: [
+                { name: "Our Team", href: "/our-team" },
+                { name: "Real Estate Blog", href: "/blog" },
+                { name: "About Quest Realty", href: "/about-us" },
+            ]
+        },
     ];
 
     return (
@@ -42,7 +64,7 @@ export function Header() {
                         className={`absolute h-10 w-auto object-contain transition-opacity duration-300 ${isScrolled ? "opacity-0 invisible" : "opacity-100 visible"}`}
                     />
                     <img
-                        src="/quest-logo-dark.png"
+                        src="https://assets.thesparksite.com/uploads/sites/6037/2025/06/Quest-Logo-gradient-250xAUTO.fit.png"
                         alt="Quest Realty Dark Logo"
                         className={`h-10 w-auto object-contain transition-opacity duration-300 ${isScrolled ? "opacity-100 visible" : "opacity-0 invisible"}`}
                     />
@@ -50,18 +72,47 @@ export function Header() {
 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex gap-8 items-center font-medium">
-                    {navLinks.map((link) => (
-                        <Link
-                            key={link.name}
-                            href={link.href}
-                            className="hover:opacity-70 transition-opacity"
+                    {navItems.map((item) => (
+                        <div
+                            key={item.name}
+                            className="relative group py-2"
+                            onMouseEnter={() => setActiveDropdown(item.name)}
+                            onMouseLeave={() => setActiveDropdown(null)}
                         >
-                            {link.name}
-                        </Link>
+                            <Link
+                                href={item.href}
+                                className="flex items-center gap-1 hover:text-primary transition-colors duration-200"
+                            >
+                                {item.name}
+                                {item.dropdown && <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${activeDropdown === item.name ? "rotate-180" : ""}`} />}
+                            </Link>
+
+                            <AnimatePresence>
+                                {item.dropdown && activeDropdown === item.name && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                        className="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden py-2"
+                                    >
+                                        {item.dropdown.map((subItem) => (
+                                            <Link
+                                                key={subItem.name}
+                                                href={subItem.href}
+                                                className="block px-5 py-3 text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors text-sm font-semibold"
+                                            >
+                                                {subItem.name}
+                                            </Link>
+                                        ))}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     ))}
                     <Link
                         href="/contact"
-                        className={`px-6 py-2.5 rounded-full font-medium transition-all ${isScrolled ? "bg-primary text-white hover:bg-primary/90" : "bg-white text-secondary hover:bg-white/90"}`}
+                        className={`px-6 py-2.5 rounded-full font-bold shadow-sm transition-all hover:scale-105 active:scale-95 ${isScrolled ? "bg-primary text-white hover:bg-primary/90 shadow-primary/20" : "bg-white text-slate-900 hover:bg-white/90"}`}
                     >
                         Contact Us
                     </Link>
@@ -84,7 +135,7 @@ export function Header() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: "100%" }}
                         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                        className="fixed inset-0 bg-secondary z-50 flex flex-col p-6 text-white"
+                        className="fixed inset-0 bg-slate-900 z-50 flex flex-col p-6 text-white"
                     >
                         <div className="flex justify-between items-center mb-12">
                             <Link href="/" onClick={() => setMobileMenuOpen(false)}>
@@ -94,26 +145,41 @@ export function Header() {
                                     className="h-10 w-auto object-contain"
                                 />
                             </Link>
-                            <button onClick={() => setMobileMenuOpen(false)} className="p-2">
+                            <button onClick={() => setMobileMenuOpen(false)} className="p-2 bg-white/10 rounded-full">
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
-                        <nav className="flex flex-col gap-6 text-2xl font-heading">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.name}
-                                    href={link.href}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="hover:text-primary transition-colors"
-                                >
-                                    {link.name}
-                                </Link>
+                        <nav className="flex flex-col gap-8 text-2xl font-heading">
+                            {navItems.map((item) => (
+                                <div key={item.name} className="flex flex-col gap-4">
+                                    <Link
+                                        href={item.href}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="text-white hover:text-primary transition-colors font-bold"
+                                    >
+                                        {item.name}
+                                    </Link>
+                                    {item.dropdown && (
+                                        <div className="flex flex-col gap-3 pl-4 border-l-2 border-primary/30">
+                                            {item.dropdown.map((subItem) => (
+                                                <Link
+                                                    key={subItem.name}
+                                                    href={subItem.href}
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                    className="text-lg text-slate-400 hover:text-white transition-colors"
+                                                >
+                                                    {subItem.name}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
                             ))}
-                            <div className="line border-t my-4" />
+                            <div className="line border-t border-white/10 my-4" />
                             <Link
                                 href="/contact"
                                 onClick={() => setMobileMenuOpen(false)}
-                                className="bg-primary text-white text-center rounded-full py-4 text-lg font-medium"
+                                className="bg-primary text-white text-center rounded-full py-5 text-xl font-bold shadow-xl shadow-primary/20"
                             >
                                 Let's Talk
                             </Link>

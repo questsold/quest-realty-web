@@ -2,16 +2,45 @@
 
 import { PageHero } from "@/components/ui/PageHero";
 import { useState } from "react";
-import { Home, AreaChart, MapPin, Calculator } from "lucide-react";
+import { Home, AreaChart, MapPin, Calculator, CheckCircle2 } from "lucide-react";
+import { submitLeadAction } from "@/app/actions/leads";
 
-export default function HomeValuationPage() {
+const HomeValuationPage = () => {
     const [step, setStep] = useState(1);
     const [address, setAddress] = useState("");
+    const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
     const handleNext = (e: React.FormEvent) => {
         e.preventDefault();
         if (address.trim().length > 5) {
             setStep(2);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setStatus("loading");
+
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            firstName: formData.get("firstName") as string,
+            lastName: formData.get("lastName") as string,
+            email: formData.get("email") as string,
+            phone: formData.get("phone") as string,
+            message: `Valuation Requested for: ${address}`,
+            source: "Home Valuation Page",
+            tags: ["Valuation Requested", "Seller Lead"]
+        };
+
+        try {
+            const result = await submitLeadAction(data);
+            if (result.success) {
+                setStatus("success");
+            } else {
+                setStatus("error");
+            }
+        } catch (error) {
+            setStatus("error");
         }
     };
 
@@ -30,10 +59,24 @@ export default function HomeValuationPage() {
 
                         {/* Left: Interactive Form */}
                         <div className="lg:col-span-3">
-                            <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 sm:p-12 relative overflow-hidden">
+                            <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 sm:p-12 relative overflow-hidden h-full">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -z-10" />
 
-                                {step === 1 ? (
+                                {status === "success" ? (
+                                    <div className="h-full flex flex-col items-center justify-center text-center py-12 animate-in zoom-in-95 duration-500">
+                                        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                                            <CheckCircle2 className="w-10 h-10 text-green-600" />
+                                        </div>
+                                        <h3 className="text-3xl font-bold text-slate-900 mb-2">Report Requested!</h3>
+                                        <p className="text-slate-500">We are processing the analysis for {address}. You will receive your detailed report via email shortly.</p>
+                                        <button
+                                            onClick={() => { setStatus("idle"); setStep(1); setAddress(""); }}
+                                            className="mt-8 text-primary font-bold hover:underline"
+                                        >
+                                            Check another address
+                                        </button>
+                                    </div>
+                                ) : step === 1 ? (
                                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                                         <h3 className="text-3xl font-heading font-bold text-slate-900 mb-4">Start Your Valuation</h3>
                                         <p className="text-slate-600 mb-8">
@@ -71,25 +114,27 @@ export default function HomeValuationPage() {
                                             We've located <strong className="text-slate-900">{address}</strong>. Where should we send your comprehensive valuation report?
                                         </p>
 
-                                        <form className="space-y-6">
+                                        <form onSubmit={handleSubmit} className="space-y-6">
                                             <div className="grid sm:grid-cols-2 gap-6">
                                                 <div>
                                                     <label className="block text-sm font-medium text-slate-700 mb-2">First Name</label>
-                                                    <input type="text" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
+                                                    <input required name="firstName" type="text" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
                                                 </div>
                                                 <div>
                                                     <label className="block text-sm font-medium text-slate-700 mb-2">Last Name</label>
-                                                    <input type="text" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
+                                                    <input required name="lastName" type="text" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
                                                 </div>
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
-                                                <input type="email" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
+                                                <input required name="email" type="email" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number (Optional)</label>
-                                                <input type="tel" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
+                                                <input name="phone" type="tel" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
                                             </div>
+
+                                            {status === "error" && <p className="text-red-500 text-sm font-medium">Something went wrong. Please try again.</p>}
 
                                             <div className="flex gap-4 pt-4">
                                                 <button
@@ -100,10 +145,15 @@ export default function HomeValuationPage() {
                                                     Back
                                                 </button>
                                                 <button
-                                                    type="button"
-                                                    className="flex-1 bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary/90 transition-colors flex justify-center items-center gap-2"
+                                                    disabled={status === "loading"}
+                                                    type="submit"
+                                                    className="flex-1 bg-primary text-white font-bold py-4 rounded-xl hover:bg-primary/90 transition-colors flex justify-center items-center gap-2 disabled:opacity-50"
                                                 >
-                                                    <AreaChart className="w-5 h-5" /> Send My Report
+                                                    {status === "loading" ? "Processing..." : (
+                                                        <>
+                                                            <AreaChart className="w-5 h-5" /> Send My Report
+                                                        </>
+                                                    )}
                                                 </button>
                                             </div>
                                         </form>

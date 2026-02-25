@@ -1,7 +1,40 @@
+"use client";
+
+import { useState } from "react";
 import { PageHero } from "@/components/ui/PageHero";
-import { Mail, Phone, MapPin, Clock } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, CheckCircle2 } from "lucide-react";
+import { submitLeadAction } from "@/app/actions/leads";
 
 export default function ContactPage() {
+    const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setStatus("loading");
+
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            firstName: formData.get("firstName") as string,
+            lastName: formData.get("lastName") as string,
+            email: formData.get("email") as string,
+            phone: formData.get("phone") as string,
+            message: formData.get("message") as string,
+            source: "Contact Page",
+            tags: ["Contact Inquiry"]
+        };
+
+        try {
+            const result = await submitLeadAction(data);
+            if (result.success) {
+                setStatus("success");
+            } else {
+                setStatus("error");
+            }
+        } catch (error) {
+            setStatus("error");
+        }
+    };
+
     return (
         <main className="min-h-screen bg-slate-50">
             <PageHero
@@ -67,67 +100,102 @@ export default function ContactPage() {
                         {/* Contact Form */}
                         <div className="bg-white rounded-2xl p-8 shadow-xl border border-slate-100 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none" />
-                            <h3 className="text-2xl font-bold font-heading text-slate-900 mb-6">Send a Message</h3>
 
-                            <form className="space-y-6">
-                                <div className="grid sm:grid-cols-2 gap-6">
-                                    <div>
-                                        <label htmlFor="firstName" className="block text-sm font-medium text-slate-700 mb-2">First Name</label>
-                                        <input
-                                            type="text"
-                                            id="firstName"
-                                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-slate-50 focus:bg-white"
-                                            placeholder="Jane"
-                                        />
+                            {status === "success" ? (
+                                <div className="h-full flex flex-col items-center justify-center text-center py-12">
+                                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                                        <CheckCircle2 className="w-10 h-10 text-green-600" />
                                     </div>
-                                    <div>
-                                        <label htmlFor="lastName" className="block text-sm font-medium text-slate-700 mb-2">Last Name</label>
-                                        <input
-                                            type="text"
-                                            id="lastName"
-                                            className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-slate-50 focus:bg-white"
-                                            placeholder="Doe"
-                                        />
-                                    </div>
+                                    <h3 className="text-2xl font-bold text-slate-900 mb-2">Message Sent!</h3>
+                                    <p className="text-slate-500">Thank you for reaching out. An advisor will be in touch shortly.</p>
+                                    <button
+                                        onClick={() => setStatus("idle")}
+                                        className="mt-8 text-primary font-bold hover:underline"
+                                    >
+                                        Send another message
+                                    </button>
                                 </div>
+                            ) : (
+                                <>
+                                    <h3 className="text-2xl font-bold font-heading text-slate-900 mb-6">Send a Message</h3>
 
-                                <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-slate-50 focus:bg-white"
-                                        placeholder="jane@example.com"
-                                    />
-                                </div>
+                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                        <div className="grid sm:grid-cols-2 gap-6">
+                                            <div>
+                                                <label htmlFor="firstName" className="block text-sm font-medium text-slate-700 mb-2">First Name</label>
+                                                <input
+                                                    required
+                                                    type="text"
+                                                    id="firstName"
+                                                    name="firstName"
+                                                    className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-slate-50 focus:bg-white"
+                                                    placeholder="Jane"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="lastName" className="block text-sm font-medium text-slate-700 mb-2">Last Name</label>
+                                                <input
+                                                    required
+                                                    type="text"
+                                                    id="lastName"
+                                                    name="lastName"
+                                                    className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-slate-50 focus:bg-white"
+                                                    placeholder="Doe"
+                                                />
+                                            </div>
+                                        </div>
 
-                                <div>
-                                    <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
-                                    <input
-                                        type="tel"
-                                        id="phone"
-                                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-slate-50 focus:bg-white"
-                                        placeholder="(555) 123-4567"
-                                    />
-                                </div>
+                                        <div>
+                                            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+                                            <input
+                                                required
+                                                type="email"
+                                                id="email"
+                                                name="email"
+                                                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-slate-50 focus:bg-white"
+                                                placeholder="jane@example.com"
+                                            />
+                                        </div>
 
-                                <div>
-                                    <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-2">Message</label>
-                                    <textarea
-                                        id="message"
-                                        rows={4}
-                                        className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-slate-50 focus:bg-white resize-none"
-                                        placeholder="How can we help you?"
-                                    ></textarea>
-                                </div>
+                                        <div>
+                                            <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
+                                            <input
+                                                type="tel"
+                                                id="phone"
+                                                name="phone"
+                                                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-slate-50 focus:bg-white"
+                                                placeholder="(555) 123-4567"
+                                            />
+                                        </div>
 
-                                <button
-                                    type="button"
-                                    className="w-full bg-slate-900 text-white font-bold py-4 rounded-lg hover:bg-slate-800 transition-colors"
-                                >
-                                    Send Message
-                                </button>
-                            </form>
+                                        <div>
+                                            <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-2">Message</label>
+                                            <textarea
+                                                required
+                                                id="message"
+                                                name="message"
+                                                rows={4}
+                                                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all bg-slate-50 focus:bg-white resize-none"
+                                                placeholder="How can we help you?"
+                                            ></textarea>
+                                        </div>
+
+                                        {status === "error" && (
+                                            <p className="text-red-500 text-sm font-medium text-center">
+                                                Something went wrong. Please try again or call us directly.
+                                            </p>
+                                        )}
+
+                                        <button
+                                            disabled={status === "loading"}
+                                            type="submit"
+                                            className="w-full bg-slate-900 text-white font-bold py-4 rounded-lg hover:bg-slate-800 transition-colors disabled:opacity-50"
+                                        >
+                                            {status === "loading" ? "Sending..." : "Send Message"}
+                                        </button>
+                                    </form>
+                                </>
+                            )}
                         </div>
 
                     </div>

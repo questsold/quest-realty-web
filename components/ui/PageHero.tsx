@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 
 interface PageHeroProps {
     title: string;
-    imageAlt: string;
+    imageAlt?: string;
     imageUrl?: string;
     eyebrow?: string;
     description?: string;
@@ -18,7 +18,7 @@ export function PageHero({ title, imageAlt, imageUrl, eyebrow, description }: Pa
             <div className="absolute inset-0 z-0">
                 <img
                     src={imageUrl || defaultImage}
-                    alt={imageAlt}
+                    alt={imageAlt || title}
                     className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-slate-950/50" />
