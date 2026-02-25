@@ -64,7 +64,7 @@ export function Header() {
                         className={`absolute h-10 w-auto object-contain transition-opacity duration-300 ${isScrolled ? "opacity-0 invisible" : "opacity-100 visible"}`}
                     />
                     <img
-                        src="https://assets.thesparksite.com/uploads/sites/6037/2025/06/Quest-Logo-gradient-250xAUTO.fit.png"
+                        src="/quest-logo-dark.png"
                         alt="Quest Realty Dark Logo"
                         className={`h-10 w-auto object-contain transition-opacity duration-300 ${isScrolled ? "opacity-100 visible" : "opacity-0 invisible"}`}
                     />
