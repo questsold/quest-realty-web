@@ -158,8 +158,9 @@ export function LeadCaptureModal() {
                                             </div>
 
                                             <div className="space-y-1.5">
-                                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Phone Number (Optional)</label>
+                                                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">Phone Number</label>
                                                 <input
+                                                    required
                                                     name="phone"
                                                     type="tel"
                                                     placeholder="(555) 000-0000"

@@ -124,6 +124,7 @@ export default function JoinUsPage() {
                                         <div>
                                             <label htmlFor="phone" className="block text-sm font-medium text-slate-300 mb-2">Phone Number</label>
                                             <input
+                                                required
                                                 name="phone"
                                                 type="tel"
                                                 id="phone"

@@ -130,8 +130,8 @@ export default function HomeValuationPage() {
                                                 <input required name="email" type="email" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number (Optional)</label>
-                                                <input name="phone" type="tel" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
+                                                <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
+                                                <input required name="phone" type="tel" className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent" />
                                             </div>
 
                                             {status === "error" && <p className="text-red-500 text-sm font-medium">Something went wrong. Please try again.</p>}

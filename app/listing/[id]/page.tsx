@@ -256,6 +256,7 @@ export default function ListingDetailsPage({ params }: { params: { id: string } 
                                                 className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent bg-slate-50 text-sm"
                                             />
                                             <input
+                                                required
                                                 name="phone"
                                                 type="tel"
                                                 placeholder="Phone Number"

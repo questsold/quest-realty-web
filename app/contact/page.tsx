@@ -160,6 +160,7 @@ export default function ContactPage() {
                                         <div>
                                             <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
                                             <input
+                                                required
                                                 type="tel"
                                                 id="phone"
                                                 name="phone"
