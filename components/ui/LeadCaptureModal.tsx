@@ -10,6 +10,7 @@ export function LeadCaptureModal() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [viewCount, setViewCount] = useState(0);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         // Check local storage for view count
@@ -30,6 +31,7 @@ export function LeadCaptureModal() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
+        setError(null);
 
         const formData = new FormData(e.currentTarget);
         const data = {
@@ -50,9 +52,15 @@ export function LeadCaptureModal() {
                 setTimeout(() => {
                     setIsOpen(false);
                 }, 2000);
+            } else {
+                setError(result.error || "Something went wrong. Please try again.");
+                // If the CRM fails, let's still allow them to proceed after one failed attempt 
+                // so they can actually see the property they came for.
+                console.warn("FUB Submission failed:", result.error);
             }
         } catch (error) {
             console.error("Submission failed", error);
+            setError("Connection error. Please try again.");
         } finally {
             setIsLoading(false);
         }
@@ -167,6 +175,22 @@ export function LeadCaptureModal() {
                                                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent bg-slate-50 transition-all outline-none text-sm"
                                                 />
                                             </div>
+
+                                            {error && (
+                                                <div className="p-3 rounded-lg bg-red-50 border border-red-100">
+                                                    <p className="text-xs text-red-600 font-medium text-center">{error}</p>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            localStorage.setItem("is_registered", "true");
+                                                            setIsOpen(false);
+                                                        }}
+                                                        className="block w-full text-[10px] text-red-400 hover:text-red-600 underline mt-1 text-center font-bold uppercase tracking-wider"
+                                                    >
+                                                        Continue to property anyway
+                                                    </button>
+                                                </div>
+                                            )}
 
                                             <button
                                                 disabled={isLoading}
