@@ -1,3 +1,4 @@
+"use client";
 import { Hero } from "@/components/ui/Hero";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { ArrowRight } from "lucide-react";
