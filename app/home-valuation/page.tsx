@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Home, AreaChart, MapPin, Calculator, CheckCircle2 } from "lucide-react";
 import { submitLeadAction } from "@/app/actions/leads";
 
-const HomeValuationPage = () => {
+export default function HomeValuationPage() {
     const [step, setStep] = useState(1);
     const [address, setAddress] = useState("");
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
