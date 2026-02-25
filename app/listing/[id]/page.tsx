@@ -57,7 +57,7 @@ export default function ListingDetailsPage({ params }: { params: { id: string } 
             email: formData.get("email") as string,
             phone: formData.get("phone") as string,
             message: formData.get("message") as string,
-            source: `Listing: ${property.address}`,
+            source: "Website",
             tags: ["Property Inquiry", property.city]
         };
 

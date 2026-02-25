@@ -39,7 +39,7 @@ export function LeadCaptureModal() {
             lastName: formData.get("lastName") as string,
             email: formData.get("email") as string,
             phone: formData.get("phone") as string,
-            source: "Website Registration Gate",
+            source: "Website",
             tags: ["Website Registration", "AdWords Target"]
         };
 

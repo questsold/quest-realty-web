@@ -19,7 +19,7 @@ export default function ContactPage() {
             email: formData.get("email") as string,
             phone: formData.get("phone") as string,
             message: formData.get("message") as string,
-            source: "Contact Page",
+            source: "Website",
             tags: ["Contact Inquiry"]
         };
 

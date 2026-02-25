@@ -28,7 +28,7 @@ export default function HomeValuationPage() {
             email: formData.get("email") as string,
             phone: formData.get("phone") as string,
             message: `Valuation Requested for: ${address}`,
-            source: "Home Valuation Page",
+            source: "Website",
             tags: ["Valuation Requested", "Seller Lead"]
         };
 

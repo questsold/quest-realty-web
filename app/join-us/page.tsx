@@ -29,7 +29,7 @@ export default function JoinUsPage() {
             email: formData.get("email") as string,
             phone: formData.get("phone") as string,
             message: `Experience Level: ${formData.get("experience")}`,
-            source: "Join Us Page",
+            source: "Website",
             tags: ["Recruitment Lead", "Potential Agent"]
         };
 
