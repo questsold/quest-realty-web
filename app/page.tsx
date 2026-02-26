@@ -48,6 +48,37 @@ export default function Home() {
     <>
       <Hero />
 
+      {/* Handpicked Listings */}
+      <section className="py-32 bg-slate-50">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div className="max-w-2xl">
+              <h2 className="text-sm uppercase tracking-widest text-primary mb-4 font-bold">Discover</h2>
+              <h3 className="text-4xl md:text-5xl font-heading font-bold text-slate-900 leading-tight">
+                Handpicked Listings
+              </h3>
+            </div>
+            <Link href="/properties" className="group flex items-center gap-2 text-slate-900 font-bold hover:text-primary transition-all">
+              View Collection <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {featuredProperties.map((property, idx) => (
+              <motion.div
+                key={property.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+              >
+                <PropertyCard {...property} />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* The Quest Realty Difference Section */}
       <section className="py-32 bg-white" id="About">
         <div className="container mx-auto px-6 max-w-6xl">
@@ -146,37 +177,6 @@ export default function Home() {
               <div className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-2">Properties Sold</div>
               <div className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">Over 3,800+ Transactions</div>
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Handpicked Listings */}
-      <section className="py-32 bg-slate-50">
-        <div className="container mx-auto px-6 max-w-7xl">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div className="max-w-2xl">
-              <h2 className="text-sm uppercase tracking-widest text-primary mb-4 font-bold">Discover</h2>
-              <h3 className="text-4xl md:text-5xl font-heading font-bold text-slate-900 leading-tight">
-                Handpicked Listings
-              </h3>
-            </div>
-            <Link href="/properties" className="group flex items-center gap-2 text-slate-900 font-bold hover:text-primary transition-all">
-              View Collection <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {featuredProperties.map((property, idx) => (
-              <motion.div
-                key={property.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <PropertyCard {...property} />
-              </motion.div>
-            ))}
           </div>
         </div>
       </section>
