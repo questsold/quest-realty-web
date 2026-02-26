@@ -97,19 +97,24 @@ export function Hero() {
 
             {/* Scroll to Discover */}
             <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1, duration: 1 }}
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3 cursor-pointer group"
-                onClick={() => window.scrollTo({ top: window.innerHeight * 0.7, behavior: 'smooth' })}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.5, duration: 1 }}
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3 cursor-pointer group"
+                onClick={() => window.scrollTo({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
             >
-                <span className="text-[10px] uppercase tracking-[0.4em] text-primary font-bold drop-shadow-md">Discover</span>
-                <div className="w-5 h-8 border-2 border-primary/50 rounded-full flex justify-center p-1 group-hover:border-primary transition-colors">
-                    <motion.div
-                        animate={{ y: [0, 8, 0] }}
-                        transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-                        className="w-1 h-1 bg-primary rounded-full shadow-[0_0_10px_rgba(157,208,61,0.8)]"
-                    />
+                <div className="bg-slate-950/40 backdrop-blur-md px-6 py-4 rounded-full border border-white/10 flex flex-col items-center gap-3 shadow-2xl hover:bg-slate-950/60 transition-all">
+                    <span className="text-[11px] uppercase tracking-[0.5em] text-primary font-black drop-shadow-sm">Discover</span>
+                    <div className="w-5 h-9 border-2 border-primary/40 rounded-full flex justify-center p-1 group-hover:border-primary/80 transition-colors">
+                        <motion.div
+                            animate={{
+                                y: [0, 14, 0],
+                                opacity: [0.4, 1, 0.4]
+                            }}
+                            transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+                            className="w-1.5 h-1.5 bg-primary rounded-full shadow-[0_0_12px_rgba(157,208,61,1)]"
+                        />
+                    </div>
                 </div>
             </motion.div>
 
