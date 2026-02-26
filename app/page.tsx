@@ -101,11 +101,11 @@ export default function Home() {
                   With transparency at every stage and proactive customer support, Quest Realty keeps you informed from the first lead through the closing table. Trust Quest Realty to leverage cutting-edge technology and in-depth market research to maximize demand and secure the best possible outcome for your home.
                 </p>
               </div>
-              <div className="mt-8 md:mt-12 flex flex-col md:flex-row gap-4 md:gap-6">
-                <Link href="/about-us" className="bg-slate-900 text-white px-8 py-5 rounded-full font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2 text-center text-sm md:text-base">
+              <div className="mt-8 md:mt-12 flex flex-col md:flex-row gap-4 md:gap-6 text-center">
+                <Link href="/about-us" className="bg-primary text-white px-10 py-5 rounded-full font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 text-lg shadow-xl shadow-primary/20">
                   Why we&apos;re different <ArrowRight className="w-5 h-5" />
                 </Link>
-                <Link href="/our-team" className="border-2 border-slate-900 text-slate-900 px-8 py-5 rounded-full font-bold hover:bg-slate-100 transition-all text-center text-sm md:text-base">
+                <Link href="/our-team" className="border-2 border-slate-900 text-slate-900 px-10 py-5 rounded-full font-bold hover:bg-slate-100 transition-all text-center text-lg">
                   Our agents
                 </Link>
               </div>

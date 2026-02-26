@@ -56,7 +56,7 @@ export function Header() {
             transition={{ duration: 0.6, ease: "easeOut" }}
             className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-md border-b shadow-sm py-3 text-zinc-900" : "bg-transparent py-5 text-white"}`}
         >
-            <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
+            <div className="container mx-auto px-6 flex items-center justify-between">
                 <Link href="/" className="flex items-center">
                     <img
                         src="https://assets.thesparksite.com/uploads/templates/header-q-2/Quest-Logo-gradient-white-250xAUTO.fit.png"
