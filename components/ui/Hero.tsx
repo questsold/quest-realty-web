@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function Hero() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -47,10 +48,30 @@ export function Hero() {
                         </p>
                     </div>
 
-                    <motion.form
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                        className="flex flex-wrap justify-center gap-4 mb-10"
+                    >
+                        <Link
+                            href="/buyers"
+                            className="bg-primary hover:bg-primary/90 text-white px-10 py-5 rounded-full font-bold text-lg transition-all shadow-xl shadow-primary/20 hover:scale-105"
+                        >
+                            BUY WITH US
+                        </Link>
+                        <Link
+                            href="/sellers"
+                            className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border-2 border-white/30 px-10 py-5 rounded-full font-bold text-lg transition-all hover:scale-105"
+                        >
+                            SELL WITH US
+                        </Link>
+                    </motion.div>
+
+                    <motion.form
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
                         onSubmit={handleSearch}
                         className="flex w-full max-w-xl mx-auto bg-white p-2 rounded-full shadow-2xl"
                     >
@@ -66,7 +87,7 @@ export function Hero() {
                         </div>
                         <button
                             type="submit"
-                            className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-full font-medium transition-colors"
+                            className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-full font-bold transition-all"
                         >
                             Search
                         </button>

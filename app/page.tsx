@@ -3,7 +3,32 @@ import { Hero } from "@/components/ui/Hero";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useEffect, useRef } from "react";
+
+function Counter({ value, suffix = "", duration = 2 }: { value: number; suffix?: string, duration?: number }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const motionValue = useMotionValue(0);
+  const springValue = useSpring(motionValue, {
+    damping: 30,
+    stiffness: 100,
+  });
+  const displayValue = useTransform(springValue, (latest) => Math.round(latest));
+
+  useEffect(() => {
+    if (isInView) {
+      motionValue.set(value);
+    }
+  }, [isInView, value, motionValue]);
+
+  return (
+    <span ref={ref}>
+      <motion.span>{displayValue}</motion.span>
+      {suffix}
+    </span>
+  );
+}
 
 export default function Home() {
   const featuredProperties = [
@@ -114,7 +139,9 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">1%</div>
+              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">
+                <Counter value={1} suffix="%" />
+              </div>
               <div className="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Top Realtors</div>
             </motion.div>
             <motion.div
@@ -123,7 +150,9 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">500+</div>
+              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">
+                <Counter value={500} suffix="+" />
+              </div>
               <div className="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Homes Sold</div>
             </motion.div>
             <motion.div
@@ -132,7 +161,9 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">24h</div>
+              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">
+                <Counter value={24} suffix="h" />
+              </div>
               <div className="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Avg Response Time</div>
             </motion.div>
             <motion.div
@@ -141,7 +172,9 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
             >
-              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">100%</div>
+              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">
+                <Counter value={100} suffix="%" />
+              </div>
               <div className="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Client Focus</div>
             </motion.div>
           </div>
