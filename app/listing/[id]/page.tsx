@@ -1,15 +1,46 @@
-"use client";
-
-import { useState } from "react";
-import { MapPin, Bed, Bath, Square, Calendar, Heart, Share2, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { MapPin, Bed, Bath, Square, Calendar, Heart, Share2, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { LeadCaptureModal } from "@/components/ui/LeadCaptureModal";
-import { submitLeadAction } from "@/app/actions/leads";
+import { getPropertyBySlug } from "@/lib/realcomp";
+import { LeadForm } from "./LeadForm";
 
-export default function ListingDetailsPage({ params }: { params: { id: string } }) {
-    const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-    // Mock data for the UI build out
-    const property = {
+export default async function ListingDetailsPage({ params }: { params: { id: string } }) {
+    let realcompData = null;
+    try {
+        realcompData = await getPropertyBySlug(params.id);
+    } catch (e) {
+        console.error("Failed to load Realcomp property details:", e);
+    }
+
+    // Map Realcomp Data or fall back to mock
+    const property = realcompData ? {
+        id: realcompData.ListingId || params.id,
+        address: realcompData.UnparsedAddress || 'Address Withheld',
+        city: realcompData.City || 'Metro Detroit',
+        state: "MI",
+        zip: realcompData.PostalCode || '',
+        price: realcompData.ListPrice || 0,
+        beds: realcompData.BedroomsTotal || 0,
+        baths: (realcompData.BathroomsFull || 0) + (realcompData.BathroomsHalf ? 0.5 : 0),
+        sqft: realcompData.LivingArea || 0,
+        yearBuilt: 0, // Realcomp may have YearBuilt
+        status: realcompData.StandardStatus || 'Active',
+        daysOnMarket: 0,
+        description: realcompData.PublicRemarks || 'No description available for this property.',
+        features: [
+            `${realcompData.PropertySubType || realcompData.PropertyType || 'Residential'}`,
+            "Updates coming soon"
+        ],
+        agent: {
+            name: "Ali Berry",
+            role: "Broker/Owner",
+            phone: "(248) 955-1403",
+            image: "https://assets.thesparksite.com/uploads/sites/6037/2025/06/Ali-Berry-900x900.fit.png"
+        },
+        images: realcompData.Media ? realcompData.Media.sort((a: any, b: any) => a.Order - b.Order).map((m: any) => m.MediaURL) : [
+            "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80"
+        ]
+    } : {
         id: params.id,
         address: "1042 Waddington Rd",
         city: "Birmingham",
@@ -46,40 +77,13 @@ export default function ListingDetailsPage({ params }: { params: { id: string } 
         ]
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setStatus("loading");
-
-        const formData = new FormData(e.currentTarget);
-        const data = {
-            firstName: (formData.get("fullName") as string).split(" ")[0] || "Inquiry",
-            lastName: (formData.get("fullName") as string).split(" ").slice(1).join(" ") || "Lead",
-            email: formData.get("email") as string,
-            phone: formData.get("phone") as string,
-            message: formData.get("message") as string,
-            source: "Website",
-            tags: ["Property Inquiry", property.city]
-        };
-
-        try {
-            const result = await submitLeadAction(data);
-            if (result.success) {
-                setStatus("success");
-            } else {
-                setStatus("error");
-            }
-        } catch (error) {
-            setStatus("error");
-        }
-    };
-
     return (
         <main className="min-h-screen bg-slate-50 pt-[88px] pb-24">
             {/* Top Navigation Bar */}
             <div className="bg-white border-b border-slate-200">
                 <div className="container mx-auto px-6 py-4 flex justify-between items-center">
                     <Link href="/properties" className="flex items-center gap-2 text-slate-600 hover:text-primary transition-colors font-medium">
-                        <ArrowLeft className="w-4 h-4" /> Back to Search
+                        <span className="w-4 h-4 flex"><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"></path></svg></span> Back to Search
                     </Link>
                     <div className="flex gap-4">
                         <button className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors font-medium">
@@ -211,85 +215,7 @@ export default function ListingDetailsPage({ params }: { params: { id: string } 
 
                             {/* Contact Card */}
                             <div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100">
-                                {status === "success" ? (
-                                    <div className="text-center py-8">
-                                        <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                            <CheckCircle2 className="w-8 h-8 text-green-600" />
-                                        </div>
-                                        <h4 className="font-bold text-slate-900 mb-2">Inquiry Received</h4>
-                                        <p className="text-sm text-slate-500">Ali Berry will be in touch with you shortly regarding this property.</p>
-                                        <button
-                                            onClick={() => setStatus("idle")}
-                                            className="mt-6 text-primary font-bold text-sm hover:underline"
-                                        >
-                                            Send another message
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <div className="flex items-center gap-4 mb-8">
-                                            <img
-                                                src={property.agent.image}
-                                                alt={property.agent.name}
-                                                className="w-16 h-16 rounded-full object-cover shadow-md"
-                                            />
-                                            <div>
-                                                <h4 className="font-bold text-slate-900">{property.agent.name}</h4>
-                                                <p className="text-sm text-primary font-medium">{property.agent.role}</p>
-                                                <p className="text-xs text-slate-500 mt-1">{property.agent.phone}</p>
-                                            </div>
-                                        </div>
-
-                                        <form onSubmit={handleSubmit} className="space-y-4">
-                                            <input
-                                                required
-                                                name="fullName"
-                                                type="text"
-                                                placeholder="Full Name"
-                                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent bg-slate-50 text-sm"
-                                            />
-                                            <input
-                                                required
-                                                name="email"
-                                                type="email"
-                                                placeholder="Email Address"
-                                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent bg-slate-50 text-sm"
-                                            />
-                                            <input
-                                                required
-                                                name="phone"
-                                                type="tel"
-                                                placeholder="Phone Number"
-                                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent bg-slate-50 text-sm"
-                                            />
-                                            <textarea
-                                                required
-                                                name="message"
-                                                defaultValue={`I am interested in ${property.address}`}
-                                                rows={4}
-                                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent bg-slate-50 text-sm resize-none"
-                                            ></textarea>
-
-                                            {status === "error" && (
-                                                <p className="text-red-500 text-xs text-center">Something went wrong. Please try again.</p>
-                                            )}
-
-                                            <button
-                                                disabled={status === "loading"}
-                                                type="submit"
-                                                className="w-full bg-slate-900 text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-colors mt-2 disabled:opacity-50"
-                                            >
-                                                {status === "loading" ? "Sending..." : "Request Information"}
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="w-full border-2 border-slate-900 text-slate-900 font-bold py-4 rounded-xl hover:bg-slate-50 transition-colors"
-                                            >
-                                                Schedule a Tour
-                                            </button>
-                                        </form>
-                                    </>
-                                )}
+                                <LeadForm city={property.city} address={property.address} />
                             </div>
 
                             {/* Quick Facts */}
