@@ -1,7 +1,7 @@
 "use client";
 import { Hero } from "@/components/ui/Hero";
 import { PropertyCard } from "@/components/ui/PropertyCard";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, Users, Building2, BarChart3, CircleDollarSign } from "lucide-react";
 import Link from "next/link";
 import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef } from "react";
@@ -260,33 +260,116 @@ export default function Home() {
       </section>
 
       {/* Communities Section */}
-      <section className="py-32 bg-slate-50">
+      <section className="py-32 bg-slate-50 overflow-hidden">
         <div className="container mx-auto px-6 max-w-7xl">
-          <div className="text-center mb-16">
-            <h2 className="text-sm uppercase tracking-[0.3em] text-primary mb-4 font-bold">Discover Hidden Local Gems</h2>
-            <h3 className="text-4xl md:text-5xl font-heading font-bold text-slate-900">Communities</h3>
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div className="max-w-2xl">
+              <h2 className="text-sm uppercase tracking-[0.3em] text-primary mb-4 font-bold">Discover Hidden Local Gems</h2>
+              <h3 className="text-4xl md:text-5xl font-heading font-bold text-slate-900">Communities</h3>
+            </div>
+            <div className="flex gap-4">
+              <button
+                onClick={() => {
+                  const el = document.getElementById('communities-slider');
+                  if (el) el.scrollBy({ left: -400, behavior: 'smooth' });
+                }}
+                className="p-4 rounded-full border-2 border-slate-200 text-slate-400 hover:text-primary hover:border-primary transition-all bg-white shadow-sm"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={() => {
+                  const el = document.getElementById('communities-slider');
+                  if (el) el.scrollBy({ left: 400, behavior: 'smooth' });
+                }}
+                className="p-4 rounded-full border-2 border-slate-200 text-slate-400 hover:text-primary hover:border-primary transition-all bg-white shadow-sm"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            id="communities-slider"
+            className="flex gap-6 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
             {[
-              { name: "Birmingham", slug: "birmingham", count: 42, image: "https://images.unsplash.com/photo-1542435503-956c469947f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-              { name: "Bloomfield Hills", slug: "bloomfield-hills", count: 28, image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" },
-              { name: "Troy", slug: "troy", count: 35, image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" }
-            ].map((city, idx) => (
+              { name: "Troy", slug: "troy", image: "https://assets.thesparksite.com/uploads/sites/6037/2025/06/troy-500x360.png", stats: { pop: "87,294", rentOwn: "28/72", avgPrice: "$475,000", recentSales: "412" } },
+              { name: "Birmingham", slug: "birmingham", image: "https://assets.thesparksite.com/uploads/sites/6037/2025/06/birmingham-500x360.png", stats: { pop: "21,813", rentOwn: "25/75", avgPrice: "$850,000", recentSales: "185" } },
+              { name: "Bloomfield Hills", slug: "bloomfield-hills", image: "https://assets.thesparksite.com/uploads/sites/6037/2025/06/bloomfield-hills-500x360.png", stats: { pop: "4,460", rentOwn: "9/91", avgPrice: "$1,200,000", recentSales: "45" } },
+              { name: "Rochester Hills", slug: "rochester-hills", image: "https://assets.thesparksite.com/uploads/sites/6037/2025/06/rochester-hills-500x360.png", stats: { pop: "76,300", rentOwn: "22/78", avgPrice: "$510,000", recentSales: "350" } },
+              { name: "Royal Oak", slug: "royal-oak", image: "https://assets.thesparksite.com/uploads/sites/6037/2025/06/royal-oak-500x360.png", stats: { pop: "58,211", rentOwn: "35/65", avgPrice: "$395,000", recentSales: "420" } },
+              { name: "Clarkston", slug: "clarkston", image: "https://assets.thesparksite.com/uploads/sites/6037/2025/06/clarkston-500x360.png", stats: { pop: "47,765", rentOwn: "17/83", avgPrice: "$444,611", recentSales: "265" } },
+              { name: "Waterford", slug: "waterford", image: "https://assets.thesparksite.com/uploads/sites/6037/2025/06/bloomfield-hills-500x360.png", stats: { pop: "70,565", rentOwn: "29/71", avgPrice: "$315,000", recentSales: "380" } },
+            ].map((community, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="relative h-72 rounded-3xl overflow-hidden group cursor-pointer"
+                className="min-w-[400px] snap-start"
               >
-                <img src={city.image} alt={city.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8">
-                  <h4 className="text-2xl font-bold text-white mb-2">{city.name}</h4>
-                  <p className="text-white/70 text-sm font-medium">{city.count} ACTIVE LISTINGS</p>
-                </div>
-                <Link href={`/communities/${city.slug}`} className="absolute inset-0 z-10" />
+                <Link
+                  href={`/communities/${community.slug}`}
+                  className="group relative aspect-[500/360] bg-zinc-900 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 block rounded-3xl"
+                >
+                  {/* Background Image Layer */}
+                  <div className="absolute inset-0 z-0 bg-zinc-200">
+                    <img
+                      src={community.image}
+                      alt={`${community.name} Map`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Overlay Layers */}
+                  <div className="absolute inset-0 bg-slate-900/40 z-10 transition-colors duration-300 group-hover:bg-zinc-950/95" />
+
+                  {/* Default State */}
+                  <div className="absolute inset-0 z-20 flex flex-col items-center justify-center transition-opacity duration-300 group-hover:opacity-0">
+                    <h3 className="text-4xl font-heading font-medium text-white">{community.name}</h3>
+                    <span className="text-sm font-medium text-white tracking-widest mt-4 bg-primary/80 px-6 py-2 rounded-full backdrop-blur-sm">View Guide</span>
+                  </div>
+
+                  {/* Hover State Data Overlay */}
+                  <div className="absolute inset-0 z-30 flex flex-col items-center justify-center p-8 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="w-full">
+                      <div className="flex justify-between w-full mb-8">
+                        <div className="flex flex-col items-center text-center w-1/2">
+                          <Users className="w-8 h-8 text-primary mb-3" />
+                          <span className="text-[10px] font-bold text-white tracking-widest uppercase mb-1">Population</span>
+                          <span className="text-sm font-medium text-white">{community.stats.pop}</span>
+                        </div>
+                        <div className="flex flex-col items-center text-center w-1/2">
+                          <Building2 className="w-8 h-8 text-primary mb-3" />
+                          <span className="text-[10px] font-bold text-white tracking-widest uppercase mb-1">Rent vs Own</span>
+                          <span className="text-sm font-medium text-white">{community.stats.rentOwn}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-center mb-8">
+                        <div className="bg-zinc-800 border border-zinc-700 text-white text-[10px] px-4 py-1 rounded tracking-widest uppercase font-bold">
+                          {community.name}
+                        </div>
+                      </div>
+
+                      <div className="flex justify-between w-full">
+                        <div className="flex flex-col items-center text-center w-1/2">
+                          <BarChart3 className="w-8 h-8 text-primary mb-3" />
+                          <span className="text-[10px] font-bold text-white tracking-widest uppercase mb-1">Avg Price</span>
+                          <span className="text-sm font-medium text-white">{community.stats.avgPrice}</span>
+                        </div>
+                        <div className="flex flex-col items-center text-center w-1/2">
+                          <CircleDollarSign className="w-8 h-8 text-primary mb-3" />
+                          <span className="text-[10px] font-bold text-white tracking-widest uppercase mb-1">Recent Sales</span>
+                          <span className="text-sm font-medium text-white">{community.stats.recentSales}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </div>
