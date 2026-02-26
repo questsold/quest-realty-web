@@ -6,7 +6,7 @@
 const REALCOMP_CLIENT_ID = process.env.REALCOMP_CLIENT_ID;
 const REALCOMP_CLIENT_SECRET = process.env.REALCOMP_CLIENT_SECRET;
 const REALCOMP_TOKEN_URL = process.env.REALCOMP_TOKEN_URL || 'https://auth.realcomp.com/Token';
-const REALCOMP_API_URL = process.env.REALCOMP_API_URL || 'https://apiidx.realcomp.com/odata';
+const REALCOMP_API_URL = process.env.REALCOMP_API_URL || 'https://idxapi.realcomp.com/odata';
 const REALCOMP_AUDIENCE = process.env.REALCOMP_AUDIENCE || 'rcapi.realcomp.com';
 
 let cachedToken: string | null = null;
