@@ -1,4 +1,8 @@
+"use client";
+
 import { PageHero } from "@/components/ui/PageHero";
+import { Counter } from "@/components/ui/Counter";
+import { motion } from "framer-motion";
 import Link from "next/link";
 
 export default function Sellers() {
@@ -75,29 +79,48 @@ export default function Sellers() {
             </section>
 
             {/* Stats Section */}
-            <section className="py-20 bg-white border-b border-slate-100">
+            <section className="py-24 bg-white border-b border-slate-100">
                 <div className="container mx-auto px-6">
-                    <div className="text-center mb-12">
+                    <div className="text-center mb-16">
                         <h2 className="text-sm uppercase tracking-widest text-primary mb-2 font-semibold">Experience Matters</h2>
                         <h3 className="text-3xl md:text-5xl font-heading font-bold text-slate-900">Why Clients Choose Us</h3>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                        <div>
-                            <div className="text-4xl lg:text-5xl font-heading font-bold text-primary mb-2">1%</div>
-                            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Nationwide</div>
-                        </div>
-                        <div>
-                            <div className="text-4xl lg:text-5xl font-heading font-bold text-primary mb-2">$100M+</div>
-                            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Closed Volume</div>
-                        </div>
-                        <div>
-                            <div className="text-4xl lg:text-5xl font-heading font-bold text-primary mb-2">500+</div>
-                            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Properties Sold</div>
-                        </div>
-                        <div>
-                            <div className="text-4xl lg:text-5xl font-heading font-bold text-primary mb-2">24/7</div>
-                            <div className="text-sm font-medium text-slate-500 uppercase tracking-wide">Customer Support</div>
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center max-w-6xl mx-auto">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
+                            <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-4">
+                                <Counter value={1} suffix="%" />
+                            </div>
+                            <div className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-1">Nationwide</div>
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Top Realtors</div>
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                        >
+                            <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-4">
+                                <Counter value={920} prefix="$" suffix="M+" />
+                            </div>
+                            <div className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-1">Closed Volume</div>
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Over $920M+ Million</div>
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                        >
+                            <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-4">
+                                <Counter value={3800} suffix="+" />
+                            </div>
+                            <div className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-1">Properties Sold</div>
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Over 3,800+ Transactions</div>
+                        </motion.div>
                     </div>
                 </div>
             </section>
