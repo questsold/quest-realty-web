@@ -72,7 +72,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} ${outfit.variable} antialiased font-sans flex flex-col min-h-screen`}>
+      <body className={`${inter.variable} ${outfit.variable} antialiased font-sans flex flex-col min-h-screen overflow-x-hidden w-full`}>
         {process.env.NEXT_PUBLIC_GA_ID && (
           <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GA_ID} />
         )}

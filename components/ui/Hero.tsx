@@ -18,7 +18,7 @@ export function Hero() {
     };
 
     return (
-        <section className="relative min-h-[600px] md:h-[75vh] flex items-center justify-center overflow-hidden pt-32 pb-20 md:py-0">
+        <section className="relative min-h-[700px] md:h-[80vh] flex items-center justify-center overflow-hidden pt-36 pb-24 md:py-0">
             {/* Background Image & Overlay */}
             <div className="absolute inset-0 z-0">
                 <img
@@ -36,14 +36,14 @@ export function Hero() {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="max-w-4xl"
                 >
-                    <div className="mb-8 text-white">
+                    <div className="mb-6 md:mb-10 text-white">
                         <div className="text-[10px] md:text-sm uppercase tracking-[0.4em] font-bold mb-4 text-primary drop-shadow-lg">
                             Your Metro Detroit
                         </div>
-                        <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-medium tracking-tight mb-8 leading-[1.2] md:leading-[1.1]">
+                        <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-heading font-medium tracking-tight mb-6 md:mb-8 leading-[1.2] md:leading-[1.1]">
                             Real Estate Experts
                         </h1>
-                        <p className="text-sm sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed px-4 md:px-0">
+                        <p className="text-sm sm:text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed px-2 md:px-0 opacity-80">
                             The most current listings and detailed neighborhood information for the greater Michigan region.
                         </p>
                     </div>
@@ -52,7 +52,7 @@ export function Hero() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                        className="flex flex-col sm:flex-row justify-center gap-4 mb-12"
+                        className="flex flex-col sm:flex-row justify-center gap-4 mb-10 md:mb-12"
                     >
                         <Link
                             href="/buyers"
@@ -73,7 +73,7 @@ export function Hero() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
                         onSubmit={handleSearch}
-                        className="flex w-full max-w-xl mx-auto bg-white p-1.5 md:p-2 rounded-full shadow-2xl"
+                        className="flex w-full max-w-xl mx-auto bg-white p-1.5 md:p-2 rounded-full shadow-2xl relative z-30"
                     >
                         <div className="relative flex-grow flex items-center">
                             <Search className="absolute left-4 w-4 h-4 md:w-5 md:h-5 text-slate-400" />
@@ -87,7 +87,7 @@ export function Hero() {
                         </div>
                         <button
                             type="submit"
-                            className="bg-slate-900 hover:bg-slate-800 text-white px-5 md:px-8 py-3 md:py-4 rounded-full font-bold text-xs md:text-base transition-all"
+                            className="bg-slate-900 hover:bg-slate-800 text-white px-5 md:px-8 py-3 md:py-4 rounded-full font-bold text-xs md:text-base transition-all translate-x-[1px]"
                         >
                             Search
                         </button>
@@ -100,7 +100,7 @@ export function Hero() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.5, duration: 1 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3 cursor-pointer group"
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 hidden lg:flex flex-col items-center gap-3 cursor-pointer group scale-100"
                 onClick={() => window.scrollTo({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
             >
                 <div className="bg-slate-950/40 backdrop-blur-md px-6 py-4 rounded-full border border-white/10 flex flex-col items-center gap-3 shadow-2xl hover:bg-slate-950/60 transition-all">

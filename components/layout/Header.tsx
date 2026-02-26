@@ -54,19 +54,19 @@ export function Header() {
             initial={{ y: "-100%" }}
             animate={{ y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-md border-b shadow-sm py-4 text-zinc-900" : "bg-transparent py-6 text-white"}`}
+            className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-md border-b shadow-sm py-3 text-zinc-900" : "bg-transparent py-5 text-white"}`}
         >
-            <div className="container mx-auto px-6 flex items-center justify-between">
+            <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
                 <Link href="/" className="flex items-center">
                     <img
                         src="https://assets.thesparksite.com/uploads/templates/header-q-2/Quest-Logo-gradient-white-250xAUTO.fit.png"
                         alt="Quest Realty White Logo"
-                        className={`absolute h-10 w-auto object-contain transition-opacity duration-300 ${isScrolled ? "opacity-0 invisible" : "opacity-100 visible"}`}
+                        className={`absolute h-8 md:h-10 w-auto object-contain transition-opacity duration-300 ${isScrolled ? "opacity-0 invisible" : "opacity-100 visible"}`}
                     />
                     <img
                         src="/quest-logo-dark.png"
                         alt="Quest Realty Dark Logo"
-                        className={`h-10 w-auto object-contain transition-opacity duration-300 ${isScrolled ? "opacity-100 visible" : "opacity-0 invisible"}`}
+                        className={`h-8 md:h-10 w-auto object-contain transition-opacity duration-300 ${isScrolled ? "opacity-100 visible" : "opacity-0 invisible"}`}
                     />
                 </Link>
 

@@ -45,7 +45,7 @@ export default function Home() {
   ];
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Hero />
 
       {/* Handpicked Listings */}
@@ -101,11 +101,11 @@ export default function Home() {
                   With transparency at every stage and proactive customer support, Quest Realty keeps you informed from the first lead through the closing table. Trust Quest Realty to leverage cutting-edge technology and in-depth market research to maximize demand and secure the best possible outcome for your home.
                 </p>
               </div>
-              <div className="mt-12 flex flex-wrap gap-6">
-                <Link href="/about-us" className="bg-slate-900 text-white px-8 py-4 rounded-full font-bold hover:bg-slate-800 transition-all flex items-center gap-2">
+              <div className="mt-8 md:mt-12 flex flex-col md:flex-row gap-4 md:gap-6">
+                <Link href="/about-us" className="bg-slate-900 text-white px-8 py-5 rounded-full font-bold hover:bg-slate-800 transition-all flex items-center justify-center gap-2 text-center text-sm md:text-base">
                   Why we&apos;re different <ArrowRight className="w-5 h-5" />
                 </Link>
-                <Link href="/our-team" className="border-2 border-slate-900 text-slate-900 px-8 py-4 rounded-full font-bold hover:bg-slate-100 transition-all">
+                <Link href="/our-team" className="border-2 border-slate-900 text-slate-900 px-8 py-5 rounded-full font-bold hover:bg-slate-100 transition-all text-center text-sm md:text-base">
                   Our agents
                 </Link>
               </div>
@@ -285,7 +285,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="min-w-[400px] snap-start"
+                className="min-w-[300px] md:min-w-[400px] snap-start"
               >
                 <Link
                   href={`/communities/${community.slug}`}
@@ -404,7 +404,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
-                className="min-w-[320px] md:min-w-[450px] snap-start"
+                className="min-w-[300px] md:min-w-[450px] snap-start"
               >
                 <div className="h-full bg-slate-900 border border-slate-800 p-8 md:p-12 rounded-[2rem] relative group hover:border-primary/30 transition-all">
                   <Quote className="absolute top-8 right-8 w-12 h-12 text-primary/5 group-hover:text-primary/10 transition-colors" />
@@ -461,6 +461,6 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
-    </>
+    </div>
   );
 }
