@@ -6,7 +6,7 @@ import Link from "next/link";
 import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useEffect, useRef } from "react";
 
-function Counter({ value, suffix = "", duration = 2 }: { value: number; suffix?: string, duration?: number }) {
+function Counter({ value, suffix = "", prefix = "", duration = 2 }: { value: number; suffix?: string, prefix?: string, duration?: number }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
   const motionValue = useMotionValue(0);
@@ -14,7 +14,7 @@ function Counter({ value, suffix = "", duration = 2 }: { value: number; suffix?:
     damping: 30,
     stiffness: 100,
   });
-  const displayValue = useTransform(springValue, (latest) => Math.round(latest));
+  const displayValue = useTransform(springValue, (latest) => Math.round(latest).toLocaleString());
 
   useEffect(() => {
     if (isInView) {
@@ -24,6 +24,7 @@ function Counter({ value, suffix = "", duration = 2 }: { value: number; suffix?:
 
   return (
     <span ref={ref}>
+      {prefix}
       <motion.span>{displayValue}</motion.span>
       {suffix}
     </span>
@@ -132,50 +133,42 @@ export default function Home() {
             <h2 className="text-sm uppercase tracking-[0.3em] text-primary mb-4 font-bold">Experience Matters</h2>
             <h3 className="text-3xl md:text-5xl font-heading font-bold text-white">Why Clients Choose Us</h3>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center max-w-6xl mx-auto">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">
+              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-4">
                 <Counter value={1} suffix="%" />
               </div>
-              <div className="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Top Realtors</div>
+              <div className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-2">Nationwide</div>
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">Top Realtors</div>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">
-                <Counter value={500} suffix="+" />
+              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-4">
+                <Counter value={920} prefix="$" suffix="M+" />
               </div>
-              <div className="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Homes Sold</div>
+              <div className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-2">Closed Volume</div>
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">Over $920M+ Million</div>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
             >
-              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">
-                <Counter value={24} suffix="h" />
+              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-4">
+                <Counter value={3800} suffix="+" />
               </div>
-              <div className="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Avg Response Time</div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-            >
-              <div className="text-5xl lg:text-7xl font-heading font-bold text-primary mb-3">
-                <Counter value={100} suffix="%" />
-              </div>
-              <div className="text-xs lg:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">Client Focus</div>
+              <div className="text-sm font-bold text-white uppercase tracking-[0.2em] mb-2">Properties Sold</div>
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">Over 3,800+ Transactions</div>
             </motion.div>
           </div>
         </div>
