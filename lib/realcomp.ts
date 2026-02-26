@@ -79,8 +79,8 @@ export async function getProperties(options: {
         const url = new URL(`${REALCOMP_API_URL}/Property`);
 
         // Base filters for IDX compliance
-        // Note: Realcomp OData field names might differ, often based on RESO Web API standards.
-        let combinedFilter = "StandardStatus eq 'Active' and SyndicateTo has 'Internet Data Exchange (IDX)'";
+        // Note: Realcomp OData field names based on RESO Web API standards.
+        let combinedFilter = "StandardStatus eq 'Active' and InternetEntireListingDisplayYN eq true";
 
         if (filter) {
             combinedFilter = `(${combinedFilter}) and (${filter})`;
