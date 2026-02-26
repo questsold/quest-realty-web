@@ -1,12 +1,27 @@
 import { Search, Map as MapIcon, Filter, List, SlidersHorizontal, ImageOff } from "lucide-react";
 import Link from "next/link";
 import { getProperties } from "@/lib/realcomp";
+import { PropertyFilters } from "./PropertyFilters";
 
-export default async function PropertiesPage() {
+export default async function PropertiesPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
     let propertiesToDisplay: any[] = [];
+    const q = typeof searchParams.q === 'string' ? searchParams.q : '';
+
+    let filterString = "";
+    if (q) {
+        // Build OData Filter String for City or PostalCode
+        const isNumeric = /^\d+$/.test(q.trim());
+        if (isNumeric) {
+            filterString = `PostalCode eq '${q.trim()}'`;
+        } else {
+            // Capitalize first letter of each word to match Realcomp's standard casing
+            const city = q.trim().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+            filterString = `City eq '${city}'`;
+        }
+    }
 
     try {
-        const realcompData = await getProperties({ top: 12 }); // Fetch 12 active properties
+        const realcompData = await getProperties({ top: 12, filter: filterString || undefined });
         if (realcompData && realcompData.length > 0) {
             propertiesToDisplay = realcompData.map((p, idx) => ({
                 id: p.ListingId || `rc-${idx}`,
@@ -105,34 +120,7 @@ export default async function PropertiesPage() {
 
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col pt-[88px]">
-            {/* Search Header Bar */}
-            <div className="bg-white border-b border-slate-200 sticky top-[88px] z-40 shadow-sm">
-                <div className="container mx-auto px-6 py-4 flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <div className="relative w-full md:max-w-md">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                        <input
-                            type="text"
-                            placeholder="City, Neighborhood, or Zip"
-                            className="w-full pl-12 pr-4 py-3 rounded-full border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
-                        />
-                    </div>
-
-                    <div className="flex w-full md:w-auto gap-3 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
-                        <button className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-full text-sm font-medium text-slate-700 hover:bg-slate-50 whitespace-nowrap">
-                            Price <SlidersHorizontal className="w-4 h-4 ml-1 text-slate-400" />
-                        </button>
-                        <button className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-full text-sm font-medium text-slate-700 hover:bg-slate-50 whitespace-nowrap">
-                            Beds & Baths <SlidersHorizontal className="w-4 h-4 ml-1 text-slate-400" />
-                        </button>
-                        <button className="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-full text-sm font-medium text-slate-700 hover:bg-slate-50 whitespace-nowrap">
-                            Property Type <SlidersHorizontal className="w-4 h-4 ml-1 text-slate-400" />
-                        </button>
-                        <button className="flex items-center gap-2 px-5 py-2 bg-slate-900 text-white rounded-full text-sm font-medium hover:bg-slate-800 whitespace-nowrap">
-                            <Filter className="w-4 h-4 mr-1" /> Filters
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <PropertyFilters />
 
             {/* Main Content Split View */}
             <div className="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-[1600px] mx-auto w-full">
@@ -185,33 +173,18 @@ export default async function PropertiesPage() {
                     </div>
                 </div>
 
-                {/* Right: Map View (Placeholder) */}
+                {/* Right: Interactive Map */}
                 <div className="hidden lg:block w-[45%] bg-slate-200 relative lg:h-[calc(100vh-165px)] border-l border-slate-200">
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center" />
-                    <div className="absolute inset-0 bg-slate-900/10 backdrop-blur-[1px]" />
-
-                    {/* Map Overlay UI */}
-                    <div className="absolute top-6 right-6">
-                        <div className="bg-white rounded-lg shadow-xl p-1 flex flex-col border border-slate-200">
-                            <button className="p-2 hover:bg-slate-50 rounded-md transition-colors"><div className="w-6 h-6 flex items-center justify-center font-bold text-slate-700 text-lg">+</div></button>
-                            <div className="w-full h-px bg-slate-100" />
-                            <button className="p-2 hover:bg-slate-50 rounded-md transition-colors"><div className="w-6 h-6 flex items-center justify-center font-bold text-slate-700 text-lg">-</div></button>
-                        </div>
-                    </div>
-
-                    {/* Example Map Pins */}
-                    {propertiesToDisplay.map((prop: any, idx: number) => (
-                        <div
-                            key={prop.id}
-                            className="absolute bg-primary text-white px-3 py-1.5 rounded-full font-bold text-sm shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform hover:bg-slate-900 hover:text-white hover:z-50"
-                            style={{
-                                top: `${25 + (idx * 12)}%`,
-                                left: `${20 + (idx * 15 - (idx % 2 * 25))}%`
-                            }}
-                        >
-                            {prop.price.split(',')[0]}K
-                        </div>
-                    ))}
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d376176.71190533356!2d-83.47353139871131!3d42.5085444535352!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8824c969397f35ad%3A0xe5a3c2678f8c4c7c!2sOakland%20County%2C%20MI!5e0!3m2!1sen!2sus!4v1699999999999!5m2!1sen!2sus"
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0, position: 'absolute', inset: 0 }}
+                        allowFullScreen={false}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        className="w-full h-full"
+                    ></iframe>
                 </div>
             </div>
         </div>

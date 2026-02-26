@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -9,11 +10,16 @@ export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+    const pathname = usePathname();
+
+    const forceDarkHeader = pathname === "/properties" || pathname?.startsWith("/listing/");
+    const isDarkTheme = isScrolled || forceDarkHeader;
 
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
+        handleScroll(); // Check on mount
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
@@ -54,19 +60,19 @@ export function Header() {
             initial={{ y: "-100%" }}
             animate={{ y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? "bg-white/95 backdrop-blur-md border-b shadow-sm py-3 text-zinc-900" : "bg-transparent py-5 text-white"}`}
+            className={`fixed top-0 w-full z-50 transition-all duration-300 ${isDarkTheme ? "bg-white/95 backdrop-blur-md border-b shadow-sm py-3 text-zinc-900" : "bg-transparent py-5 text-white"}`}
         >
             <div className="container mx-auto px-6 flex items-center justify-between">
                 <Link href="/" className="flex items-center">
                     <img
                         src="https://assets.thesparksite.com/uploads/templates/header-q-2/Quest-Logo-gradient-white-250xAUTO.fit.png"
                         alt="Quest Realty White Logo"
-                        className={`absolute h-8 md:h-10 w-auto object-contain transition-opacity duration-300 ${isScrolled ? "opacity-0 invisible" : "opacity-100 visible"}`}
+                        className={`absolute h-8 md:h-10 w-auto object-contain transition-opacity duration-300 ${isDarkTheme ? "opacity-0 invisible" : "opacity-100 visible"}`}
                     />
                     <img
                         src="/quest-logo-dark.png"
                         alt="Quest Realty Dark Logo"
-                        className={`h-8 md:h-10 w-auto object-contain transition-opacity duration-300 ${isScrolled ? "opacity-100 visible" : "opacity-0 invisible"}`}
+                        className={`h-8 md:h-10 w-auto object-contain transition-opacity duration-300 ${isDarkTheme ? "opacity-100 visible" : "opacity-0 invisible"}`}
                     />
                 </Link>
 
@@ -112,7 +118,7 @@ export function Header() {
                     ))}
                     <Link
                         href="/contact"
-                        className={`px-6 py-2.5 rounded-full font-bold shadow-sm transition-all hover:scale-105 active:scale-95 ${isScrolled ? "bg-primary text-white hover:bg-primary/90 shadow-primary/20" : "bg-white text-slate-900 hover:bg-white/90"}`}
+                        className={`px-6 py-2.5 rounded-full font-bold shadow-sm transition-all hover:scale-105 active:scale-95 ${isDarkTheme ? "bg-primary text-white hover:bg-primary/90 shadow-primary/20" : "bg-white text-slate-900 hover:bg-white/90"}`}
                     >
                         Contact Us
                     </Link>
