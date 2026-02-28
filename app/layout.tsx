@@ -3,7 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import GoogleTracking from "@/components/analytics/GoogleAnalytics";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,7 +26,18 @@ export const metadata: Metadata = {
     template: "%s | Quest Realty"
   },
   description: "The most current real estate listings and detailed neighborhood information for the greater Michigan region. Specialist in Oakland, Macomb, and Wayne counties.",
-  keywords: ["Metro Detroit Real Estate", "Homes for sale Michigan", "Oakland County Realtors", "Quest Realty", "Michigan Property Search"],
+  keywords: [
+    "Metro Detroit Real Estate",
+    "Homes for sale Michigan",
+    "Oakland County Realtors",
+    "Quest Realty",
+    "Michigan Property Search",
+    "Real Estate Agents Troy MI",
+    "Birmingham MI Luxury Homes",
+    "Royal Oak Real Estate",
+    "Rochester Hills Property Listings",
+    "Sell my house fast Metro Detroit"
+  ],
   authors: [{ name: "Ali Berry" }],
   creator: "Quest Realty",
   openGraph: {
@@ -65,6 +76,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { Suspense } from "react";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -73,9 +86,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.variable} ${outfit.variable} antialiased font-sans flex flex-col min-h-screen overflow-x-hidden w-full`}>
-        {process.env.NEXT_PUBLIC_GA_ID && (
-          <GoogleAnalytics ga_id={process.env.NEXT_PUBLIC_GA_ID} />
-        )}
+        <Suspense fallback={null}>
+          <GoogleTracking
+            ga_id={process.env.NEXT_PUBLIC_GA_ID}
+            ads_id={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID}
+          />
+        </Suspense>
         <Header />
         <main className="flex-grow">
           {children}

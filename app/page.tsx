@@ -1,3 +1,5 @@
+"use client";
+
 import { Hero } from "@/components/ui/Hero";
 import { ExclusiveListings } from "@/components/ui/ExclusiveListings";
 import { PropertyCard } from "@/components/ui/PropertyCard";

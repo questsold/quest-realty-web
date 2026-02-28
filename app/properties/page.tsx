@@ -11,7 +11,7 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
     const searchParams = await props.searchParams;
     let propertiesToDisplay: any[] = [];
     const q = typeof searchParams.q === 'string' ? searchParams.q : '';
-    const view = typeof searchParams.view === 'string' ? searchParams.view : 'list';
+    const view = typeof searchParams.view === 'string' ? searchParams.view : 'split';
 
     // Additional Filters
     const minPrice = typeof searchParams.minPrice === 'string' ? parseInt(searchParams.minPrice) : null;
@@ -84,7 +84,10 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
 
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col pt-[88px] overflow-hidden">
+        <div className="min-h-screen bg-slate-50 flex flex-col overflow-hidden">
+            {/* Header Spacer */}
+            <div className="h-[80px] w-full shrink-0" />
+
             <PropertyFilters />
 
             {/* Main Content Split View */}
@@ -93,11 +96,12 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
                 {/* Left: Property List */}
                 <div
                     className={`h-full overflow-y-auto transition-all duration-500 ease-in-out bg-slate-50 border-r border-slate-200
-                        ${view === 'map' ? 'w-0 opacity-0 pointer-events-none' : ''}
+                        ${view === 'map' ? 'hidden lg:block w-0 opacity-0 pointer-events-none' : 'block'}
                         ${view === 'list' ? 'w-full' : 'w-full lg:w-[50%]'}
+                        ${view === 'split' ? 'w-full lg:w-[50%]' : ''}
                     `}
                 >
-                    <div className="max-w-4xl mx-auto p-6 md:p-8">
+                    <div className="max-w-4xl mx-auto p-6 md:p-8 pt-6">
                         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
                             <div>
                                 <h1 className="text-3xl font-heading font-bold text-slate-900 tracking-tight">
@@ -166,9 +170,9 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
                 {/* Right: Interactive Map */}
                 <div
                     className={`relative transition-all duration-500 ease-in-out bg-slate-200 border-l border-slate-200
-                        ${view === 'list' ? 'w-0 opacity-0 pointer-events-none' : ''}
+                        ${view === 'list' ? 'hidden' : 'flex'}
                         ${view === 'map' ? 'w-full' : 'w-0 lg:w-[50%] lg:flex'}
-                        ${view === 'split' ? 'hidden lg:block' : ''}
+                        ${view === 'split' ? 'hidden lg:flex' : ''}
                     `}
                 >
                     <div className="absolute inset-0">

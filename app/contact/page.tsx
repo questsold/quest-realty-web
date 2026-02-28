@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PageHero } from "@/components/ui/PageHero";
 import { Mail, Phone, MapPin, Clock, CheckCircle2 } from "lucide-react";
 import { submitLeadAction } from "@/app/actions/leads";
+import { trackConversion } from "@/components/analytics/GoogleAnalytics";
 
 export default function ContactPage() {
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -27,6 +28,10 @@ export default function ContactPage() {
             const result = await submitLeadAction(data);
             if (result.success) {
                 setStatus("success");
+                trackConversion("contact_form_submission", {
+                    event_category: "Leads",
+                    event_label: "Contact Page",
+                });
             } else {
                 setStatus("error");
             }
@@ -61,7 +66,7 @@ export default function ContactPage() {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-slate-900 mb-1">Office Location</h4>
-                                        <p className="text-slate-600">23940 Woodward Ave<br />Pleasant Ridge, MI 48069</p>
+                                        <p className="text-slate-600">888 W Big Beaver Rd, Ste 200<br />Troy, MI 48084</p>
                                     </div>
                                 </div>
 
@@ -214,7 +219,7 @@ export default function ContactPage() {
                         </div>
                         <div>
                             <h4 className="font-bold text-slate-900 text-lg">Quest Realty HQ</h4>
-                            <p className="text-sm text-slate-500">23940 Woodward Ave, Pleasant Ridge</p>
+                            <p className="text-sm text-slate-500">888 W Big Beaver Rd, Ste 200, Troy</p>
                         </div>
                     </div>
                 </div>

@@ -140,17 +140,17 @@ function FiltersContent() {
     }).length;
 
     return (
-        <div className="bg-white/90 backdrop-blur-xl border-b border-slate-200 sticky top-[88px] z-[9999] shadow-sm relative transition-all duration-300">
-            <div className="container mx-auto px-6 py-4 flex flex-col md:flex-row gap-4 items-center justify-between !overflow-visible relative">
+        <div className="bg-white border-b border-slate-200 z-10 shadow-sm transition-all duration-300">
+            <div className="container mx-auto px-6 py-3 flex flex-col md:flex-row gap-6 items-center justify-between relative">
 
                 {/* Left side: Advanced Search Bar */}
-                <div className="relative w-full md:max-w-xl">
+                <div className="relative w-full md:flex-1 md:max-w-3xl group">
                     <form onSubmit={handleSearch} className="relative z-[60]">
-                        <button type="submit" className="absolute left-4 top-1/2 -translate-y-1/2">
+                        <button type="submit" className="absolute left-5 top-1/2 -translate-y-1/2">
                             {isLoading ? (
                                 <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
                             ) : (
-                                <Search className="w-4 h-4 text-primary" />
+                                <Search className="w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                             )}
                         </button>
                         <input
@@ -160,7 +160,7 @@ function FiltersContent() {
                             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                             onFocus={() => q.length >= 2 && setShowSuggestions(true)}
                             placeholder="Search by City, Zip, or Address..."
-                            className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary text-sm bg-white font-bold placeholder:text-slate-400 placeholder:font-medium transition-all"
+                            className="w-full pl-12 pr-4 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary text-sm bg-slate-50/50 font-bold placeholder:text-slate-400 placeholder:font-medium transition-all hover:bg-white"
                         />
                     </form>
 
@@ -213,23 +213,21 @@ function FiltersContent() {
                     {/* Filter Pills */}
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className={`flex items-center gap-2 px-6 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all border-2
+                        className={`flex items-center gap-2 px-10 py-4 rounded-2xl text-[12px] font-bold uppercase tracking-wider transition-all border-2
                             ${activeFilterCount > 0 ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-900/20' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-900 hover:text-slate-900'}
                         `}
                     >
                         <SlidersHorizontal className="w-4 h-4" />
                         Filters
                         {activeFilterCount > 0 && (
-                            <span className="ml-1 w-5 h-5 bg-primary text-white flex items-center justify-center rounded-full text-[9px] border-2 border-slate-900">
+                            <span className="ml-1 w-5 h-5 bg-primary text-white flex items-center justify-center rounded-full text-[10px] border-2 border-slate-900 font-bold">
                                 {activeFilterCount}
                             </span>
                         )}
                     </button>
 
-                    <div className="w-px h-8 bg-slate-200 mx-2 hidden md:block" />
-
                     <button
-                        className="flex items-center gap-2 px-6 py-3.5 bg-primary text-white rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 active:scale-95 whitespace-nowrap"
+                        className="flex items-center gap-2 px-10 py-4 bg-primary text-white border-2 border-primary rounded-2xl text-[12px] font-bold uppercase tracking-wider hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 hover:shadow-primary/40 active:scale-95 whitespace-nowrap"
                     >
                         Save Search
                     </button>

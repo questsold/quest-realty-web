@@ -154,11 +154,19 @@ export async function getSuggestions(q: string) {
         const token = await getAccessToken();
         const url = new URL(`${REALCOMP_API_URL}/Property`);
 
-        // Search for addresses or cities starting with q
-        const filter = `contains(UnparsedAddress, '${q}') or contains(OriginalCity, '${q}')`;
+        // Intelligence: If all digits, prioritize PostalCode and start of address
+        const isNumeric = /^\d+$/.test(q);
+        let filter = "";
+
+        if (isNumeric) {
+            filter = `StandardStatus eq 'Active' and (startswith(PostalCode, '${q}') or startswith(UnparsedAddress, '${q}'))`;
+        } else {
+            filter = `StandardStatus eq 'Active' and (contains(UnparsedAddress, '${q}') or startswith(OriginalCity, '${q}'))`;
+        }
+
         url.searchParams.set('$filter', filter);
         url.searchParams.set('$top', '10');
-        url.searchParams.set('$select', 'UnparsedAddress,OriginalCity,PostalCode');
+        url.searchParams.set('$select', 'UnparsedAddress,OriginalCity,PostalCode,ListingId');
 
         const response = await fetch(url.toString(), {
             headers: {
