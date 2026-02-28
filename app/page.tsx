@@ -1,5 +1,5 @@
-"use client";
 import { Hero } from "@/components/ui/Hero";
+import { ExclusiveListings } from "@/components/ui/ExclusiveListings";
 import { PropertyCard } from "@/components/ui/PropertyCard";
 import { ArrowRight, ChevronLeft, ChevronRight, Users, Building2, BarChart3, CircleDollarSign } from "lucide-react";
 import Link from "next/link";
@@ -8,76 +8,12 @@ import { Star, Quote } from "lucide-react";
 import { Counter } from "@/components/ui/Counter";
 
 export default function Home() {
-  const featuredProperties = [
-    {
-      id: "1",
-      address: "1042 Waddington Rd",
-      city: "Birmingham, MI",
-      price: "$1,850,000",
-      beds: 5,
-      baths: 4.5,
-      sqft: "4,200",
-      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      status: "New Listing"
-    },
-    {
-      id: "2",
-      address: "821 Rivenoak Ave",
-      city: "Birmingham, MI",
-      price: "$899,000",
-      beds: 3,
-      baths: 3,
-      sqft: "2,100",
-      image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      status: "Active"
-    },
-    {
-      id: "3",
-      address: "4550 Walnut Lake Rd",
-      city: "Bloomfield Hills, MI",
-      price: "$2,100,000",
-      beds: 5,
-      baths: 6,
-      sqft: "6,500",
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      status: "Coming Soon"
-    }
-  ];
-
   return (
     <div className="overflow-x-hidden">
       <Hero />
 
-      {/* Handpicked Listings */}
-      <section className="py-32 bg-slate-50">
-        <div className="container mx-auto px-6 max-w-7xl">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div className="max-w-2xl">
-              <h2 className="text-sm uppercase tracking-widest text-primary mb-4 font-bold">Discover</h2>
-              <h3 className="text-4xl md:text-5xl font-heading font-bold text-slate-900 leading-tight">
-                Handpicked Listings
-              </h3>
-            </div>
-            <Link href="/properties" className="group flex items-center gap-2 text-slate-900 font-bold hover:text-primary transition-all">
-              View Collection <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {featuredProperties.map((property, idx) => (
-              <motion.div
-                key={property.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-              >
-                <PropertyCard {...property} />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Exclusive Listings Carousel */}
+      <ExclusiveListings />
 
       {/* The Quest Realty Difference Section */}
       <section className="py-32 bg-white" id="About">

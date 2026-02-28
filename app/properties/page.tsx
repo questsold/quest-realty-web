@@ -1,216 +1,179 @@
-import { Search, Map as MapIcon, Filter, List, SlidersHorizontal, ImageOff, MapPinOff } from "lucide-react";
+import { Search, Map as MapIcon, Filter, List, SlidersHorizontal, ImageOff, MapPinOff, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { getProperties } from "@/lib/realcomp";
+import { PropertyCard } from "@/components/ui/PropertyCard";
 import { PropertyFilters } from "./PropertyFilters";
+import MapWrapper from "./MapWrapper";
 
 export const dynamic = "force-dynamic";
 
-export default async function PropertiesPage({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
+export default async function PropertiesPage(props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+    const searchParams = await props.searchParams;
     let propertiesToDisplay: any[] = [];
     const q = typeof searchParams.q === 'string' ? searchParams.q : '';
+    const view = typeof searchParams.view === 'string' ? searchParams.view : 'list';
+
+    // Additional Filters
+    const minPrice = typeof searchParams.minPrice === 'string' ? parseInt(searchParams.minPrice) : null;
+    const maxPrice = typeof searchParams.maxPrice === 'string' ? parseInt(searchParams.maxPrice) : null;
+    const minBeds = typeof searchParams.beds === 'string' ? parseInt(searchParams.beds) : null;
+    const minBaths = typeof searchParams.baths === 'string' ? parseFloat(searchParams.baths) : null;
+    const minSqft = typeof searchParams.sqft === 'string' ? parseInt(searchParams.sqft) : null;
+    const minYear = typeof searchParams.year === 'string' ? parseInt(searchParams.year) : null;
+    const propType = typeof searchParams.type === 'string' ? searchParams.type : 'Residential';
+    const sortOrder = typeof searchParams.sort === 'string' ? searchParams.sort : 'ModificationTimestamp desc';
+
+    const isNumeric = /^\d+$/.test(q.trim());
 
     let filterString = "";
     if (q) {
-        // Build OData Filter String for City or PostalCode
-        const isNumeric = /^\d+$/.test(q.trim());
         if (isNumeric) {
             filterString = `contains(PostalCode, '${q.trim()}')`;
         } else {
-            // Use OriginalCity for string contains search as it's more flexible than the Enum City field
-            filterString = `contains(OriginalCity, '${q.trim()}')`;
+            filterString = `(contains(OriginalCity, '${q.trim()}') or contains(UnparsedAddress, '${q.trim()}'))`;
         }
     }
 
+    // Append additional filters
+    if (minPrice !== null) filterString += (filterString ? " and " : "") + `ListPrice ge ${minPrice}`;
+    if (maxPrice !== null) filterString += (filterString ? " and " : "") + `ListPrice le ${maxPrice}`;
+    if (minBeds !== null) filterString += (filterString ? " and " : "") + `BedroomsTotal ge ${minBeds}`;
+    if (minBaths !== null) filterString += (filterString ? " and " : "") + `BathroomsFull ge ${minBaths}`;
+    if (minSqft !== null) filterString += (filterString ? " and " : "") + `LivingArea ge ${minSqft}`;
+    if (minYear !== null) filterString += (filterString ? " and " : "") + `YearBuilt ge ${minYear}`;
+
+    // Safer Property Type Filter
+    if (propType && propType !== 'Any') {
+        const typeFilter = propType === 'Residential'
+            ? `PropertyType eq 'Residential'`
+            : `(contains(PropertySubType, '${propType}') or contains(PropertyType, '${propType}'))`;
+        filterString += (filterString ? " and " : "") + `(${typeFilter})`;
+    }
+
+    // Determine if this is a "filtered" view
+    const isFiltered = !!(q || searchParams.minPrice || searchParams.maxPrice || searchParams.beds || searchParams.baths || searchParams.sqft || searchParams.year || (searchParams.type && searchParams.type !== 'Residential'));
+
     try {
-        const realcompData = await getProperties({ top: 24, filter: filterString || undefined });
+        const realcompData = await getProperties({
+            top: 40,
+            filter: filterString || undefined,
+            orderby: sortOrder
+        });
         if (realcompData && realcompData.length > 0) {
             propertiesToDisplay = realcompData.map((p, idx) => ({
                 id: p.ListingId || `rc-${idx}`,
-                address: p.UnparsedAddress || 'Address Withheld',
-                city: `${p.City || ''}, MI ${p.PostalCode || ''}`.trim(),
+                address: (p as any).InternetAddressDisplayYN === false ? 'Address Withheld' : (p.UnparsedAddress || 'Address Withheld'),
+                city: `${p.OriginalCity || p.City || ''}, MI ${p.PostalCode || ''}`.trim(),
                 price: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(p.ListPrice || 0),
                 beds: p.BedroomsTotal || 0,
                 baths: (p.BathroomsFull || 0) + (p.BathroomsHalf ? 0.5 : 0),
                 sqft: p.LivingArea ? p.LivingArea.toLocaleString() : 'N/A',
                 type: p.PropertySubType || p.PropertyType || 'Single Family',
                 image: (p.Media && p.Media.length > 0) ? p.Media[0].MediaURL : null,
-                status: p.StandardStatus
+                status: p.StandardStatus,
+                lat: p.Latitude,
+                lng: p.Longitude
             }));
         }
     } catch (e) {
         console.error("Failed to load Realcomp properties:", e);
     }
 
-    // ONLY Fallback to Mock Data if no search is active and no properties are found
-    let isNoResults = false;
-    if (propertiesToDisplay.length === 0) {
-        if (!q) {
-            propertiesToDisplay = [
-                {
-                    id: "1",
-                    address: "1042 Waddington Rd",
-                    city: "Birmingham, MI 48009",
-                    price: "$1,450,000",
-                    beds: 4,
-                    baths: 4,
-                    sqft: "3,200",
-                    type: "Single Family",
-                    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                    status: "Active"
-                },
-                {
-                    id: "2",
-                    address: "821 Rivenoak Ave",
-                    city: "Birmingham, MI 48009",
-                    price: "$899,000",
-                    beds: 3,
-                    baths: 3,
-                    sqft: "2,100",
-                    type: "Single Family",
-                    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                    status: "Active"
-                },
-                {
-                    id: "3",
-                    address: "4550 Walnut Lake Rd",
-                    city: "Bloomfield Hills, MI 48301",
-                    price: "$2,100,000",
-                    beds: 5,
-                    baths: 6,
-                    sqft: "6,500",
-                    type: "Estate",
-                    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                    status: "Coming Soon"
-                },
-                {
-                    id: "4",
-                    address: "2150 E Lincoln St",
-                    city: "Birmingham, MI 48009",
-                    price: "$725,000",
-                    beds: 3,
-                    baths: 2,
-                    sqft: "1,850",
-                    type: "Single Family",
-                    image: "https://images.unsplash.com/photo-1583608205712-bea72456202e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                    status: "Active"
-                },
-                {
-                    id: "5",
-                    address: "1820 Quarton Rd",
-                    city: "Bloomfield Hills, MI 48304",
-                    price: "$3,450,000",
-                    beds: 6,
-                    baths: 7,
-                    sqft: "8,200",
-                    type: "Estate",
-                    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                    status: "Active"
-                },
-                {
-                    id: "6",
-                    address: "945 N Adams Rd",
-                    city: "Troy, MI 48098",
-                    price: "$649,900",
-                    beds: 4,
-                    baths: 3,
-                    sqft: "2,500",
-                    type: "Single Family",
-                    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-                    status: "Active"
-                }
-            ];
-        } else {
-            isNoResults = true;
-        }
-    }
+    const hasResults = propertiesToDisplay.length > 0;
+
+
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col pt-[88px]">
+        <div className="min-h-screen bg-slate-50 flex flex-col pt-[88px] overflow-hidden">
             <PropertyFilters />
 
             {/* Main Content Split View */}
-            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-[1600px] mx-auto w-full">
+            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden w-full relative">
 
                 {/* Left: Property List */}
-                <div className="w-full lg:w-[55%] lg:h-[calc(100vh-165px)] overflow-y-auto p-6 bg-slate-50">
-                    <div className="flex justify-between items-end mb-6">
-                        <div>
-                            <h1 className="text-2xl font-heading font-bold text-slate-900">Metro Detroit Homes For Sale</h1>
-                            <p className="text-slate-500 text-sm mt-1 font-medium">{propertiesToDisplay.length} Results</p>
-                        </div>
+                <div
+                    className={`h-full overflow-y-auto transition-all duration-500 ease-in-out bg-slate-50 border-r border-slate-200
+                        ${view === 'map' ? 'w-0 opacity-0 pointer-events-none' : ''}
+                        ${view === 'list' ? 'w-full' : 'w-full lg:w-[50%]'}
+                    `}
+                >
+                    <div className="max-w-4xl mx-auto p-6 md:p-8">
+                        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+                            <div>
+                                <h1 className="text-3xl font-heading font-bold text-slate-900 tracking-tight">
+                                    {isFiltered ? 'Search Results' : 'Detroit Real Estate'}
+                                </h1>
+                                <p className="text-slate-500 text-sm mt-1.5 font-medium flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                    {propertiesToDisplay.length} Live Listings Found
+                                </p>
+                            </div>
 
-                        <div className="flex bg-white rounded-lg border border-slate-200 p-1 shadow-sm">
-                            <button className="flex items-center gap-2 px-4 py-1.5 bg-slate-100 rounded-md text-sm font-medium text-slate-900">
-                                <List className="w-4 h-4" /> List
-                            </button>
-                            <button className="flex items-center gap-2 px-4 py-1.5 rounded-md text-sm font-medium text-slate-500 hover:text-slate-900">
-                                <MapIcon className="w-4 h-4" /> Map
-                            </button>
-                        </div>
-                    </div>
-
-                    {isNoResults ? (
-                        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-dashed border-slate-300">
-                            <MapPinOff className="w-16 h-16 text-slate-300 mb-4" />
-                            <h3 className="text-xl font-bold text-slate-900">No properties found</h3>
-                            <p className="text-slate-500 mt-2">We couldn't find any active listings matching "{q}"</p>
-                            <button
-                                onClick={() => window.location.href = '/properties'}
-                                className="mt-6 text-primary font-bold hover:underline"
-                            >
-                                Clear all filters
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="grid sm:grid-cols-2 gap-6">
-                            {propertiesToDisplay.map((property: any) => (
-                                <Link href={`/listing/${property.id}`} key={property.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all cursor-pointer group block">
-                                    <div className="relative h-64 overflow-hidden">
-                                        <div className="absolute top-4 left-4 z-10 bg-black/60 backdrop-blur-md text-white px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-sm">
-                                            {property.type}
-                                        </div>
-                                        {property.image ? (
-                                            <img src={property.image} alt={property.address} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                        ) : (
-                                            <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-                                                <ImageOff className="w-12 h-12 text-slate-300" />
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="p-5">
-                                        <div className="text-2xl font-heading font-bold text-slate-900 mb-1">{property.price}</div>
-                                        <div className="flex gap-4 text-sm font-medium text-slate-600 mb-4 pb-4 border-b border-slate-100">
-                                            <span>{property.beds} <span className="font-normal text-slate-400">Beds</span></span>
-                                            <span>{property.baths} <span className="font-normal text-slate-400">Baths</span></span>
-                                            <span>{property.sqft} <span className="font-normal text-slate-400">Sqft</span></span>
-                                        </div>
-                                        <h4 className="font-semibold text-slate-900 truncate">{property.address}</h4>
-                                        <p className="text-slate-500 text-sm truncate mt-0.5">{property.city}</p>
-                                    </div>
+                            <div className="flex bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 p-1.5 shadow-sm self-start">
+                                <Link
+                                    href={`/properties?${new URLSearchParams({ ...Object.fromEntries(Object.entries(searchParams).map(([k, v]) => [k, String(v)])), view: 'list' }).toString()}`}
+                                    className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold transition-all ${view === 'list' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                                >
+                                    <List className="w-4 h-4" /> LIST
                                 </Link>
-                            ))}
+                                <Link
+                                    href={`/properties?${new URLSearchParams({ ...Object.fromEntries(Object.entries(searchParams).map(([k, v]) => [k, String(v)])), view: 'split' }).toString()}`}
+                                    className={`hidden lg:flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold transition-all ${view === 'split' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                                >
+                                    <SlidersHorizontal className="w-4 h-4" /> SPLIT
+                                </Link>
+                                <Link
+                                    href={`/properties?${new URLSearchParams({ ...Object.fromEntries(Object.entries(searchParams).map(([k, v]) => [k, String(v)])), view: 'map' }).toString()}`}
+                                    className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold transition-all ${view === 'map' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                                >
+                                    <MapIcon className="w-4 h-4" /> MAP
+                                </Link>
+                            </div>
                         </div>
-                    )}
 
-                    <div className="mt-10 mb-8 flex justify-center">
-                        <button className="border-2 border-slate-200 bg-white px-8 py-3 rounded-full text-sm font-bold tracking-wide text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition-colors uppercase">
-                            Load More Properties
-                        </button>
+                        {!hasResults ? (
+                            <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm px-6 text-center">
+                                <div className="bg-slate-50 p-8 rounded-full mb-8">
+                                    <MapPinOff className="w-14 h-14 text-slate-300" />
+                                </div>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-3">No properties matched</h3>
+                                <p className="text-slate-500 max-w-sm mb-10 font-medium">We couldn't find any listings for your current criteria. Try removing filters or searching a broader area.</p>
+                                <Link
+                                    href="/properties"
+                                    className="bg-primary text-white px-10 py-4 rounded-full font-bold hover:shadow-2xl hover:scale-105 transition-all shadow-xl shadow-primary/20"
+                                >
+                                    Clear all filters
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className={`grid gap-6 ${view === 'list' ? 'sm:grid-cols-2 xl:grid-cols-3' : 'sm:grid-cols-2'}`}>
+                                {propertiesToDisplay.map((property: any) => (
+                                    <PropertyCard key={property.id} {...property} />
+                                ))}
+                            </div>
+                        )}
+
+                        {hasResults && (
+                            <div className="mt-12 mb-12 flex justify-center">
+                                <button className="group relative px-10 py-4 bg-white border border-slate-200 rounded-full text-sm font-bold tracking-widest text-slate-900 hover:border-slate-900 hover:bg-slate-900 hover:text-white transition-all duration-300 uppercase shadow-sm">
+                                    <span className="relative z-10">Load More Properties</span>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Right: Interactive Map */}
-                <div className="hidden lg:block w-[45%] bg-slate-200 relative lg:h-[calc(100vh-165px)] border-l border-slate-200">
-                    <iframe
-                        src={`https://www.google.com/maps?q=${q ? encodeURIComponent(q + ", MI") : "Oakland+County,MI"}&output=embed`}
-                        width="100%"
-                        height="100%"
-                        style={{ border: 0, position: 'absolute', inset: 0 }}
-                        allowFullScreen={false}
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                        className="w-full h-full"
-                    ></iframe>
+                <div
+                    className={`relative transition-all duration-500 ease-in-out bg-slate-200 border-l border-slate-200
+                        ${view === 'list' ? 'w-0 opacity-0 pointer-events-none' : ''}
+                        ${view === 'map' ? 'w-full' : 'w-0 lg:w-[50%] lg:flex'}
+                        ${view === 'split' ? 'hidden lg:block' : ''}
+                    `}
+                >
+                    <div className="absolute inset-0">
+                        <MapWrapper properties={propertiesToDisplay} />
+                    </div>
                 </div>
             </div>
         </div>

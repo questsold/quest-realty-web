@@ -64,6 +64,13 @@ export interface RealcompProperty {
         Order: number;
     }>;
     PublicRemarks: string;
+    OriginalCity: string;
+    Latitude?: number;
+    Longitude?: number;
+    YearBuilt?: number;
+    LotSizeAcres?: number;
+    GarageSpaces?: number;
+    ArchitecturalStyle?: string;
 }
 
 export async function getProperties(options: {
@@ -99,7 +106,7 @@ export async function getProperties(options: {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
             },
-            next: { revalidate: 3600 } // Cache for 1 hour in Next.js
+            next: { revalidate: 60 } // Cache for 1 minute in Next.js
         });
 
         if (!response.ok) {
@@ -138,5 +145,33 @@ export async function getPropertyBySlug(listingId: string) {
     } catch (error) {
         console.error("Error fetching single property:", error);
         return null;
+    }
+}
+
+export async function getSuggestions(q: string) {
+    if (!q || q.length < 3) return [];
+    try {
+        const token = await getAccessToken();
+        const url = new URL(`${REALCOMP_API_URL}/Property`);
+
+        // Search for addresses or cities starting with q
+        const filter = `contains(UnparsedAddress, '${q}') or contains(OriginalCity, '${q}')`;
+        url.searchParams.set('$filter', filter);
+        url.searchParams.set('$top', '10');
+        url.searchParams.set('$select', 'UnparsedAddress,OriginalCity,PostalCode');
+
+        const response = await fetch(url.toString(), {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+            }
+        });
+
+        if (!response.ok) return [];
+        const data = await response.json();
+        return data.value as any[];
+    } catch (error) {
+        console.error("Error fetching suggestions:", error);
+        return [];
     }
 }
