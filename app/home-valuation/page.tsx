@@ -7,23 +7,23 @@ import { trackConversion } from "@/components/analytics/GoogleAnalytics";
 import RealScoutValuationWidget from "@/components/widgets/RealScoutValuation";
 
 export default function HomeValuationPage() {
-    const agentId = process.env.REALSCOUT_AGENT_ID || "214245";
+    const agentId = "QWdlbnQtMjE0MjQ1";
 
     return (
         <main className="min-h-screen bg-slate-50">
             <PageHero
                 title="What is Your Home Worth?"
                 description="Get a free, data-driven estimate of your property's current market value instantly."
-                imageUrl="https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
+                imageUrl="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
             />
 
             <section className="py-24">
-                <div className="container mx-auto px-6 max-w-6xl">
+                <div className="container mx-auto px-6 max-w-7xl">
 
-                    <div className="grid lg:grid-cols-5 gap-16 items-start">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-24 items-start">
 
                         {/* Left: Interactive RealScout Widget */}
-                        <div className="lg:col-span-3">
+                        <div className="md:col-span-7">
                             <RealScoutValuationWidget agentId={agentId} />
 
                             <p className="text-sm text-slate-400 text-center mt-6">
@@ -32,7 +32,7 @@ export default function HomeValuationPage() {
                         </div>
 
                         {/* Right: Info Column */}
-                        <div className="lg:col-span-2 space-y-10">
+                        <div className="md:col-span-5 space-y-10 lg:pl-8">
                             <div>
                                 <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
                                     <AreaChart className="w-6 h-6 text-primary" />

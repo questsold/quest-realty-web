@@ -138,7 +138,7 @@ export function Hero() {
     };
 
     return (
-        <section className={`relative min-h-[800px] md:h-[90vh] flex items-center justify-center ${showSuggestions ? 'z-50' : 'z-20'}`}>
+        <section className={`relative min-h-[800px] md:h-[90vh] flex items-center justify-center pt-24 md:pt-32 ${showSuggestions ? 'z-50' : 'z-20'}`}>
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <motion.div
                     initial={{ scale: 1.1 }}

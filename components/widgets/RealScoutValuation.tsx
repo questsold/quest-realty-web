@@ -9,7 +9,7 @@ interface RealScoutWidgetProps {
 
 export default function RealScoutValuationWidget({ agentId }: RealScoutWidgetProps) {
     return (
-        <div className="w-full max-w-4xl mx-auto">
+        <div className="w-full pb-8 px-2">
             <Script
                 src="https://em.realscout.com/widgets/realscout-web-components.umd.js"
                 type="module"
@@ -26,13 +26,12 @@ export default function RealScoutValuationWidget({ agentId }: RealScoutWidgetPro
           --rs-hvw-primary-button-text-color: #ffffff;
           --rs-hvw-secondary-button-color: #ffffff;
           --rs-hvw-secondary-button-text-color: #0f172a;
-          --rs-hvw-widget-width: 100%;
         }
       `}} />
 
-            <div className="bg-white rounded-2xl shadow-2xl p-4 sm:p-8 border border-slate-100 min-h-[400px]">
+            <div>
                 {/* @ts-ignore */}
-                <realscout-home-value agent-id={agentId}></realscout-home-value>
+                <realscout-home-value agent-encoded-id={agentId}></realscout-home-value>
             </div>
         </div>
     );
