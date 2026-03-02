@@ -119,7 +119,7 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
                     </div>
 
                     {/* Smaller Images */}
-                    {property.images.slice(1).map((img, idx) => (
+                    {property.images.slice(1, 5).map((img, idx) => (
                         <div key={idx} className="hidden lg:block relative group overflow-hidden cursor-pointer">
                             <img
                                 src={img}
