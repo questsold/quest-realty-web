@@ -171,7 +171,7 @@ export async function getSuggestions(q: string) {
 
         if (isNumeric) {
             // Priority 1: Address starts with (any status)
-            const addrFilter = `startswith(UnparsedAddress, '${q}') or startswith(StreetNumber, '${q}')`;
+            const addrFilter = `StandardStatus eq 'Active' and (startswith(UnparsedAddress, '${q}') or startswith(StreetNumber, '${q}'))`;
             const addrRes = await fetch(`${baseQuery}${encodeURIComponent(addrFilter)}`, { headers });
             if (addrRes.ok) {
                 const data = await addrRes.json();
@@ -180,7 +180,7 @@ export async function getSuggestions(q: string) {
 
             // Priority 2: PostalCode starts with (only if we need more results)
             if (results.length < 10) {
-                const zipFilter = `startswith(PostalCode, '${q}')`;
+                const zipFilter = `StandardStatus eq 'Active' and startswith(PostalCode, '${q}')`;
                 const zipRes = await fetch(`${baseQuery}${encodeURIComponent(zipFilter)}`, { headers });
                 if (zipRes.ok) {
                     const data = await zipRes.json();
@@ -190,7 +190,7 @@ export async function getSuggestions(q: string) {
                 }
             }
         } else {
-            const filter = `contains(UnparsedAddress, '${q}') or startswith(OriginalCity, '${q}') or contains(StreetName, '${q}')`;
+            const filter = `StandardStatus eq 'Active' and (contains(UnparsedAddress, '${q}') or startswith(OriginalCity, '${q}') or contains(StreetName, '${q}'))`;
             const res = await fetch(`${baseQuery}${encodeURIComponent(filter)}`, { headers });
             if (res.ok) {
                 const data = await res.json();
