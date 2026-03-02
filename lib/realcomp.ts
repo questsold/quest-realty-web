@@ -48,6 +48,9 @@ export interface RealcompProperty {
     ListingKey: string;
     ListingId: string;
     UnparsedAddress: string;
+    StreetNumber?: string;
+    StreetName?: string;
+    StreetSuffix?: string;
     City: string;
     PostalCode: string;
     ListPrice: number;

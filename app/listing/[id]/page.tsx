@@ -15,8 +15,8 @@ export default async function ListingDetailsPage({ params }: { params: { id: str
     // Map Realcomp Data or fall back to mock
     const property = realcompData ? {
         id: realcompData.ListingId || params.id,
-        address: realcompData.UnparsedAddress || 'Address Withheld',
-        city: realcompData.City || 'Metro Detroit',
+        address: realcompData.UnparsedAddress || [realcompData.StreetNumber, realcompData.StreetName, realcompData.StreetSuffix].filter(Boolean).join(' ') || 'Address Withheld',
+        city: realcompData.OriginalCity || realcompData.City || 'Metro Detroit',
         state: "MI",
         zip: realcompData.PostalCode || '',
         price: realcompData.ListPrice || 0,
