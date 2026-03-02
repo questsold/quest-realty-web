@@ -152,32 +152,53 @@ export async function getSuggestions(q: string) {
     if (!q || q.length < 3) return [];
     try {
         const token = await getAccessToken();
-        const url = new URL(`${REALCOMP_API_URL}/Property`);
 
-        // Intelligence: If all digits, prioritize PostalCode and start of address
-        const isNumeric = /^\d+$/.test(q);
-        let filter = "";
+        const baseQuery = `${REALCOMP_API_URL}/Property?$top=10&$select=UnparsedAddress,OriginalCity,PostalCode,ListingId,StreetNumber,StreetName,StreetSuffix&$filter=`;
+        const headers = {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+        };
 
-        if (isNumeric) {
-            filter = `StandardStatus eq 'Active' and (startswith(PostalCode, '${q}') or startswith(UnparsedAddress, '${q}'))`;
-        } else {
-            filter = `StandardStatus eq 'Active' and (contains(UnparsedAddress, '${q}') or startswith(OriginalCity, '${q}'))`;
-        }
-
-        url.searchParams.set('$filter', filter);
-        url.searchParams.set('$top', '10');
-        url.searchParams.set('$select', 'UnparsedAddress,OriginalCity,PostalCode,ListingId');
-
-        const response = await fetch(url.toString(), {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/json',
+        const formatAddress = (items: any[]) => items.map(item => {
+            if (!item.UnparsedAddress) {
+                item.UnparsedAddress = [item.StreetNumber, item.StreetName, item.StreetSuffix].filter(Boolean).join(' ');
             }
+            return item;
         });
 
-        if (!response.ok) return [];
-        const data = await response.json();
-        return data.value as any[];
+        const isNumeric = /^\d+$/.test(q);
+        let results: any[] = [];
+
+        if (isNumeric) {
+            // Priority 1: Address starts with (any status)
+            const addrFilter = `startswith(UnparsedAddress, '${q}') or startswith(StreetNumber, '${q}')`;
+            const addrRes = await fetch(`${baseQuery}${encodeURIComponent(addrFilter)}`, { headers });
+            if (addrRes.ok) {
+                const data = await addrRes.json();
+                results = [...formatAddress(data.value || [])];
+            }
+
+            // Priority 2: PostalCode starts with (only if we need more results)
+            if (results.length < 10) {
+                const zipFilter = `startswith(PostalCode, '${q}')`;
+                const zipRes = await fetch(`${baseQuery}${encodeURIComponent(zipFilter)}`, { headers });
+                if (zipRes.ok) {
+                    const data = await zipRes.json();
+                    const existingIds = new Set(results.map(r => r.ListingId));
+                    const newZipResults = formatAddress(data.value || []).filter((r: any) => !existingIds.has(r.ListingId));
+                    results = [...results, ...newZipResults].slice(0, 10);
+                }
+            }
+        } else {
+            const filter = `contains(UnparsedAddress, '${q}') or startswith(OriginalCity, '${q}') or contains(StreetName, '${q}')`;
+            const res = await fetch(`${baseQuery}${encodeURIComponent(filter)}`, { headers });
+            if (res.ok) {
+                const data = await res.json();
+                results = formatAddress(data.value || []);
+            }
+        }
+
+        return results;
     } catch (error) {
         console.error("Error fetching suggestions:", error);
         return [];

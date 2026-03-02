@@ -74,7 +74,7 @@ export function Hero() {
                                 type: 'city'
                             });
                         }
-                        if (item.PostalCode && !seen.has(`zip-${item.PostalCode}`)) {
+                        if (item.PostalCode && item.PostalCode.startsWith(val) && !seen.has(`zip-${item.PostalCode}`)) {
                             seen.add(`zip-${item.PostalCode}`);
                             resMap.zip.push({
                                 label: item.PostalCode,
@@ -82,7 +82,7 @@ export function Hero() {
                                 PostalCode: item.PostalCode
                             });
                         }
-                        if (item.UnparsedAddress && !seen.has(`address-${item.UnparsedAddress}`)) {
+                        if (item.UnparsedAddress && item.UnparsedAddress.toLowerCase().includes(val.toLowerCase()) && !seen.has(`address-${item.UnparsedAddress}`)) {
                             seen.add(`address-${item.UnparsedAddress}`);
                             resMap.address.push({
                                 ...item,
@@ -239,8 +239,15 @@ export function Hero() {
                                             key={`${idx}-${item.type}-${item.label}`}
                                             whileHover={{ x: 8, backgroundColor: "rgb(248, 250, 252)" }}
                                             onClick={() => {
-                                                setSearchQuery(item.label);
-                                                handleSearch(item.label);
+                                                if (item.type === 'address' && item.ListingId) {
+                                                    setIsNavigating(true);
+                                                    setSearchQuery(item.label);
+                                                    router.push(`/listing/${item.ListingId}`);
+                                                } else {
+                                                    setSearchQuery(item.label);
+                                                    handleSearch(item.label);
+                                                }
+                                                setShowSuggestions(false);
                                             }}
                                             className="w-full text-left flex items-center justify-between gap-4 px-4 py-4 rounded-xl transition-all group"
                                         >

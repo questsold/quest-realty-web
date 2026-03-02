@@ -75,17 +75,27 @@ function FiltersContent() {
                 try {
                     const res = await fetch(`/api/autocomplete?q=${encodeURIComponent(val)}`);
                     const data = await res.json();
-                    const formattedData = data.map((item: any) => ({
-                        ...item,
-                        type: item.UnparsedAddress?.toLowerCase().includes(val.toLowerCase()) ? 'address' : 'city'
-                    }));
+                    const formattedData: any[] = [];
+                    data.forEach((item: any) => {
+                        if (item.OriginalCity && item.OriginalCity.toLowerCase().startsWith(val.toLowerCase())) {
+                            formattedData.push({ ...item, label: item.OriginalCity, type: 'city' });
+                        }
+                        if (item.PostalCode && item.PostalCode.startsWith(val)) {
+                            formattedData.push({ ...item, label: item.PostalCode, type: 'zip' });
+                        }
+                        if (item.UnparsedAddress && item.UnparsedAddress.toLowerCase().includes(val.toLowerCase())) {
+                            formattedData.push({ ...item, label: item.UnparsedAddress, type: 'address' });
+                        }
+                    });
+
                     setSuggestions(prev => {
                         const combined = [...prev, ...formattedData];
                         const seen = new Set();
                         return combined.filter(item => {
-                            const label = item.UnparsedAddress || item.OriginalCity;
-                            if (!label || seen.has(label)) return false;
-                            seen.add(label);
+                            const label = item.label || item.OriginalCity;
+                            const key = `${item.type}-${label}`;
+                            if (!label || seen.has(key)) return false;
+                            seen.add(key);
                             return true;
                         }).slice(0, 10);
                     });
@@ -174,14 +184,20 @@ function FiltersContent() {
                                 className="absolute top-full left-0 right-0 mt-3 bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 z-[100] overflow-hidden p-2"
                             >
                                 {suggestions.map((item, idx) => {
-                                    const label = item.UnparsedAddress || item.OriginalCity;
+                                    const label = item.label || item.OriginalCity;
                                     return (
                                         <motion.button
                                             key={idx}
                                             whileHover={{ x: 5 }}
                                             onClick={() => {
-                                                setQ(label);
-                                                handleSearch(label);
+                                                if (item.type === 'address' && item.ListingId) {
+                                                    setQ(item.label);
+                                                    router.push(`/listing/${item.ListingId}`);
+                                                } else {
+                                                    setQ(label);
+                                                    handleSearch(label);
+                                                }
+                                                setShowSuggestions(false);
                                             }}
                                             className="w-full text-left flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50 rounded-2xl transition-all duration-300 border-b border-slate-50 last:border-0 group cursor-pointer"
                                         >
@@ -192,7 +208,7 @@ function FiltersContent() {
                                                 <div className="flex flex-col text-left">
                                                     <span className="font-bold text-slate-900 uppercase tracking-tight text-xs group-hover:text-primary transition-colors">{label}</span>
                                                     <span className="text-[10px] uppercase font-extrabold text-slate-400 group-hover:text-slate-500 transition-colors">
-                                                        {item.type === 'address' ? `Address in ${item.OriginalCity}` : 'City'}
+                                                        {item.type === 'address' ? `Property in ${item.OriginalCity || 'Michigan'}` : item.type === 'zip' ? `Search Zip Code` : 'City / Region'}
                                                     </span>
                                                 </div>
                                             </div>

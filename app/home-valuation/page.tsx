@@ -65,7 +65,38 @@ export default function HomeValuationPage() {
                         </div>
 
                     </div>
+
                 </div>
+
+                {/* Hyper-Local SEO Section for Google Ads Relevance */}
+                <div className="mt-24 bg-white rounded-[2rem] p-10 lg:p-16 border border-slate-200 shadow-xl overflow-hidden relative">
+                    {/* Subtle background decoration */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-bl-full blur-[60px] pointer-events-none" />
+
+                    <div className="max-w-4xl mx-auto text-center relative z-10">
+                        <h3 className="text-3xl font-heading font-bold text-slate-900 mb-6">
+                            Selling in <span className="text-primary">Troy, Birmingham, or Rochester?</span>
+                        </h3>
+                        <p className="text-lg text-slate-600 leading-relaxed mb-10">
+                            The luxury markets in <strong>Birmingham (48009)</strong>, <strong>Bloomfield Hills</strong>, <strong>Troy (48098)</strong>, and <strong>Rochester Hills</strong> are highly nuanced. A basic online calculator cannot fully capture the premium finishes, acclaimed school districts, and exclusive neighborhood amenities that increase your home's value.
+                            <br /><br />
+                            As Top 1% Metro Detroit Realtors, Quest Realty specializes in properly positioning properties in these affluent zip codes. Get your baseline estimate above, then contact Ali Berry for an aggressive, data-backed marketing strategy designed to attract the most qualified buyers and maximize your final sale price.
+                        </p>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 pt-8 border-t border-slate-100">
+                            {["Birmingham", "Troy", "Rochester Hills", "Bloomfield Hills"].map((city) => (
+                                <div key={city} className="flex flex-col items-center">
+                                    <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3">
+                                        <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                                    </div>
+                                    <span className="text-sm font-bold text-slate-900">{city}</span>
+                                    <span className="text-xs text-slate-500">Market Expert</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
             </section>
         </main>
     );
