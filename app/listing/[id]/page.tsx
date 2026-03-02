@@ -4,17 +4,19 @@ import { LeadCaptureModal } from "@/components/ui/LeadCaptureModal";
 import { getPropertyBySlug } from "@/lib/realcomp";
 import { LeadForm } from "./LeadForm";
 
-export default async function ListingDetailsPage({ params }: { params: { id: string } }) {
+export default async function ListingDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+    const resolvedParams = await params;
+
     let realcompData = null;
     try {
-        realcompData = await getPropertyBySlug(params.id);
+        realcompData = await getPropertyBySlug(resolvedParams.id);
     } catch (e) {
         console.error("Failed to load Realcomp property details:", e);
     }
 
     // Map Realcomp Data or fall back to mock
     const property = realcompData ? {
-        id: realcompData.ListingId || params.id,
+        id: realcompData.ListingId || resolvedParams.id,
         address: realcompData.UnparsedAddress || [realcompData.StreetNumber, realcompData.StreetName, realcompData.StreetSuffix].filter(Boolean).join(' ') || 'Address Withheld',
         city: realcompData.OriginalCity || realcompData.City || 'Metro Detroit',
         state: "MI",
@@ -41,7 +43,7 @@ export default async function ListingDetailsPage({ params }: { params: { id: str
             "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80"
         ]
     } : {
-        id: params.id,
+        id: resolvedParams.id,
         address: "1042 Waddington Rd",
         city: "Birmingham",
         state: "MI",
