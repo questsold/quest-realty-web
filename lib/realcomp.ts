@@ -138,7 +138,7 @@ export async function getPropertyBySlug(listingId: string) {
                 'Authorization': `Bearer ${token}`,
                 'Accept': 'application/json',
             },
-            next: { revalidate: 3600 }
+            cache: 'no-store'
         });
 
         if (!response.ok) return null;
