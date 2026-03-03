@@ -3,7 +3,7 @@ import Link from "next/link";
 import { LeadCaptureModal } from "@/components/ui/LeadCaptureModal";
 import { getPropertyBySlug } from "@/lib/realcomp";
 import { LeadForm } from "./LeadForm";
-
+import { ListingGallery } from "./ListingGallery";
 export default async function ListingDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = await params;
 
@@ -100,43 +100,11 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
 
             {/* Image Gallery Grid */}
             <div className="container mx-auto px-6 mt-8 mb-12">
-                <div className="grid grid-cols-4 grid-rows-2 gap-4 h-[60vh] min-h-[500px] rounded-3xl overflow-hidden shadow-lg">
-                    {/* Main Image */}
-                    <div className="col-span-4 lg:col-span-2 row-span-2 relative group cursor-pointer">
-                        <img
-                            src={property.images[0]}
-                            alt="Main listing view"
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                        <div className="absolute top-6 left-6 flex gap-2">
-                            <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">
-                                {property.status}
-                            </span>
-                            <span className="bg-slate-900/80 backdrop-blur-md text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">
-                                {property.daysOnMarket} DOM
-                            </span>
-                        </div>
-                    </div>
-
-                    {/* Smaller Images */}
-                    {property.images.slice(1, 5).map((img, idx) => (
-                        <div key={idx} className="hidden lg:block relative group overflow-hidden cursor-pointer">
-                            <img
-                                src={img}
-                                alt={`Property view ${idx + 2}`}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            />
-                            {/* Show 'View All' overlay on the last image */}
-                            {idx === 3 && (
-                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center transition-colors group-hover:bg-black/50">
-                                    <span className="text-white font-bold tracking-widest uppercase border-2 border-white px-6 py-2 rounded-full hover:bg-white hover:text-black transition-colors">
-                                        View All Photos
-                                    </span>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
+                <ListingGallery
+                    images={property.images}
+                    status={property.status}
+                    daysOnMarket={property.daysOnMarket}
+                />
             </div>
 
             {/* Main Content Area */}
