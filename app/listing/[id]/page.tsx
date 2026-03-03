@@ -164,16 +164,19 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
                             </div>
                         </div>
 
-                        {/* Location / Map Placeholder */}
+                        {/* Location / Map */}
                         <div>
                             <h3 className="text-2xl font-heading font-bold text-slate-900 mb-6">Location</h3>
-                            <div className="h-[400px] bg-slate-200 rounded-3xl overflow-hidden relative">
-                                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center brightness-90 grayscale" />
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                                    <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center animate-pulse">
-                                        <div className="w-6 h-6 bg-primary rounded-full shadow-lg border-2 border-white" />
-                                    </div>
-                                </div>
+                            <div className="h-[400px] bg-slate-200 rounded-3xl overflow-hidden relative shadow-inner border border-slate-100">
+                                <iframe
+                                    width="100%"
+                                    height="100%"
+                                    frameBorder="0"
+                                    style={{ border: 0 }}
+                                    src={`https://maps.google.com/maps?q=${encodeURIComponent(`${property.address}, ${property.city}, ${property.state} ${property.zip}`)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
+                                    allowFullScreen
+                                    title="Property Map Location"
+                                />
                             </div>
                         </div>
 
