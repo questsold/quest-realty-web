@@ -16,7 +16,7 @@ export async function GET() {
         // Map to common UI format
         const formatted = properties.map((p, idx) => ({
             id: p.ListingId || `exclusive-${idx}`,
-            address: (p as any).InternetAddressDisplayYN === false ? 'Address Withheld' : (p.UnparsedAddress || 'Address Withheld'),
+            address: (p as any).InternetAddressDisplayYN === false ? 'Address Withheld' : (p.UnparsedAddress || [p.StreetNumber, p.StreetName, p.StreetSuffix].filter(Boolean).join(' ') || 'Address Withheld'),
             city: `${p.OriginalCity || p.City || ''}, MI ${p.PostalCode || ''}`.trim(),
             price: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(p.ListPrice || 0),
             beds: p.BedroomsTotal || 0,

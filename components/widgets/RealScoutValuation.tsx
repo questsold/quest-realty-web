@@ -20,18 +20,19 @@ export default function RealScoutValuationWidget({ agentId }: RealScoutWidgetPro
                 __html: `
         realscout-home-value {
           --rs-hvw-background-color: #ffffff;
-          --rs-hvw-title-color: #0f172a;
-          --rs-hvw-subtitle-color: rgba(71, 85, 105, 0.8);
-          --rs-hvw-primary-button-color: #0f172a;
+          --rs-hvw-title-color: #000000;
+          --rs-hvw-subtitle-color: #000000;
           --rs-hvw-primary-button-text-color: #ffffff;
+          --rs-hvw-primary-button-color: #000000;
+          --rs-hvw-secondary-button-text-color: #000000;
           --rs-hvw-secondary-button-color: #ffffff;
-          --rs-hvw-secondary-button-text-color: #0f172a;
+          --rs-hvw-widget-width: auto;
         }
       `}} />
 
             <div>
                 {/* @ts-ignore */}
-                <realscout-home-value agent-encoded-id={agentId}></realscout-home-value>
+                <realscout-home-value agent-encoded-id={agentId} include-phone></realscout-home-value>
             </div>
         </div>
     );
