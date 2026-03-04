@@ -1,25 +1,18 @@
-"use client";
-
 import { useEffect, useState, useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-// Create a custom green marker icon
-const createGreenIcon = () => {
+// Create a Zillow-style price tag icon
+const createPriceIcon = (price: string) => {
     return new L.DivIcon({
-        className: "custom-div-icon",
-        html: `<div style="
-            background-color: #94c83d;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
-        "></div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7],
-        popupAnchor: [0, -7]
+        className: "price-marker-icon",
+        html: `<div class="price-marker-container">
+            <div class="price-marker-tag">${price}</div>
+        </div>`,
+        iconSize: [60, 30],
+        iconAnchor: [30, 15],
+        popupAnchor: [0, -15]
     });
 };
 
@@ -36,15 +29,14 @@ function ChangeView({ bounds, center }: { bounds: L.LatLngBounds | null, center:
 
     useEffect(() => {
         if (bounds && bounds.isValid()) {
-            // Wait slightly for container transitions to complete
             const timer = setTimeout(() => {
                 map.invalidateSize();
-                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15, animate: true });
-            }, 250);
+                map.fitBounds(bounds, { padding: [40, 40], maxZoom: 14, animate: true });
+            }, 300);
             return () => clearTimeout(timer);
         } else {
             map.invalidateSize();
-            map.setView(center, 11, { animate: true });
+            map.setView(center, 12, { animate: true });
         }
     }, [bounds, map, center]);
 
@@ -56,19 +48,26 @@ interface Property {
     address: string;
     city: string;
     price: string;
+    beds: number | string;
+    baths: number | string;
+    sqft: string;
     lat?: number | string;
     lng?: number | string;
-    latNum?: number | null; // Added for parsed number
-    lngNum?: number | null; // Added for parsed number
+    latNum?: number | null;
+    lngNum?: number | null;
 }
 
-export default function PropertyMap({ properties }: { properties: Property[] }) {
+interface SearchBoundary {
+    geojson: any;
+    displayName: string;
+    boundingbox: string[];
+}
+
+export default function PropertyMap({ properties, searchBoundary }: { properties: Property[], searchBoundary?: SearchBoundary }) {
     const [isMounted, setIsMounted] = useState(false);
-    const [greenIcon, setGreenIcon] = useState<L.DivIcon | null>(null);
 
     useEffect(() => {
         setIsMounted(true);
-        setGreenIcon(createGreenIcon());
     }, []);
 
     const validProperties = useMemo(() => {
@@ -86,6 +85,22 @@ export default function PropertyMap({ properties }: { properties: Property[] }) 
     }, [properties]);
 
     const { bounds, center } = useMemo(() => {
+        // If we have a search boundary, prioritize it for the map view
+        if (searchBoundary?.geojson) {
+            try {
+                // Create a ghost layer to calculate bounds of GeoJSON
+                const geoLayer = L.geoJSON(searchBoundary.geojson);
+                const b = geoLayer.getBounds();
+                if (b.isValid()) {
+                    const c = b.getCenter();
+                    return { bounds: b, center: [c.lat, c.lng] as [number, number] };
+                }
+            } catch (e) {
+                console.error("Error parsing boundary geojson:", e);
+            }
+        }
+
+        // Fallback to property markers
         if (validProperties.length === 0) {
             return { bounds: null, center: [42.48, -83.14] as [number, number] };
         }
@@ -96,10 +111,43 @@ export default function PropertyMap({ properties }: { properties: Property[] }) 
             const c = b.getCenter();
             return { bounds: b, center: [c.lat, c.lng] as [number, number] };
         } catch (e) {
-            console.error("Error creating map bounds:", e);
             return { bounds: null, center: [42.48, -83.14] as [number, number] };
         }
-    }, [validProperties]);
+    }, [validProperties, searchBoundary]);
+
+    // Create the dimming mask (inverse polygon)
+    const maskData = useMemo(() => {
+        if (!searchBoundary?.geojson) return null;
+
+        // A huge rectangle covering the globe with a hole for the city
+        // Note: GeoJSON coordinates are [lng, lat]
+        const outer = [
+            [-180, 90],
+            [180, 90],
+            [180, -90],
+            [-180, -90],
+            [-180, 90]
+        ];
+
+        let inner: any[] = [];
+        if (searchBoundary.geojson.type === 'Polygon') {
+            inner = searchBoundary.geojson.coordinates[0];
+        } else if (searchBoundary.geojson.type === 'MultiPolygon') {
+            // Take the first polygon's outer ring
+            inner = searchBoundary.geojson.coordinates[0][0];
+        }
+
+        if (inner.length === 0) return null;
+
+        return {
+            type: "Feature",
+            properties: {},
+            geometry: {
+                type: "Polygon",
+                coordinates: [outer, inner]
+            }
+        };
+    }, [searchBoundary]);
 
     if (!isMounted) return <div className="w-full h-full bg-slate-50 animate-pulse" />;
 
@@ -110,47 +158,103 @@ export default function PropertyMap({ properties }: { properties: Property[] }) 
                 zoom={11}
                 className="w-full h-full"
                 scrollWheelZoom={true}
+                zoomControl={false}
             >
-                {/* Standard less busy looking maps: CartoDB Positron */}
                 <TileLayer
                     url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                    subdomains='abcd'
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     maxZoom={20}
                 />
+
                 <MapResizer />
                 <ChangeView bounds={bounds} center={center} />
+
+                {/* The Dimming Mask */}
+                {maskData && (
+                    <GeoJSON
+                        data={maskData as any}
+                        style={{
+                            fillColor: '#000',
+                            fillOpacity: 0.15,
+                            weight: 0,
+                            stroke: false
+                        }}
+                    />
+                )}
+
+                {/* The City/Zip Boundary Outline */}
+                {searchBoundary?.geojson && (
+                    <GeoJSON
+                        data={searchBoundary.geojson}
+                        style={{
+                            color: '#004cff',
+                            weight: 3,
+                            opacity: 0.7,
+                            fillOpacity: 0
+                        }}
+                    />
+                )}
 
                 {validProperties.map((property) => (
                     <Marker
                         key={property.id}
                         position={[property.latNum!, property.lngNum!]}
-                        icon={greenIcon || undefined}
+                        icon={createPriceIcon(property.price)}
                     >
-                        <Popup>
-                            <div className="p-2 min-w-[120px]">
-                                <div className="font-extrabold text-slate-900 text-sm mb-1">{property.price}</div>
-                                <div className="text-[11px] text-slate-600 font-medium leading-tight mb-0.5">{property.address}</div>
-                                <div className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">{property.city}</div>
+                        <Popup className="zillow-popup">
+                            <div className="p-3 min-w-[200px]">
+                                <div className="text-lg font-black text-slate-900 mb-1">{property.price}</div>
+                                <div className="text-xs text-slate-600 font-bold mb-0.5">{property.address}</div>
+                                <div className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">{property.city}</div>
+                                <div className="mt-2 text-[10px] flex gap-3 text-slate-500 font-bold border-t border-slate-100 pt-2">
+                                    <span>{property.beds} Beds</span>
+                                    <span>{property.baths} Baths</span>
+                                </div>
                             </div>
                         </Popup>
                     </Marker>
                 ))}
+
+                {/* Re-add zoom control in Zillow position */}
+                <div className="leaflet-bottom leaflet-right">
+                    <div className="leaflet-control-zoom leaflet-bar leaflet-control">
+                        <a className="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in" onClick={(e) => { e.preventDefault(); (window as any)._leaflet_map?.zoomIn(); }}>+</a>
+                        <a className="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out" onClick={(e) => { e.preventDefault(); (window as any)._leaflet_map?.zoomOut(); }}>-</a>
+                    </div>
+                </div>
             </MapContainer>
 
             <style jsx global>{`
+                .price-marker-tag {
+                    background: white;
+                    color: #000;
+                    font-weight: 800;
+                    font-size: 11px;
+                    padding: 4px 10px;
+                    border-radius: 20px;
+                    border: 1px solid #ddd;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    text-align: center;
+                    white-space: nowrap;
+                    transition: all 0.2s ease;
+                    display: inline-block;
+                }
+                .price-marker-container:hover .price-marker-tag {
+                    background: #94c83d;
+                    color: white;
+                    border-color: #94c83d;
+                    transform: scale(1.1);
+                    z-index: 1000;
+                }
                 .leaflet-popup-content-wrapper {
                     border-radius: 12px;
                     padding: 0;
                     overflow: hidden;
-                    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.2) !important;
                 }
-                .leaflet-popup-content {
-                    margin: 0;
-                }
-                .leaflet-container {
-                    font-family: inherit;
-                }
+                .leaflet-popup-content { margin: 0 !important; }
+                .zillow-popup .leaflet-popup-tip { display: none; }
+                .leaflet-container { font-family: inherit !important; }
             `}</style>
         </div>
     );

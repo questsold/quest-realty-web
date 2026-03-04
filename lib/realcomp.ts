@@ -214,3 +214,37 @@ export async function getSuggestions(q: string) {
         return [];
     }
 }
+export async function getSearchBoundary(q: string) {
+    if (!q || q.length < 3) return null;
+    try {
+        const isZip = /^\d{5}$/.test(q.trim());
+        let searchQuery = q.trim();
+
+        if (!isZip && !searchQuery.toLowerCase().includes('mi') && !searchQuery.toLowerCase().includes('michigan')) {
+            searchQuery += ', MI';
+        }
+
+        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(searchQuery)}&format=json&polygon_geojson=1&limit=1`;
+
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'QuestRealty/1.0 (https://questsold.com)'
+            }
+        });
+
+        if (!response.ok) return null;
+
+        const data = await response.json();
+        if (data && data.length > 0 && data[0].geojson) {
+            return {
+                geojson: data[0].geojson,
+                displayName: data[0].display_name,
+                boundingbox: data[0].boundingbox
+            };
+        }
+        return null;
+    } catch (error) {
+        console.error("Error fetching search boundary:", error);
+        return null;
+    }
+}

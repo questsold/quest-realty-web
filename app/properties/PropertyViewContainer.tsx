@@ -10,9 +10,10 @@ import MapWrapper from "./MapWrapper";
 interface PropertyViewContainerProps {
     initialView: string;
     properties: any[];
+    searchBoundary?: any;
 }
 
-export default function PropertyViewContainer({ initialView, properties }: PropertyViewContainerProps) {
+export default function PropertyViewContainer({ initialView, properties, searchBoundary }: PropertyViewContainerProps) {
     const [view, setView] = useState(initialView);
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -151,7 +152,7 @@ export default function PropertyViewContainer({ initialView, properties }: Prope
                     `}
                 >
                     <div className="absolute inset-0">
-                        <MapWrapper properties={properties} />
+                        <MapWrapper properties={properties} searchBoundary={searchBoundary} />
                     </div>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-import { getProperties } from "@/lib/realcomp";
+import { getProperties, getSearchBoundary } from "@/lib/realcomp";
 import { PropertyFilters } from "./PropertyFilters";
 import PropertyViewContainer from "./PropertyViewContainer";
 
@@ -55,12 +55,19 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
         filterString += (filterString ? " and " : "") + `(${officeFilter})`;
     }
 
+    let searchBoundary = null;
     try {
-        const realcompData = await getProperties({
-            top: 40,
-            filter: filterString || undefined,
-            orderby: sortOrder
-        });
+        const [realcompData, boundaryData] = await Promise.all([
+            getProperties({
+                top: 40,
+                filter: filterString || undefined,
+                orderby: sortOrder
+            }),
+            q && q.length >= 3 ? getSearchBoundary(q) : Promise.resolve(null)
+        ]);
+
+        searchBoundary = boundaryData;
+
         if (realcompData && realcompData.length > 0) {
             propertiesToDisplay = realcompData.map((p, idx) => ({
                 id: p.ListingId || `rc-${idx}`,
@@ -78,7 +85,7 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
             }));
         }
     } catch (e) {
-        console.error("Failed to load Realcomp properties:", e);
+        console.error("Failed to load search data:", e);
     }
 
     return (
@@ -91,6 +98,7 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
             <PropertyViewContainer
                 initialView={view}
                 properties={propertiesToDisplay}
+                searchBoundary={searchBoundary}
             />
         </div>
     );
