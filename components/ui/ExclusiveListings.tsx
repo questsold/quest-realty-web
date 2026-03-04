@@ -103,13 +103,13 @@ export function ExclusiveListings() {
                     {/* Final CTA Card inside carousel */}
                     <div className="min-w-[320px] md:min-w-[400px] snap-start h-full">
                         <div className="h-full bg-slate-900 rounded-[2.5rem] p-10 flex flex-col justify-center text-center text-white border-4 border-primary/20 shadow-2xl relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                            <Home className="w-16 h-16 text-primary mx-auto mb-8 animate-bounce" />
-                            <h4 className="text-3xl font-black mb-4 leading-tight">Searching for <br />More?</h4>
-                            <p className="text-white/60 font-medium mb-10">Explore our full inventory of Detroit's finest real estate.</p>
+                            <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                            <Home className="w-16 h-16 text-primary mx-auto mb-8 animate-bounce relative z-10" />
+                            <h4 className="text-3xl font-black mb-4 leading-tight relative z-10">Searching for <br />More?</h4>
+                            <p className="text-white/60 font-medium mb-10 relative z-10">Explore our full inventory of Detroit's finest real estate.</p>
                             <Link
                                 href="/properties"
-                                className="bg-primary text-white py-5 rounded-full font-black uppercase tracking-widest text-xs hover:bg-white hover:text-primary transition-all shadow-xl shadow-primary/20"
+                                className="bg-primary text-white py-5 rounded-full font-black uppercase tracking-widest text-xs hover:bg-white hover:text-primary transition-all shadow-xl shadow-primary/20 relative z-10"
                             >
                                 Browse All Listings
                             </Link>
