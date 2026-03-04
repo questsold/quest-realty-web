@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -31,11 +31,17 @@ function MapResizer() {
     return null;
 }
 
-function ChangeView({ center }: { center: [number, number] }) {
+function ChangeView({ bounds, center }: { bounds: L.LatLngBounds | null, center: [number, number] }) {
     const map = useMap();
+
     useEffect(() => {
-        map.setView(center, map.getZoom());
-    }, [center, map]);
+        if (bounds && bounds.isValid()) {
+            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15, animate: true });
+        } else {
+            map.setView(center, 11, { animate: true });
+        }
+    }, [bounds, map, center]);
+
     return null;
 }
 
@@ -57,13 +63,18 @@ export default function PropertyMap({ properties }: { properties: Property[] }) 
         setGreenIcon(createGreenIcon());
     }, []);
 
-    if (!isMounted) return <div className="w-full h-full bg-slate-50 animate-pulse" />;
+    const validProperties = useMemo(() => properties.filter(p => p.lat && p.lng), [properties]);
 
-    // Find a reasonable center (default to Metro Detroit area if no properties have coordinates)
-    const validProperties = properties.filter(p => p.lat && p.lng);
-    const center: [number, number] = validProperties.length > 0
-        ? [validProperties[0].lat!, validProperties[0].lng!]
-        : [42.48, -83.14]; // Oakland County center
+    const { bounds, center } = useMemo(() => {
+        if (validProperties.length === 0) {
+            return { bounds: null, center: [42.48, -83.14] as [number, number] };
+        }
+
+        const b = L.latLngBounds(validProperties.map(p => [p.lat!, p.lng!] as [number, number]));
+        return { bounds: b, center: b.getCenter() as unknown as [number, number] };
+    }, [validProperties]);
+
+    if (!isMounted) return <div className="w-full h-full bg-slate-50 animate-pulse" />;
 
     return (
         <div className="w-full h-full relative">
@@ -81,7 +92,7 @@ export default function PropertyMap({ properties }: { properties: Property[] }) 
                     maxZoom={20}
                 />
                 <MapResizer />
-                <ChangeView center={center} />
+                <ChangeView bounds={bounds} center={center} />
 
                 {validProperties.map((property) => (
                     <Marker
