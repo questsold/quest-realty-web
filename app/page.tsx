@@ -8,6 +8,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
 import { Counter } from "@/components/ui/Counter";
+import { topReviews } from "@/lib/data/reviews_data";
 
 export default function Home() {
   return (
@@ -329,13 +330,7 @@ export default function Home() {
             className="flex gap-8 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {[
-              { name: "Sarah & Mike T.", location: "Birmingham", text: "Working with Quest Realty was an absolute dream. Our agent was incredibly knowledgeable about the Birmingham market and helped us navigate a multiple-offer situation with ease." },
-              { name: "David L.", location: "Bloomfield Hills", text: "I was extremely impressed by the level of professionalism and marketing expertise the Quest team brought to selling my home. From the stunning photography to strategic pricing." },
-              { name: "Emily R.", location: "Royal Oak", text: "As a first-time homebuyer, I was nervous about the process, but my Quest advisor was patient, transparent, and always available. They made it incredibly smooth and exciting." },
-              { name: "James & Olivia W.", location: "Troy", text: "The communication from start to finish was flawless. We always felt like a priority, and their negotiation skills saved us thousands at the closing table. Highly recommend!" },
-              { name: "The Martinez Family", location: "Rochester Hills", text: "We relocated from out of state and relied heavily on our Quest agent's local expertise. They found us the perfect home in a great school district within our timeline." },
-            ].map((review, idx) => (
+            {topReviews.map((review, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}
@@ -358,7 +353,7 @@ export default function Home() {
                   <div className="mt-auto flex items-center justify-between">
                     <div>
                       <h4 className="font-bold text-white text-lg">{review.name}</h4>
-                      <p className="text-primary font-medium">{review.location}</p>
+                      <p className="text-primary font-medium">{review.location} — {review.agent}</p>
                     </div>
                     <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-primary font-bold">
                       {review.name.charAt(0)}
