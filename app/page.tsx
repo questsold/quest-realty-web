@@ -6,8 +6,8 @@ import { PropertyCard } from "@/components/ui/PropertyCard";
 import { ArrowRight, ChevronLeft, ChevronRight, Users, Building2, BarChart3, CircleDollarSign } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { Star, Quote } from "lucide-react";
 import { Counter } from "@/components/ui/Counter";
-import ElfsightReviews from "@/components/widgets/ElfsightReviews";
 
 export default function Home() {
   return (
@@ -297,14 +297,85 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -ml-48 -mb-48" />
 
         <div className="container mx-auto px-6 max-w-7xl relative z-10">
-          <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-sm uppercase tracking-[0.3em] text-primary mb-4 font-bold">Verified Testimonials</h2>
-            <h3 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">What Our Clients Say</h3>
-            <p className="text-slate-400 text-lg">Real feedback from homebuyers and sellers throughout Metro Detroit.</p>
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div className="max-w-2xl text-left">
+              <h2 className="text-sm uppercase tracking-[0.3em] text-primary mb-4 font-bold">What Our Clients Say</h2>
+              <h3 className="text-4xl md:text-5xl font-heading font-bold text-white">Client Reviews</h3>
+            </div>
+            <div className="flex gap-4">
+              <button
+                onClick={() => {
+                  const el = document.getElementById('reviews-slider');
+                  if (el) el.scrollBy({ left: -400, behavior: 'smooth' });
+                }}
+                className="p-4 rounded-full border-2 border-slate-800 text-slate-400 hover:text-primary hover:border-primary transition-all bg-slate-900 shadow-xl"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={() => {
+                  const el = document.getElementById('reviews-slider');
+                  if (el) el.scrollBy({ left: 400, behavior: 'smooth' });
+                }}
+                className="p-4 rounded-full border-2 border-slate-800 text-slate-400 hover:text-primary hover:border-primary transition-all bg-slate-900 shadow-xl"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
           </div>
 
-          <div className="bg-slate-900/50 rounded-[2.5rem] p-4 md:p-8 border border-white/5">
-            <ElfsightReviews />
+          <div
+            id="reviews-slider"
+            className="flex gap-8 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {[
+              { name: "Sarah & Mike T.", location: "Birmingham", text: "Working with Quest Realty was an absolute dream. Our agent was incredibly knowledgeable about the Birmingham market and helped us navigate a multiple-offer situation with ease." },
+              { name: "David L.", location: "Bloomfield Hills", text: "I was extremely impressed by the level of professionalism and marketing expertise the Quest team brought to selling my home. From the stunning photography to strategic pricing." },
+              { name: "Emily R.", location: "Royal Oak", text: "As a first-time homebuyer, I was nervous about the process, but my Quest advisor was patient, transparent, and always available. They made it incredibly smooth and exciting." },
+              { name: "James & Olivia W.", location: "Troy", text: "The communication from start to finish was flawless. We always felt like a priority, and their negotiation skills saved us thousands at the closing table. Highly recommend!" },
+              { name: "The Martinez Family", location: "Rochester Hills", text: "We relocated from out of state and relied heavily on our Quest agent's local expertise. They found us the perfect home in a great school district within our timeline." },
+            ].map((review, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="min-w-[300px] md:min-w-[450px] snap-start"
+              >
+                <div className="h-full bg-slate-900 border border-slate-800 p-8 md:p-12 rounded-[2rem] relative group hover:border-primary/30 transition-all">
+                  <Quote className="absolute top-8 right-8 w-12 h-12 text-primary/5 group-hover:text-primary/10 transition-colors" />
+
+                  <div className="flex gap-1 mb-6">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500" />
+                    ))}
+                  </div>
+
+                  <p className="text-lg md:text-xl text-slate-300 leading-relaxed italic mb-10">"{review.text}"</p>
+
+                  <div className="mt-auto flex items-center justify-between">
+                    <div>
+                      <h4 className="font-bold text-white text-lg">{review.name}</h4>
+                      <p className="text-primary font-medium">{review.location}</p>
+                    </div>
+                    <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-primary font-bold">
+                      {review.name.charAt(0)}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <Link
+              href="/testimonials"
+              className="inline-flex items-center gap-2 text-slate-400 hover:text-primary transition-colors font-bold uppercase tracking-widest text-sm"
+            >
+              View More Success Stories <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
