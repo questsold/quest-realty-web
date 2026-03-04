@@ -22,21 +22,57 @@ export default function PropertyViewContainer({ initialView, properties }: Prope
         setView(newView);
         const params = new URLSearchParams(searchParams.toString());
         params.set("view", newView);
-        window.history.replaceState(null, "", `?${params.toString()}`);
+        window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
     };
+
+    const handleSortChange = (newSort: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set("sort", newSort);
+        router.push(`/properties?${params.toString()}`);
+    };
+
+    const currentSort = searchParams.get("sort") || "ModificationTimestamp desc";
+
+    const sortOptions = [
+        { label: "Newest Listings", value: "ModificationTimestamp desc" },
+        { label: "Price: Low to High", value: "ListPrice asc" },
+        { label: "Price: High to Low", value: "ListPrice desc" },
+        { label: "Size: Largest", value: "LivingArea desc" },
+    ];
 
     const hasResults = properties.length > 0;
 
     return (
         <>
             {/* Results Bar (Sticky/Persistent) */}
-            <div className="bg-slate-50/50 border-b border-slate-200 py-4 px-6 md:px-10 z-20 shadow-sm">
-                <div className="max-w-[1700px] mx-auto flex items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-xl md:text-2xl font-heading font-bold text-slate-900 tracking-tight flex items-center gap-3">
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                            {properties.length} Live Listings Found
-                        </h1>
+            <div className="bg-slate-50/50 border-b border-slate-200 py-4 px-6 md:px-10 z-20 shadow-sm transition-all">
+                <div className="max-w-[1700px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                        <div>
+                            <h1 className="text-xl md:text-2xl font-heading font-bold text-slate-900 tracking-tight flex items-center gap-3">
+                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                                {properties.length} Live Listings Found
+                            </h1>
+                        </div>
+
+                        {/* Sort Dropdown */}
+                        <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest hidden sm:inline">Sort By</span>
+                            <div className="relative group">
+                                <select
+                                    value={currentSort}
+                                    onChange={(e) => handleSortChange(e.target.value)}
+                                    className="appearance-none bg-white border border-slate-200 rounded-xl px-4 py-2 pr-10 text-xs font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all cursor-pointer hover:border-slate-300"
+                                >
+                                    {sortOptions.map(opt => (
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-slate-900 transition-colors">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div className="flex bg-white rounded-2xl border border-slate-200 p-1.5 shadow-sm">

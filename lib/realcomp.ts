@@ -100,7 +100,7 @@ export async function getProperties(options: {
             'ListingId', 'UnparsedAddress', 'StreetNumber', 'StreetName', 'StreetSuffix',
             'City', 'PostalCode', 'ListPrice', 'BedroomsTotal', 'BathroomsFull',
             'BathroomsHalf', 'LivingArea', 'PropertyType', 'PropertySubType',
-            'StandardStatus', 'OriginalCity', 'Latitude', 'Longitude', 'YearBuilt'
+            'StandardStatus', 'OriginalCity', 'Latitude', 'Longitude', 'YearBuilt', 'ModificationTimestamp'
         ];
         url.searchParams.set('$select', fields.join(','));
         url.searchParams.set('$filter', combinedFilter);
