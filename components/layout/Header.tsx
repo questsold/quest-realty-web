@@ -49,6 +49,7 @@ export function Header() {
             href: "/about-us",
             dropdown: [
                 { name: "Our Team", href: "/our-team" },
+                { name: "Client Testimonials", href: "/testimonials" },
                 { name: "Real Estate Blog", href: "/blog" },
                 { name: "About Quest Realty", href: "/about-us" },
             ]
