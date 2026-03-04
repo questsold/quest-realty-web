@@ -96,6 +96,13 @@ export async function getProperties(options: {
             combinedFilter = `(${combinedFilter}) and (${filter})`;
         }
 
+        const fields = [
+            'ListingId', 'UnparsedAddress', 'StreetNumber', 'StreetName', 'StreetSuffix',
+            'City', 'PostalCode', 'ListPrice', 'BedroomsTotal', 'BathroomsFull',
+            'BathroomsHalf', 'LivingArea', 'PropertyType', 'PropertySubType',
+            'StandardStatus', 'OriginalCity', 'Latitude', 'Longitude', 'YearBuilt'
+        ];
+        url.searchParams.set('$select', fields.join(','));
         url.searchParams.set('$filter', combinedFilter);
         url.searchParams.set('$top', top.toString());
         url.searchParams.set('$skip', skip.toString());

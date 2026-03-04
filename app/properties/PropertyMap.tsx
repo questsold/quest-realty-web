@@ -35,8 +35,16 @@ function ChangeView({ bounds, center }: { bounds: L.LatLngBounds | null, center:
     const map = useMap();
 
     useEffect(() => {
+        // Force a resize calculation before fitting bounds (helps with layout transitions)
+        map.invalidateSize();
+
         if (bounds && bounds.isValid()) {
-            map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15, animate: true });
+            // Use a slight delay to ensure the container transition is mostly done
+            const timer = setTimeout(() => {
+                map.invalidateSize();
+                map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15, animate: true });
+            }, 100);
+            return () => clearTimeout(timer);
         } else {
             map.setView(center, 11, { animate: true });
         }
@@ -50,8 +58,8 @@ interface Property {
     address: string;
     city: string;
     price: string;
-    lat?: number;
-    lng?: number;
+    lat?: number | string;
+    lng?: number | string;
 }
 
 export default function PropertyMap({ properties }: { properties: Property[] }) {
@@ -61,17 +69,37 @@ export default function PropertyMap({ properties }: { properties: Property[] }) 
     useEffect(() => {
         setIsMounted(true);
         setGreenIcon(createGreenIcon());
+        console.log("PropertyMap mounted with properties:", properties.length);
     }, []);
 
-    const validProperties = useMemo(() => properties.filter(p => p.lat && p.lng), [properties]);
+    const validProperties = useMemo(() => {
+        return properties
+            .map(p => ({
+                ...p,
+                lat: typeof p.lat === 'string' ? parseFloat(p.lat) : p.lat,
+                lng: typeof p.lng === 'string' ? parseFloat(p.lng) : p.lng
+            }))
+            .filter(p =>
+                p.lat !== undefined && p.lat !== null && !isNaN(p.lat as number) &&
+                p.lng !== undefined && p.lng !== null && !isNaN(p.lng as number) &&
+                p.lat !== 0 && p.lng !== 0
+            );
+    }, [properties]);
 
     const { bounds, center } = useMemo(() => {
         if (validProperties.length === 0) {
+            console.log("No valid properties with coordinates found!");
             return { bounds: null, center: [42.48, -83.14] as [number, number] };
         }
 
-        const b = L.latLngBounds(validProperties.map(p => [p.lat!, p.lng!] as [number, number]));
-        return { bounds: b, center: b.getCenter() as unknown as [number, number] };
+        console.log(`Found ${validProperties.length} properties with valid coordinates.`);
+        try {
+            const b = L.latLngBounds(validProperties.map(p => [Number(p.lat), Number(p.lng)] as [number, number]));
+            return { bounds: b, center: b.getCenter() as unknown as [number, number] };
+        } catch (e) {
+            console.error("Error creating bounds:", e);
+            return { bounds: null, center: [42.48, -83.14] as [number, number] };
+        }
     }, [validProperties]);
 
     if (!isMounted) return <div className="w-full h-full bg-slate-50 animate-pulse" />;
@@ -97,12 +125,12 @@ export default function PropertyMap({ properties }: { properties: Property[] }) 
                 {validProperties.map((property) => (
                     <Marker
                         key={property.id}
-                        position={[property.lat!, property.lng!]}
+                        position={[Number(property.lat), Number(property.lng)]}
                         icon={greenIcon || undefined}
                     >
                         <Popup>
                             <div className="p-2 min-w-[120px]">
-                                <div className="font-exrabold text-slate-900 text-sm mb-1">{property.price}</div>
+                                <div className="font-extrabold text-slate-900 text-sm mb-1">{property.price}</div>
                                 <div className="text-[11px] text-slate-600 font-medium leading-tight mb-0.5">{property.address}</div>
                                 <div className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">{property.city}</div>
                             </div>

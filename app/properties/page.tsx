@@ -88,6 +88,19 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
 
             <PropertyFilters />
 
+            <div>
+                <h1 className="text-xl md:text-2xl font-heading font-bold text-slate-900 tracking-tight flex items-center gap-3">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                    {propertiesToDisplay.length} Live Listings Found
+                </h1>
+                {/* Debug Info */}
+                {propertiesToDisplay.length > 0 && (
+                    <div className="text-[10px] text-slate-400 font-mono mt-1 opacity-10">
+                        DBG: {propertiesToDisplay[0].lat}, {propertiesToDisplay[0].lng}
+                    </div>
+                )}
+            </div>
+
             <PropertyViewContainer
                 initialView={view}
                 properties={propertiesToDisplay}
