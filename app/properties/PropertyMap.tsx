@@ -226,23 +226,21 @@ export default function PropertyMap({ properties, searchBoundary }: { properties
 
             <style jsx global>{`
                 .price-marker-tag {
-                    background: white;
-                    color: #000;
+                    background: #94c83d;
+                    color: white;
                     font-weight: 800;
                     font-size: 11px;
-                    padding: 4px 10px;
+                    padding: 4px 12px;
                     border-radius: 20px;
-                    border: 1px solid #ddd;
                     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
                     text-align: center;
                     white-space: nowrap;
                     transition: all 0.2s ease;
                     display: inline-block;
+                    border: 1.5px solid white;
                 }
                 .price-marker-container:hover .price-marker-tag {
-                    background: #94c83d;
-                    color: white;
-                    border-color: #94c83d;
+                    background: #7ba632;
                     transform: scale(1.1);
                     z-index: 1000;
                 }
