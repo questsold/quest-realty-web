@@ -50,6 +50,14 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
         filterString += (filterString ? " and " : "") + `(${typeFilter})`;
     }
 
+    // Office Filtering
+    const officeOnly = searchParams.office === 'true';
+    if (officeOnly) {
+        const officeIds = ['368625', '6505368625'];
+        const officeFilter = `(${officeIds.map(id => `ListOfficeMlsId eq '${id}'`).join(' or ')})`;
+        filterString += (filterString ? " and " : "") + `(${officeFilter})`;
+    }
+
     // Determine if this is a "filtered" view
     const isFiltered = !!(q || searchParams.minPrice || searchParams.maxPrice || searchParams.beds || searchParams.baths || searchParams.sqft || searchParams.year || (searchParams.type && searchParams.type !== 'Residential'));
 

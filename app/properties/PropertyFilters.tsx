@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Filter, X, SlidersHorizontal, MapPin, Home, Check, RotateCcw, ArrowUpDown } from "lucide-react";
+import { Search, Filter, X, SlidersHorizontal, MapPin, Home, Check, RotateCcw, ArrowUpDown, Building2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, Suspense, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,7 +25,8 @@ function FiltersContent() {
         type: searchParams.get("type") || "Residential",
         sqft: searchParams.get("sqft") || "Any",
         year: searchParams.get("year") || "Any",
-        sort: searchParams.get("sort") || "ModificationTimestamp desc"
+        sort: searchParams.get("sort") || "ModificationTimestamp desc",
+        office: searchParams.get("office") === "true"
     });
 
     const propertyTypes = ["Any", "Residential", "Single Family", "Condominium", "Townhouse", "Land", "Multi-Family", "Commercial"];
@@ -113,12 +114,17 @@ function FiltersContent() {
     const applyFilters = () => {
         const params = new URLSearchParams(searchParams);
         Object.entries(localFilters).forEach(([key, value]) => {
-            if (value && value !== 'Any' && value !== 'Earlier') {
-                params.set(key, value.replace('+', '').replace(',', ''));
-            } else if (value === 'Earlier') {
-                params.set(key, '1900'); // Symbolic for searching older homes if needed
-            } else {
-                params.delete(key);
+            if (key === 'office') {
+                if (value) params.set(key, 'true');
+                else params.delete(key);
+            } else if (typeof value === 'string') {
+                if (value && value !== 'Any' && value !== 'Earlier') {
+                    params.set(key, value.replace('+', '').replace(',', ''));
+                } else if (value === 'Earlier') {
+                    params.set(key, '1900');
+                } else {
+                    params.delete(key);
+                }
             }
         });
         if (q) params.set("q", q);
@@ -135,7 +141,8 @@ function FiltersContent() {
             type: "Residential",
             sqft: "Any",
             year: "Any",
-            sort: "ModificationTimestamp desc"
+            sort: "ModificationTimestamp desc",
+            office: false
         };
         setLocalFilters(reset);
         setQ("");
@@ -146,7 +153,8 @@ function FiltersContent() {
     const activeFilterCount = Object.entries(localFilters).filter(([k, v]) => {
         if (k === 'type' && v === 'Residential') return false;
         if (k === 'sort' && v === 'ModificationTimestamp desc') return false;
-        return v !== 'Any' && v !== '';
+        if (k === 'office' && v === false) return false;
+        return v !== 'Any' && v !== '' && v !== false;
     }).length;
 
     return (
@@ -308,6 +316,28 @@ function FiltersContent() {
                                         </div>
                                     </section>
 
+                                    {/* Office Filter */}
+                                    <section>
+                                        <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-primary mb-6">Listing Source</h3>
+                                        <button
+                                            onClick={() => setLocalFilters({ ...localFilters, office: !localFilters.office })}
+                                            className={`w-full flex items-center justify-between p-6 rounded-2xl border transition-all ${localFilters.office ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-900/40' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-400'}`}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${localFilters.office ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                                    <Building2 className="w-5 h-5" />
+                                                </div>
+                                                <div className="text-left">
+                                                    <div className="text-[11px] font-black uppercase tracking-wider">Quest Realty Listings Only</div>
+                                                    <div className="text-[10px] font-medium opacity-60">Filter by our office inventory</div>
+                                                </div>
+                                            </div>
+                                            <div className={`w-11 h-6 rounded-full relative transition-colors ${localFilters.office ? 'bg-primary' : 'bg-slate-200'}`}>
+                                                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${localFilters.office ? 'left-6' : 'left-1'}`} />
+                                            </div>
+                                        </button>
+                                    </section>
+
                                     {/* Price Section */}
                                     <section>
                                         <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-primary mb-6">Valuation Range</h3>
@@ -423,7 +453,7 @@ function FiltersContent() {
                     )}
                 </AnimatePresence>
             </div>
-        </div>
+        </div >
     );
 }
 

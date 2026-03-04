@@ -108,7 +108,7 @@ export function ExclusiveListings() {
                             <h4 className="text-3xl font-black mb-4 leading-tight relative z-10">Searching for <br />More?</h4>
                             <p className="text-white/60 font-medium mb-10 relative z-10">Explore our full inventory of Detroit's finest real estate.</p>
                             <Link
-                                href="/properties"
+                                href="/properties?office=true"
                                 className="bg-primary text-white py-5 rounded-full font-black uppercase tracking-widest text-xs hover:bg-white hover:text-primary transition-all shadow-xl shadow-primary/20 relative z-10"
                             >
                                 Browse All Listings
@@ -119,7 +119,7 @@ export function ExclusiveListings() {
 
                 <div className="mt-16 flex justify-center">
                     <Link
-                        href="/properties"
+                        href="/properties?office=true"
                         className="group flex items-center gap-4 text-slate-900 font-black uppercase tracking-[0.2em] text-sm hover:text-primary transition-all"
                     >
                         View Full Office Portfolio <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
