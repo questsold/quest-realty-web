@@ -89,60 +89,61 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
 
     const hasResults = propertiesToDisplay.length > 0;
 
-
-
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col overflow-hidden">
+        <div className="min-h-screen bg-white flex flex-col overflow-hidden">
             {/* Header Spacer */}
             <div className="h-[80px] w-full shrink-0" />
 
             <PropertyFilters />
+
+            {/* Results Bar (Sticky/Persistent) */}
+            <div className="bg-slate-50/50 border-b border-slate-200 py-4 px-6 md:px-10 z-20 shadow-sm">
+                <div className="max-w-[1700px] mx-auto flex items-center justify-between gap-4">
+                    <div>
+                        <h1 className="text-xl md:text-2xl font-heading font-bold text-slate-900 tracking-tight flex items-center gap-3">
+                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                            {propertiesToDisplay.length} Live Listings Found
+                        </h1>
+                    </div>
+
+                    <div className="flex bg-white rounded-2xl border border-slate-200 p-1.5 shadow-sm">
+                        <Link
+                            href={`/properties?${new URLSearchParams({ ...Object.fromEntries(Object.entries(searchParams).map(([k, v]) => [k, String(v)])), view: 'list' }).toString()}`}
+                            className={`flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold transition-all ${view === 'list' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                        >
+                            <List className="w-4 h-4" /> LIST
+                        </Link>
+                        <Link
+                            href={`/properties?${new URLSearchParams({ ...Object.fromEntries(Object.entries(searchParams).map(([k, v]) => [k, String(v)])), view: 'split' }).toString()}`}
+                            className={`hidden lg:flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold transition-all ${view === 'split' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                        >
+                            <SlidersHorizontal className="w-4 h-4" /> SPLIT
+                        </Link>
+                        <Link
+                            href={`/properties?${new URLSearchParams({ ...Object.fromEntries(Object.entries(searchParams).map(([k, v]) => [k, String(v)])), view: 'map' }).toString()}`}
+                            className={`flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold transition-all ${view === 'map' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                        >
+                            <MapIcon className="w-4 h-4" /> MAP
+                        </Link>
+                    </div>
+                </div>
+            </div>
 
             {/* Main Content Split View */}
             <div className="flex-1 flex flex-col lg:flex-row overflow-hidden w-full relative">
 
                 {/* Left: Property List */}
                 <div
-                    className={`h-full overflow-y-auto transition-all duration-500 ease-in-out bg-slate-50 border-r border-slate-200
-                        ${view === 'map' ? 'hidden lg:block w-0 opacity-0 pointer-events-none' : 'block'}
+                    className={`h-full overflow-y-auto transition-all duration-500 ease-in-out bg-white
+                        ${view === 'map' ? 'hidden w-0' : 'block'}
                         ${view === 'list' ? 'w-full' : 'w-full lg:w-[50%]'}
                         ${view === 'split' ? 'w-full lg:w-[50%]' : ''}
                     `}
                 >
-                    <div className="max-w-4xl mx-auto p-6 md:p-8 pt-6">
-                        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-                            <div>
-                                <h1 className="text-2xl md:text-3xl font-heading font-bold text-slate-900 tracking-tight flex items-center gap-3">
-                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                                    {propertiesToDisplay.length} Live Listings Found
-                                </h1>
-                            </div>
-
-                            <div className="flex bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 p-1.5 shadow-sm self-start">
-                                <Link
-                                    href={`/properties?${new URLSearchParams({ ...Object.fromEntries(Object.entries(searchParams).map(([k, v]) => [k, String(v)])), view: 'list' }).toString()}`}
-                                    className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold transition-all ${view === 'list' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
-                                >
-                                    <List className="w-4 h-4" /> LIST
-                                </Link>
-                                <Link
-                                    href={`/properties?${new URLSearchParams({ ...Object.fromEntries(Object.entries(searchParams).map(([k, v]) => [k, String(v)])), view: 'split' }).toString()}`}
-                                    className={`hidden lg:flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold transition-all ${view === 'split' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
-                                >
-                                    <SlidersHorizontal className="w-4 h-4" /> SPLIT
-                                </Link>
-                                <Link
-                                    href={`/properties?${new URLSearchParams({ ...Object.fromEntries(Object.entries(searchParams).map(([k, v]) => [k, String(v)])), view: 'map' }).toString()}`}
-                                    className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold transition-all ${view === 'map' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
-                                >
-                                    <MapIcon className="w-4 h-4" /> MAP
-                                </Link>
-                            </div>
-                        </div>
-
+                    <div className="max-w-[1400px] mx-auto p-6 md:p-10">
                         {!hasResults ? (
-                            <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm px-6 text-center">
-                                <div className="bg-slate-50 p-8 rounded-full mb-8">
+                            <div className="flex flex-col items-center justify-center py-32 bg-slate-50 rounded-[2.5rem] border border-slate-200 shadow-sm px-6 text-center">
+                                <div className="bg-white p-8 rounded-full mb-8 shadow-sm">
                                     <MapPinOff className="w-14 h-14 text-slate-300" />
                                 </div>
                                 <h3 className="text-2xl font-bold text-slate-900 mb-3">No properties matched</h3>
@@ -155,7 +156,7 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
                                 </Link>
                             </div>
                         ) : (
-                            <div className={`grid gap-6 ${view === 'list' ? 'sm:grid-cols-2 xl:grid-cols-3' : 'sm:grid-cols-2'}`}>
+                            <div className={`grid gap-8 ${view === 'list' ? 'sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' : 'sm:grid-cols-2'}`}>
                                 {propertiesToDisplay.map((property: any) => (
                                     <PropertyCard key={property.id} {...property} />
                                 ))}
@@ -163,8 +164,8 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
                         )}
 
                         {hasResults && (
-                            <div className="mt-12 mb-12 flex justify-center">
-                                <button className="group relative px-10 py-4 bg-white border border-slate-200 rounded-full text-sm font-bold tracking-widest text-slate-900 hover:border-slate-900 hover:bg-slate-900 hover:text-white transition-all duration-300 uppercase shadow-sm">
+                            <div className="mt-16 mb-16 flex justify-center">
+                                <button className="group relative px-12 py-5 bg-white border border-slate-200 rounded-full text-xs font-bold tracking-widest text-slate-900 hover:border-slate-900 hover:bg-slate-900 hover:text-white transition-all duration-300 uppercase shadow-sm">
                                     <span className="relative z-10">Load More Properties</span>
                                 </button>
                             </div>
@@ -174,10 +175,10 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
 
                 {/* Right: Interactive Map */}
                 <div
-                    className={`relative transition-all duration-500 ease-in-out bg-slate-200 border-l border-slate-200
+                    className={`relative transition-all duration-500 ease-in-out bg-slate-100 border-l border-slate-200
                         ${view === 'list' ? 'hidden' : 'flex'}
-                        ${view === 'map' ? 'w-full' : 'w-0 lg:w-[50%] lg:flex'}
-                        ${view === 'split' ? 'hidden lg:flex' : ''}
+                        ${view === 'map' ? 'w-full' : 'w-0 lg:w-[50%]'}
+                        ${view === 'split' ? 'hidden lg:flex lg:w-[50%]' : ''}
                     `}
                 >
                     <div className="absolute inset-0">
