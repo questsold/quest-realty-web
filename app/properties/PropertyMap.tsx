@@ -35,17 +35,15 @@ function ChangeView({ bounds, center }: { bounds: L.LatLngBounds | null, center:
     const map = useMap();
 
     useEffect(() => {
-        // Force a resize calculation before fitting bounds (helps with layout transitions)
-        map.invalidateSize();
-
         if (bounds && bounds.isValid()) {
-            // Use a slight delay to ensure the container transition is mostly done
+            // Wait slightly for container transitions to complete
             const timer = setTimeout(() => {
                 map.invalidateSize();
                 map.fitBounds(bounds, { padding: [50, 50], maxZoom: 15, animate: true });
-            }, 100);
+            }, 250);
             return () => clearTimeout(timer);
         } else {
+            map.invalidateSize();
             map.setView(center, 11, { animate: true });
         }
     }, [bounds, map, center]);
@@ -60,6 +58,8 @@ interface Property {
     price: string;
     lat?: number | string;
     lng?: number | string;
+    latNum?: number | null; // Added for parsed number
+    lngNum?: number | null; // Added for parsed number
 }
 
 export default function PropertyMap({ properties }: { properties: Property[] }) {
@@ -69,35 +69,34 @@ export default function PropertyMap({ properties }: { properties: Property[] }) 
     useEffect(() => {
         setIsMounted(true);
         setGreenIcon(createGreenIcon());
-        console.log("PropertyMap mounted with properties:", properties.length);
     }, []);
 
     const validProperties = useMemo(() => {
         return properties
             .map(p => ({
                 ...p,
-                lat: typeof p.lat === 'string' ? parseFloat(p.lat) : p.lat,
-                lng: typeof p.lng === 'string' ? parseFloat(p.lng) : p.lng
+                latNum: typeof p.lat === 'string' ? parseFloat(p.lat) : (typeof p.lat === 'number' ? p.lat : null),
+                lngNum: typeof p.lng === 'string' ? parseFloat(p.lng) : (typeof p.lng === 'number' ? p.lng : null)
             }))
             .filter(p =>
-                p.lat !== undefined && p.lat !== null && !isNaN(p.lat as number) &&
-                p.lng !== undefined && p.lng !== null && !isNaN(p.lng as number) &&
-                p.lat !== 0 && p.lng !== 0
+                p.latNum !== null && p.lngNum !== null &&
+                !isNaN(p.latNum) && !isNaN(p.lngNum) &&
+                p.latNum !== 0 && p.lngNum !== 0
             );
     }, [properties]);
 
     const { bounds, center } = useMemo(() => {
         if (validProperties.length === 0) {
-            console.log("No valid properties with coordinates found!");
             return { bounds: null, center: [42.48, -83.14] as [number, number] };
         }
 
-        console.log(`Found ${validProperties.length} properties with valid coordinates.`);
         try {
-            const b = L.latLngBounds(validProperties.map(p => [Number(p.lat), Number(p.lng)] as [number, number]));
-            return { bounds: b, center: b.getCenter() as unknown as [number, number] };
+            const points = validProperties.map(p => [p.latNum!, p.lngNum!] as [number, number]);
+            const b = L.latLngBounds(points);
+            const c = b.getCenter();
+            return { bounds: b, center: [c.lat, c.lng] as [number, number] };
         } catch (e) {
-            console.error("Error creating bounds:", e);
+            console.error("Error creating map bounds:", e);
             return { bounds: null, center: [42.48, -83.14] as [number, number] };
         }
     }, [validProperties]);
@@ -125,7 +124,7 @@ export default function PropertyMap({ properties }: { properties: Property[] }) 
                 {validProperties.map((property) => (
                     <Marker
                         key={property.id}
-                        position={[Number(property.lat), Number(property.lng)]}
+                        position={[property.latNum!, property.lngNum!]}
                         icon={greenIcon || undefined}
                     >
                         <Popup>
