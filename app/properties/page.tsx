@@ -112,13 +112,10 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
                     <div className="max-w-4xl mx-auto p-6 md:p-8 pt-6">
                         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
                             <div>
-                                <h1 className="text-3xl font-heading font-bold text-slate-900 tracking-tight">
-                                    {isFiltered ? 'Search Results' : 'Detroit Real Estate'}
-                                </h1>
-                                <p className="text-slate-500 text-sm mt-1.5 font-medium flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                <h1 className="text-2xl md:text-3xl font-heading font-bold text-slate-900 tracking-tight flex items-center gap-3">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
                                     {propertiesToDisplay.length} Live Listings Found
-                                </p>
+                                </h1>
                             </div>
 
                             <div className="flex bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 p-1.5 shadow-sm self-start">
