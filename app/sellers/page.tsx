@@ -11,7 +11,7 @@ export default function Sellers() {
             <PageHero
                 title="Confidence and Clarity"
                 imageAlt="Selling a home"
-                imageUrl="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80"
+                imageUrl="/images/hero-modern-house.png"
             />
 
             <section className="py-24 bg-white">
@@ -33,7 +33,7 @@ export default function Sellers() {
 
                     <div className="my-24 grid md:grid-cols-2 gap-16 items-center">
                         <div className="order-2 md:order-1 h-[600px] rounded-2xl overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Selling Experience" className="w-full h-full object-cover" />
+                            <img src="/images/closing-keys.png" alt="Selling Experience" className="w-full h-full object-cover" />
                         </div>
                         <div className="order-1 md:order-2">
                             <h2 className="text-sm uppercase tracking-widest text-primary mb-4 font-semibold">Full-Service</h2>

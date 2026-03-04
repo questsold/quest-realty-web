@@ -58,7 +58,7 @@ export default function Home() {
             >
               <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                  src="/images/hero-modern-house.png"
                   alt="Luxury Home Detail"
                   className="w-full h-full object-cover"
                 />
@@ -138,7 +138,7 @@ export default function Home() {
                 title: "Selling",
                 desc: "Maximize your home's value with our innovative marketing and strategic negotiation.",
                 link: "/sellers",
-                image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                image: "/images/hero-modern-house.png"
               },
               {
                 title: "Upsizing",

@@ -11,7 +11,7 @@ export default function Buyers() {
             <PageHero
                 title="Experience"
                 imageAlt="Buying a home"
-                imageUrl="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80"
+                imageUrl="/images/hero-modern-house.png"
             />
 
             <section className="py-24 bg-white">
@@ -60,7 +60,7 @@ export default function Buyers() {
                             </div>
                         </div>
                         <div className="h-[600px] rounded-2xl overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Buying Experience" className="w-full h-full object-cover" />
+                            <img src="/images/closing-keys.png" alt="Buying Experience" className="w-full h-full object-cover" />
                         </div>
                     </div>
                 </div>

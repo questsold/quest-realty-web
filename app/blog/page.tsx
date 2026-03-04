@@ -10,7 +10,7 @@ export default function BlogPage() {
             title: "How to Navigate the 2026 Metro Detroit Housing Market",
             excerpt: "Expert tips on what buyers and sellers can expect from interest rates, inventory levels, and neighborhood trends this year.",
             category: "Market Updates",
-            image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+            image: "/images/hero-modern-house.png",
             date: "Feb 15, 2026",
             author: "Ali Berry",
             featured: true

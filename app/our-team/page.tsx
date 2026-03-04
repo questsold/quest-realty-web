@@ -32,7 +32,7 @@ export default function OurTeamPage() {
             <PageHero
                 title="Meet Our Team"
                 description="The experts dedicated to helping you achieve your real estate goals."
-                imageUrl="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
+                imageUrl="/images/hero-modern-house.png"
             />
 
             <section className="py-24">

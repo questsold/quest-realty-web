@@ -18,7 +18,7 @@ export default function AboutUsPage() {
                         <div className="lg:w-1/2">
                             <div className="relative">
                                 <img
-                                    src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                                    src="/images/hero-modern-house.png"
                                     alt="Quest Realty Office"
                                     className="rounded-3xl shadow-2xl z-10 relative"
                                 />
