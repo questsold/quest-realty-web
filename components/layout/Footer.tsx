@@ -1,6 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function Footer() {
+    const pathname = usePathname();
+    const isSearchPage = pathname === "/properties";
+
+    if (isSearchPage) return null;
+
     return (
         <footer className="bg-[#1f1f1f] text-zinc-400 py-16 border-t border-zinc-800">
             <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
