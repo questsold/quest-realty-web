@@ -158,7 +158,7 @@ function FiltersContent() {
     }).length;
 
     return (
-        <div className="bg-white border-b border-slate-200 z-40 shadow-sm transition-all duration-300 relative">
+        <div className="bg-white border-b border-slate-200 z-40 shadow-sm transition-all duration-300 relative shrink-0">
             <div className="container mx-auto px-6 py-3 flex flex-col md:flex-row gap-6 items-center justify-between relative">
 
                 {/* Left side: Advanced Search Bar */}

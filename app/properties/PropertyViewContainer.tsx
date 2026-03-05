@@ -46,7 +46,7 @@ export default function PropertyViewContainer({ initialView, properties, searchB
     return (
         <>
             {/* Results Bar (Sticky/Persistent) */}
-            <div className="bg-slate-50/50 border-b border-slate-200 py-4 px-6 md:px-10 z-20 shadow-sm transition-all">
+            <div className="bg-slate-50/50 border-b border-slate-200 py-4 px-6 md:px-10 z-20 shadow-sm transition-all shrink-0">
                 <div className="max-w-[1700px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
                         <div>

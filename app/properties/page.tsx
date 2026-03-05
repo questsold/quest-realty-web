@@ -89,7 +89,7 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
     }
 
     return (
-        <div className="min-h-screen bg-white flex flex-col overflow-hidden">
+        <div className="h-screen bg-white flex flex-col overflow-hidden">
             {/* Header Spacer */}
             <div className="h-[80px] w-full shrink-0" />
 
