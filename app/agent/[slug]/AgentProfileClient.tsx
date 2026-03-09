@@ -154,7 +154,7 @@ const AboutSection = ({ agent }: { agent: any }) => {
                                         <div key={i}>
                                             <div className="text-3xl md:text-4xl font-bold text-black mb-2 tracking-tighter">
                                                 {match ? (
-                                                    <Counter value={Number(match[2])} prefix={match[1]} suffix={match[3]} delay={0.5} margin="-100px" />
+                                                    <Counter value={Number(match[2])} prefix={match[1]} suffix={match[3]} delay={0.8} />
                                                 ) : (
                                                     stat.value
                                                 )}
