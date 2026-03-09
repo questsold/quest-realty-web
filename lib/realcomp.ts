@@ -90,7 +90,7 @@ export async function getProperties(options: {
 
         // Base filters for IDX compliance
         // Note: Realcomp OData field names based on RESO Web API standards.
-        let combinedFilter = "StandardStatus eq 'Active' and InternetEntireListingDisplayYN eq true";
+        let combinedFilter = "(StandardStatus eq 'Active' or StandardStatus eq 'ComingSoon') and InternetEntireListingDisplayYN eq true";
 
         if (filter) {
             combinedFilter = `(${combinedFilter}) and (${filter})`;
@@ -181,7 +181,7 @@ export async function getSuggestions(q: string) {
 
         if (isNumeric) {
             // Priority 1: Address starts with (any status)
-            const addrFilter = `StandardStatus eq 'Active' and (startswith(UnparsedAddress, '${q}') or startswith(StreetNumber, '${q}'))`;
+            const addrFilter = `(StandardStatus eq 'Active' or StandardStatus eq 'ComingSoon') and (startswith(UnparsedAddress, '${q}') or startswith(StreetNumber, '${q}'))`;
             const addrRes = await fetch(`${baseQuery}${encodeURIComponent(addrFilter)}`, { headers });
             if (addrRes.ok) {
                 const data = await addrRes.json();
@@ -190,7 +190,7 @@ export async function getSuggestions(q: string) {
 
             // Priority 2: PostalCode starts with (only if we need more results)
             if (results.length < 10) {
-                const zipFilter = `StandardStatus eq 'Active' and startswith(PostalCode, '${q}')`;
+                const zipFilter = `(StandardStatus eq 'Active' or StandardStatus eq 'ComingSoon') and startswith(PostalCode, '${q}')`;
                 const zipRes = await fetch(`${baseQuery}${encodeURIComponent(zipFilter)}`, { headers });
                 if (zipRes.ok) {
                     const data = await zipRes.json();
@@ -200,7 +200,7 @@ export async function getSuggestions(q: string) {
                 }
             }
         } else {
-            const filter = `StandardStatus eq 'Active' and (contains(UnparsedAddress, '${q}') or startswith(OriginalCity, '${q}') or contains(StreetName, '${q}'))`;
+            const filter = `(StandardStatus eq 'Active' or StandardStatus eq 'ComingSoon') and (contains(UnparsedAddress, '${q}') or startswith(OriginalCity, '${q}') or contains(StreetName, '${q}'))`;
             const res = await fetch(`${baseQuery}${encodeURIComponent(filter)}`, { headers });
             if (res.ok) {
                 const data = await res.json();

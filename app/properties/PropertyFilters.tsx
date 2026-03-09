@@ -4,7 +4,7 @@ import { Search, Filter, X, SlidersHorizontal, MapPin, Home, Check, RotateCcw, A
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, Suspense, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { METRO_DETROIT_CITIES } from "@/lib/cities";
+import { METRO_DETROIT_CITIES, METRO_DETROIT_COUNTIES } from "@/lib/cities";
 
 function FiltersContent() {
     const router = useRouter();
@@ -26,7 +26,7 @@ function FiltersContent() {
         sqft: searchParams.get("sqft") || "Any",
         year: searchParams.get("year") || "Any",
         sort: searchParams.get("sort") || "ModificationTimestamp desc",
-        office: searchParams.get("office") === "true"
+        office: searchParams.has("office") ? searchParams.get("office") === "true" : !searchParams.get("q")
     });
 
     const propertyTypes = ["Any", "Residential", "Single Family", "Condominium", "Townhouse", "Land", "Multi-Family", "Commercial"];
@@ -46,8 +46,13 @@ function FiltersContent() {
         if (typeof e !== 'string') e.preventDefault();
         const searchTerm = typeof e === 'string' ? e : q;
         const params = new URLSearchParams(searchParams);
-        if (searchTerm) params.set("q", searchTerm);
-        else params.delete("q");
+        if (searchTerm) {
+            params.set("q", searchTerm);
+        } else {
+            params.delete("q");
+            params.delete("office");
+            setLocalFilters(prev => ({ ...prev, office: true }));
+        }
         router.push(`/properties?${params.toString()}`);
         setShowSuggestions(false);
     };
@@ -61,10 +66,16 @@ function FiltersContent() {
             return;
         }
 
-        const localMatches = METRO_DETROIT_CITIES
+        const localCityMatches = METRO_DETROIT_CITIES
             .filter(c => c.toLowerCase().startsWith(val.toLowerCase()) || (val.length > 3 && c.toLowerCase().includes(val.toLowerCase())))
             .slice(0, 5)
-            .map(c => ({ OriginalCity: c, type: 'city' }));
+            .map(c => ({ OriginalCity: c, type: 'city', label: c }));
+
+        const localCountyMatches = METRO_DETROIT_COUNTIES
+            .filter(c => c.toLowerCase().startsWith(val.toLowerCase()) || c.toLowerCase().replace(' county', '').startsWith(val.toLowerCase()))
+            .map(c => ({ OriginalCity: c, type: 'county', label: c }));
+
+        const localMatches = [...localCountyMatches, ...localCityMatches];
 
         setSuggestions(localMatches);
         setShowSuggestions(localMatches.length > 0);
@@ -115,8 +126,12 @@ function FiltersContent() {
         const params = new URLSearchParams(searchParams);
         Object.entries(localFilters).forEach(([key, value]) => {
             if (key === 'office') {
-                if (value) params.set(key, 'true');
-                else params.delete(key);
+                if (value) {
+                    params.set(key, 'true');
+                } else {
+                    if (!q) params.set(key, 'false');
+                    else params.delete(key);
+                }
             } else if (typeof value === 'string') {
                 if (value && value !== 'Any' && value !== 'Earlier') {
                     params.set(key, value.replace('+', '').replace(',', ''));
@@ -128,6 +143,7 @@ function FiltersContent() {
             }
         });
         if (q) params.set("q", q);
+        else params.delete("q");
         router.push(`/properties?${params.toString()}`);
         setIsModalOpen(false);
     };
@@ -142,7 +158,7 @@ function FiltersContent() {
             sqft: "Any",
             year: "Any",
             sort: "ModificationTimestamp desc",
-            office: false
+            office: true
         };
         setLocalFilters(reset);
         setQ("");
@@ -153,12 +169,15 @@ function FiltersContent() {
     const activeFilterCount = Object.entries(localFilters).filter(([k, v]) => {
         if (k === 'type' && v === 'Residential') return false;
         if (k === 'sort' && v === 'ModificationTimestamp desc') return false;
-        if (k === 'office' && v === false) return false;
+        if (k === 'office') {
+            const defaultOffice = !q;
+            return v !== defaultOffice;
+        }
         return v !== 'Any' && v !== '' && v !== false;
     }).length;
 
     return (
-        <div className="bg-white border-b border-slate-200 z-40 shadow-sm transition-all duration-300 relative shrink-0">
+        <div className="bg-white border-b border-slate-200 z-[1001] shadow-sm transition-all duration-300 relative shrink-0">
             <div className="container mx-auto px-6 py-3 flex flex-col md:flex-row gap-6 items-center justify-between relative">
 
                 {/* Left side: Advanced Search Bar */}
@@ -177,7 +196,7 @@ function FiltersContent() {
                             onChange={(e) => handleInputChange(e.target.value)}
                             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                             onFocus={() => q.length >= 2 && setShowSuggestions(true)}
-                            placeholder="Search by City, Zip, or Address..."
+                            placeholder="Search by City, County, Zip, or Address..."
                             className="w-full pl-12 pr-4 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary text-sm bg-slate-50/50 font-bold placeholder:text-slate-400 placeholder:font-medium transition-all hover:bg-white"
                         />
                     </form>
@@ -216,7 +235,7 @@ function FiltersContent() {
                                                 <div className="flex flex-col text-left">
                                                     <span className="font-bold text-slate-900 uppercase tracking-tight text-xs group-hover:text-primary transition-colors">{label}</span>
                                                     <span className="text-[10px] uppercase font-extrabold text-slate-400 group-hover:text-slate-500 transition-colors">
-                                                        {item.type === 'address' ? `Property in ${item.OriginalCity || 'Michigan'}` : item.type === 'zip' ? `Search Zip Code` : 'City / Region'}
+                                                        {item.type === 'address' ? `Property in ${item.OriginalCity || 'Michigan'}` : item.type === 'zip' ? `Search Zip Code` : item.type === 'county' ? 'County / Region' : 'City / Region'}
                                                     </span>
                                                 </div>
                                             </div>

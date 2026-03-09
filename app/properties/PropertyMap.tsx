@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap, GeoJSON } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMap, GeoJSON, ZoomControl } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import Link from "next/link";
 
 // Create a Zillow-style price tag icon
 const createPriceIcon = (price: string) => {
@@ -19,7 +20,14 @@ const createPriceIcon = (price: string) => {
 function MapResizer() {
     const map = useMap();
     useEffect(() => {
-        map.invalidateSize();
+        const observer = new ResizeObserver(() => {
+            map.invalidateSize();
+        });
+        const container = map.getContainer();
+        if (container) {
+            observer.observe(container);
+        }
+        return () => observer.disconnect();
     }, [map]);
     return null;
 }
@@ -55,6 +63,7 @@ interface Property {
     lng?: number | string;
     latNum?: number | null;
     lngNum?: number | null;
+    image?: string | null;
 }
 
 interface SearchBoundary {
@@ -85,10 +94,21 @@ export default function PropertyMap({ properties, searchBoundary }: { properties
     }, [properties]);
 
     const { bounds, center } = useMemo(() => {
-        // If we have a search boundary, prioritize it for the map view
+        // Show all results by prioritizing property markers first
+        if (validProperties.length > 0) {
+            try {
+                const points = validProperties.map(p => [p.latNum!, p.lngNum!] as [number, number]);
+                const b = L.latLngBounds(points);
+                const c = b.getCenter();
+                return { bounds: b, center: [c.lat, c.lng] as [number, number] };
+            } catch (e) {
+                // Ignore map bound errors
+            }
+        }
+
+        // Fallback to boundary if no properties exist
         if (searchBoundary?.geojson) {
             try {
-                // Create a ghost layer to calculate bounds of GeoJSON
                 const geoLayer = L.geoJSON(searchBoundary.geojson);
                 const b = geoLayer.getBounds();
                 if (b.isValid()) {
@@ -100,54 +120,8 @@ export default function PropertyMap({ properties, searchBoundary }: { properties
             }
         }
 
-        // Fallback to property markers
-        if (validProperties.length === 0) {
-            return { bounds: null, center: [42.48, -83.14] as [number, number] };
-        }
-
-        try {
-            const points = validProperties.map(p => [p.latNum!, p.lngNum!] as [number, number]);
-            const b = L.latLngBounds(points);
-            const c = b.getCenter();
-            return { bounds: b, center: [c.lat, c.lng] as [number, number] };
-        } catch (e) {
-            return { bounds: null, center: [42.48, -83.14] as [number, number] };
-        }
+        return { bounds: null, center: [42.48, -83.14] as [number, number] };
     }, [validProperties, searchBoundary]);
-
-    // Create the dimming mask (inverse polygon)
-    const maskData = useMemo(() => {
-        if (!searchBoundary?.geojson) return null;
-
-        // A huge rectangle covering the globe with a hole for the city
-        // Note: GeoJSON coordinates are [lng, lat]
-        const outer = [
-            [-180, 90],
-            [180, 90],
-            [180, -90],
-            [-180, -90],
-            [-180, 90]
-        ];
-
-        let inner: any[] = [];
-        if (searchBoundary.geojson.type === 'Polygon') {
-            inner = searchBoundary.geojson.coordinates[0];
-        } else if (searchBoundary.geojson.type === 'MultiPolygon') {
-            // Take the first polygon's outer ring
-            inner = searchBoundary.geojson.coordinates[0][0];
-        }
-
-        if (inner.length === 0) return null;
-
-        return {
-            type: "Feature",
-            properties: {},
-            geometry: {
-                type: "Polygon",
-                coordinates: [outer, inner]
-            }
-        };
-    }, [searchBoundary]);
 
     if (!isMounted) return <div className="w-full h-full bg-slate-50 animate-pulse" />;
 
@@ -169,32 +143,6 @@ export default function PropertyMap({ properties, searchBoundary }: { properties
                 <MapResizer />
                 <ChangeView bounds={bounds} center={center} />
 
-                {/* The Dimming Mask */}
-                {maskData && (
-                    <GeoJSON
-                        data={maskData as any}
-                        style={{
-                            fillColor: '#000',
-                            fillOpacity: 0.15,
-                            weight: 0,
-                            stroke: false
-                        }}
-                    />
-                )}
-
-                {/* The City/Zip Boundary Outline */}
-                {searchBoundary?.geojson && (
-                    <GeoJSON
-                        data={searchBoundary.geojson}
-                        style={{
-                            color: '#004cff',
-                            weight: 3,
-                            opacity: 0.7,
-                            fillOpacity: 0
-                        }}
-                    />
-                )}
-
                 {validProperties.map((property) => (
                     <Marker
                         key={property.id}
@@ -202,26 +150,33 @@ export default function PropertyMap({ properties, searchBoundary }: { properties
                         icon={createPriceIcon(property.price)}
                     >
                         <Popup className="zillow-popup">
-                            <div className="p-3 min-w-[200px]">
-                                <div className="text-lg font-black text-slate-900 mb-1">{property.price}</div>
-                                <div className="text-xs text-slate-600 font-bold mb-0.5">{property.address}</div>
-                                <div className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">{property.city}</div>
-                                <div className="mt-2 text-[10px] flex gap-3 text-slate-500 font-bold border-t border-slate-100 pt-2">
-                                    <span>{property.beds} Beds</span>
-                                    <span>{property.baths} Baths</span>
+                            <Link href={`/listing/${property.id}`} className="flex flex-col min-w-[200px] sm:min-w-[240px] group cursor-pointer">
+                                {property.image ? (
+                                    <div className="w-full h-32 relative bg-slate-100 shrink-0 overflow-hidden">
+                                        <img src={property.image} alt={property.address} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    </div>
+                                ) : (
+                                    <div className="w-full h-32 bg-slate-100 flex items-center justify-center shrink-0">
+                                        <span className="text-slate-400 text-[10px] font-black uppercase tracking-widest">No Image</span>
+                                    </div>
+                                )}
+                                <div className="p-4 group-hover:bg-slate-50 transition-colors">
+                                    <div className="text-xl font-black text-slate-900 mb-1 group-hover:text-primary transition-colors">{property.price}</div>
+                                    <div className="text-xs text-slate-600 font-bold mb-0.5 truncate">{property.address}</div>
+                                    <div className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest truncate">{property.city}</div>
+                                    <div className="mt-3 text-[10px] flex gap-3 text-slate-500 font-bold border-t border-slate-100 pt-3">
+                                        <span>{property.beds} <span className="text-slate-400 font-medium">Beds</span></span>
+                                        <span>{property.baths} <span className="text-slate-400 font-medium">Baths</span></span>
+                                        <span>{property.sqft} <span className="text-slate-400 font-medium">sqft</span></span>
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         </Popup>
                     </Marker>
                 ))}
 
-                {/* Re-add zoom control in Zillow position */}
-                <div className="leaflet-bottom leaflet-right">
-                    <div className="leaflet-control-zoom leaflet-bar leaflet-control">
-                        <a className="leaflet-control-zoom-in" href="#" title="Zoom in" role="button" aria-label="Zoom in" onClick={(e) => { e.preventDefault(); (window as any)._leaflet_map?.zoomIn(); }}>+</a>
-                        <a className="leaflet-control-zoom-out" href="#" title="Zoom out" role="button" aria-label="Zoom out" onClick={(e) => { e.preventDefault(); (window as any)._leaflet_map?.zoomOut(); }}>-</a>
-                    </div>
-                </div>
+                {/* Native Zoom Control */}
+                <ZoomControl position="bottomright" />
             </MapContainer>
 
             <style jsx global>{`

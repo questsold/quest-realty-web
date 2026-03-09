@@ -5,7 +5,7 @@ import { Search, MapPin, Home, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { METRO_DETROIT_CITIES } from "@/lib/cities";
+import { METRO_DETROIT_CITIES, METRO_DETROIT_COUNTIES } from "@/lib/cities";
 import { trackConversion } from "@/components/analytics/GoogleAnalytics";
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80";
@@ -46,10 +46,16 @@ export function Hero() {
             return;
         }
 
-        const localMatches = METRO_DETROIT_CITIES
+        const localCityMatches = METRO_DETROIT_CITIES
             .filter(c => c.toLowerCase().startsWith(val.toLowerCase()) || (val.length > 3 && c.toLowerCase().includes(val.toLowerCase())))
             .slice(0, 5)
             .map(c => ({ OriginalCity: c, type: 'city', label: c }));
+
+        const localCountyMatches = METRO_DETROIT_COUNTIES
+            .filter(c => c.toLowerCase().startsWith(val.toLowerCase()) || c.toLowerCase().replace(' county', '').startsWith(val.toLowerCase()))
+            .map(c => ({ OriginalCity: c, type: 'county', label: c }));
+
+        const localMatches = [...localCountyMatches, ...localCityMatches];
 
         setSuggestions(localMatches);
         setShowSuggestions(localMatches.length > 0);
@@ -204,7 +210,7 @@ export function Hero() {
                                     </div>
                                     <input
                                         type="text"
-                                        placeholder={isNavigating ? "Directing to properties..." : "Enter City, Zip, or Address..."}
+                                        placeholder={isNavigating ? "Directing to properties..." : "Enter City, County, Zip, or Address..."}
                                         className="w-full py-4 md:py-5 bg-transparent focus:outline-none text-slate-900 text-sm md:text-base font-bold placeholder:text-slate-400 disabled:opacity-50"
                                         value={searchQuery}
                                         onChange={(e) => handleInputChange(e.target.value)}
@@ -258,7 +264,7 @@ export function Hero() {
                                                 <div className="flex flex-col">
                                                     <span className="font-bold text-slate-900 uppercase tracking-tight text-xs group-hover:text-primary transition-colors">{item.label}</span>
                                                     <span className="text-[9px] font-extrabold uppercase tracking-widest text-slate-400">
-                                                        {item.type === 'address' ? `Property in ${item.OriginalCity || 'Michigan'}` : item.type === 'zip' ? `Search Zip Code` : 'City / Region'}
+                                                        {item.type === 'address' ? `Property in ${item.OriginalCity || 'Michigan'}` : item.type === 'zip' ? `Search Zip Code` : item.type === 'county' ? 'County / Region' : 'City / Region'}
                                                     </span>
                                                 </div>
                                             </div>

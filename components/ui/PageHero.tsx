@@ -14,7 +14,7 @@ export function PageHero({ title, imageAlt, imageUrl, eyebrow, description }: Pa
     const defaultImage = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80";
 
     return (
-        <section className="relative h-[60vh] min-h-[400px] flex items-center justify-center overflow-hidden pt-20">
+        <section className="relative min-h-[60vh] md:min-h-[500px] flex items-center justify-center overflow-hidden pt-32 pb-24">
             <div className="absolute inset-0 z-0">
                 <img
                     src={imageUrl || defaultImage}
@@ -36,7 +36,7 @@ export function PageHero({ title, imageAlt, imageUrl, eyebrow, description }: Pa
                             {eyebrow}
                         </div>
                     )}
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-medium tracking-tight text-white m-0 leading-tight">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-medium tracking-tight text-white m-0 leading-tight">
                         {title}
                     </h1>
                     {description && (

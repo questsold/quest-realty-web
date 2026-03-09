@@ -27,12 +27,14 @@ export default function PropertyViewContainer({ initialView, properties, searchB
     };
 
     const handleSortChange = (newSort: string) => {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(window.location.search);
         params.set("sort", newSort);
-        router.push(`/properties?${params.toString()}`);
+        router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
     };
 
-    const currentSort = searchParams.get("sort") || "ModificationTimestamp desc";
+    const currentSort = typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get("sort") || "ModificationTimestamp desc"
+        : searchParams.get("sort") || "ModificationTimestamp desc";
 
     const sortOptions = [
         { label: "Newest Listings", value: "ModificationTimestamp desc" },

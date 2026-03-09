@@ -7,10 +7,21 @@ import { ArrowRight, ChevronLeft, ChevronRight, Users, Building2, BarChart3, Cir
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Counter } from "@/components/ui/Counter";
-import { topReviews } from "@/lib/data/reviews_data";
+import { getZillowReviews, ZillowReview } from "@/lib/zillow";
 
 export default function Home() {
+  const [reviews, setReviews] = useState<ZillowReview[]>([]);
+
+  useEffect(() => {
+    async function loadReviews() {
+      const data = await getZillowReviews();
+      setReviews(data);
+    }
+    loadReviews();
+  }, []);
+
   return (
     <div className="overflow-x-hidden">
       <Hero />
@@ -141,10 +152,10 @@ export default function Home() {
                 image: "/images/hero-modern-house.png"
               },
               {
-                title: "Upsizing",
-                desc: "Ready for more space? We specialize in seamless transitions to your next dream home.",
+                title: "Invest",
+                desc: "Build your wealth with our expert insights into high-yield real estate investments.",
                 link: "/properties",
-                image: "https://images.unsplash.com/photo-1600607687931-cebfad2114ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
               }
             ].map((item, idx) => (
               <motion.div
@@ -330,33 +341,37 @@ export default function Home() {
             className="flex gap-8 overflow-x-auto pb-8 scrollbar-hide snap-x snap-mandatory"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {topReviews.map((review, idx) => (
+            {reviews.slice(0, 6).map((review: any, idx) => (
               <motion.div
-                key={idx}
+                key={review.ReviewId || idx}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
                 className="min-w-[300px] md:min-w-[450px] snap-start"
               >
-                <div className="h-full bg-slate-900 border border-slate-800 p-8 md:p-12 rounded-[2rem] relative group hover:border-primary/30 transition-all">
+                <div className="h-full bg-slate-900 border border-slate-800 p-8 md:p-12 rounded-[2rem] relative group hover:border-primary/30 transition-all flex flex-col">
                   <Quote className="absolute top-8 right-8 w-12 h-12 text-primary/5 group-hover:text-primary/10 transition-colors" />
 
                   <div className="flex gap-1 mb-6">
-                    {[...Array(5)].map((_, i) => (
+                    {[...Array(Math.floor(review.Rating || 5))].map((_, i) => (
                       <Star key={i} className="w-5 h-5 text-yellow-500 fill-yellow-500" />
                     ))}
                   </div>
 
-                  <p className="text-lg md:text-xl text-slate-300 leading-relaxed italic mb-10">"{review.text}"</p>
+                  <p className="text-lg md:text-xl text-slate-300 leading-relaxed italic mb-10 overflow-hidden line-clamp-4">"{review.Description}"</p>
 
-                  <div className="mt-auto flex items-center justify-between">
-                    <div>
-                      <h4 className="font-bold text-white text-lg">{review.name}</h4>
-                      <p className="text-primary font-medium">{review.location} — {review.agent}</p>
+                  <div className="mt-auto flex gap-4 items-center justify-between">
+                    <div className="flex flex-col min-w-0 flex-1 pr-4">
+                      <h4 className="font-bold text-white text-lg truncate">
+                        {review.ReviewerFullName || review.ReviewerScreenName || "Quest Client"}
+                      </h4>
+                      <p className="text-primary font-medium text-sm truncate">
+                        {review.FreeFormLocation || review.ServiceProviderDesc || "Real Estate Services"}
+                      </p>
                     </div>
-                    <div className="w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-primary font-bold">
-                      {review.name.charAt(0)}
+                    <div className="flex-shrink-0 w-12 h-12 bg-slate-800 rounded-full flex items-center justify-center text-primary font-bold uppercase">
+                      {(review.ReviewerFullName || review.ReviewerScreenName || "Q").charAt(0)}
                     </div>
                   </div>
                 </div>

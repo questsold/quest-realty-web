@@ -8,11 +8,13 @@ interface CounterProps {
     suffix?: string;
     prefix?: string;
     duration?: number;
+    delay?: number;
+    margin?: string;
 }
 
-export function Counter({ value, suffix = "", prefix = "", duration = 2 }: CounterProps) {
+export function Counter({ value, suffix = "", prefix = "", duration = 2, delay = 0, margin = "0px" }: CounterProps) {
     const ref = useRef(null);
-    const isInView = useInView(ref, { once: true });
+    const isInView = useInView(ref, { once: true, margin: margin as any });
     const motionValue = useMotionValue(0);
     const springValue = useSpring(motionValue, {
         damping: 30,
@@ -22,9 +24,16 @@ export function Counter({ value, suffix = "", prefix = "", duration = 2 }: Count
 
     useEffect(() => {
         if (isInView) {
-            motionValue.set(value);
+            if (delay > 0) {
+                const timeout = setTimeout(() => {
+                    motionValue.set(value);
+                }, delay * 1000);
+                return () => clearTimeout(timeout);
+            } else {
+                motionValue.set(value);
+            }
         }
-    }, [isInView, value, motionValue]);
+    }, [isInView, value, motionValue, delay]);
 
     return (
         <span ref={ref}>

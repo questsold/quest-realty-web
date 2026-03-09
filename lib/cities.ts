@@ -1,3 +1,8 @@
+export const METRO_DETROIT_COUNTIES = [
+    "Oakland County", "Wayne County", "Macomb County",
+    "Washtenaw County", "Livingston County", "Lapeer County", "Saint Clair County"
+];
+
 export const METRO_DETROIT_CITIES = [
     // Oakland County
     "Auburn Hills", "Berkley", "Beverly Hills", "Bingham Farms", "Birmingham",

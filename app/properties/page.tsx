@@ -1,4 +1,5 @@
 import { getProperties, getSearchBoundary } from "@/lib/realcomp";
+import { METRO_DETROIT_COUNTIES } from "@/lib/cities";
 import { PropertyFilters } from "./PropertyFilters";
 import PropertyViewContainer from "./PropertyViewContainer";
 
@@ -24,7 +25,12 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
 
     let filterString = "";
     if (q) {
-        if (isNumeric) {
+        const matchedCounty = METRO_DETROIT_COUNTIES.find(c => c.toLowerCase() === q.trim().toLowerCase());
+
+        if (matchedCounty) {
+            const countyName = matchedCounty.replace(/ county/i, '');
+            filterString = `CountyOrParish eq '${countyName}'`;
+        } else if (isNumeric) {
             filterString = `contains(PostalCode, '${q.trim()}')`;
         } else {
             filterString = `(contains(OriginalCity, '${q.trim()}') or contains(UnparsedAddress, '${q.trim()}'))`;
@@ -48,7 +54,9 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
     }
 
     // Office Filtering
-    const officeOnly = searchParams.office === 'true';
+    const officeParam = typeof searchParams.office === 'string' ? searchParams.office : null;
+    const officeOnly = officeParam === 'true' || (officeParam !== 'false' && !q);
+
     if (officeOnly) {
         const officeIds = ['368625', '6505368625'];
         const officeFilter = `(${officeIds.map(id => `ListOfficeMlsId eq '${id}'`).join(' or ')})`;
@@ -59,7 +67,7 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
     try {
         const [realcompData, boundaryData] = await Promise.all([
             getProperties({
-                top: 40,
+                top: 250,
                 filter: filterString || undefined,
                 orderby: sortOrder
             }),
