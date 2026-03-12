@@ -1,0 +1,41 @@
+name: Generate Weekly Blog Post
+
+on:
+  schedule:
+    # Run at 13:00 UTC (9:00 AM Eastern Time) every Monday
+    - cron: '0 13 * * 1'
+  workflow_dispatch: # Allows manual triggering from the GitHub Actions tab
+
+jobs:
+  generate-blog:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-generativeai
+
+      - name: Run Blog Generator Script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python scripts/generate_blog.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/blogs.json
+          git commit -m "chore: Auto-generate weekly SEO blog post via Gemini" || echo "No changes to commit"
+          git push
