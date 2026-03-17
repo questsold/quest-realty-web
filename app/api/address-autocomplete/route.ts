@@ -9,7 +9,8 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`, {
+        // Bias results towards Southeast Michigan (Metro Detroit) using a viewbox, but don't strictly bound it.
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=us&viewbox=-84.5,43.5,-82.0,41.5&bounded=0&limit=5&addressdetails=1`, {
             headers: {
                 "User-Agent": "QuestRealty CommuteFeature/1.0 (info@questrealtymi.com)"
             }
