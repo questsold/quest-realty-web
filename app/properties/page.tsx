@@ -47,9 +47,22 @@ export default async function PropertiesPage(props: { searchParams: Promise<{ [k
 
     // Safer Property Type Filter
     if (propType && propType !== 'Any') {
-        const typeFilter = propType === 'Residential'
-            ? `PropertyType eq 'Residential'`
-            : `(contains(PropertySubType, '${propType}') or contains(PropertyType, '${propType}'))`;
+        let typeFilter = '';
+        if (propType === 'Residential') {
+            typeFilter = `PropertyType eq 'Residential'`;
+        } else if (propType === 'Condominium') {
+            typeFilter = `PropertySubType eq 'Condominium'`;
+        } else if (propType === 'Single Family') {
+            typeFilter = `PropertySubType eq 'SingleFamilyResidence'`;
+        } else if (propType === 'Land') {
+            typeFilter = `PropertyType eq 'Land'`;
+        } else if (propType === 'Multi-Family') {
+            typeFilter = `PropertyType eq 'ResidentialIncome' or PropertySubType eq 'MultiFamily'`;
+        } else if (propType === 'Commercial') {
+            typeFilter = `PropertyType eq 'CommercialSale' or PropertyType eq 'BusinessOpportunity'`;
+        } else {
+            typeFilter = `PropertySubType eq '${propType}'`;
+        }
         filterString += (filterString ? " and " : "") + `(${typeFilter})`;
     }
 

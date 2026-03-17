@@ -29,7 +29,7 @@ function FiltersContent() {
         office: searchParams.has("office") ? searchParams.get("office") === "true" : !searchParams.get("q")
     });
 
-    const propertyTypes = ["Any", "Residential", "Single Family", "Condominium", "Townhouse", "Land", "Multi-Family", "Commercial"];
+    const propertyTypes = ["Any", "Residential", "Single Family", "Condominium", "Land", "Multi-Family", "Commercial"];
     const bedsOptions = ["Any", "1+", "2+", "3+", "4+", "5+"];
     const bathsOptions = ["Any", "1+", "2+", "3+", "4+"];
     const sqftOptions = ["Any", "1,000+", "2,000+", "3,000+", "4,000+", "5,000+"];
