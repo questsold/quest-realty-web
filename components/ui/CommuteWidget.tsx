@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MapPin, Navigation, Clock, Search, Briefcase, Plus, X, Loader2 } from "lucide-react";
 
 interface SavedPlace {
@@ -20,6 +20,55 @@ export function CommuteWidget({ propertyAddress, propertyLat, propertyLng }: Com
     const [newPlaceLabel, setNewPlaceLabel] = useState("");
     const [newPlaceAddress, setNewPlaceAddress] = useState("");
     const [isAdding, setIsAdding] = useState(false);
+    
+    // Autocomplete states
+    const [suggestions, setSuggestions] = useState<any[]>([]);
+    const [isSearching, setIsSearching] = useState(false);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const handleAddressChange = (val: string) => {
+        setNewPlaceAddress(val);
+        setShowSuggestions(true);
+        
+        if (searchTimeoutRef.current) {
+            clearTimeout(searchTimeoutRef.current);
+        }
+
+        if (val.length < 3) {
+            setSuggestions([]);
+            return;
+        }
+
+        setIsSearching(true);
+        searchTimeoutRef.current = setTimeout(async () => {
+            try {
+                const res = await fetch(`/api/address-autocomplete?q=${encodeURIComponent(val)}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setSuggestions(data);
+                }
+            } catch (e) {
+                console.error("Failed to fetch autocomplete", e);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 400);
+    };
+
+    const handleSelectSuggestion = (suggestion: any) => {
+        // Build a clean primary text from components if possible
+        const addressMatch = [
+            suggestion.address?.house_number, 
+            suggestion.address?.road,
+            suggestion.address?.suburb || suggestion.address?.city || suggestion.address?.town
+        ].filter(Boolean).join(' ');
+        
+        setNewPlaceAddress(addressMatch || suggestion.display_name);
+        setSuggestions([]);
+        setShowSuggestions(false);
+    };
+
     
     // Duration in minutes
     const [commuteTimes, setCommuteTimes] = useState<Record<string, number | null>>({});
@@ -179,15 +228,52 @@ export function CommuteWidget({ propertyAddress, propertyLat, propertyLng }: Com
                                 maxLength={30}
                             />
                         </div>
-                        <div>
+                        <div className="relative">
                             <input
                                 type="text"
                                 placeholder="Address or Zip Code"
                                 className="w-full text-sm px-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary/20"
                                 value={newPlaceAddress}
-                                onChange={e => setNewPlaceAddress(e.target.value)}
+                                onChange={e => handleAddressChange(e.target.value)}
+                                onFocus={() => setShowSuggestions(true)}
+                                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                                 required
                             />
+                            {showSuggestions && (isSearching || suggestions.length > 0) && (
+                                <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-48 overflow-y-auto">
+                                    {isSearching ? (
+                                        <div className="p-3 text-sm text-slate-500 flex items-center gap-2">
+                                            <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                                            Searching...
+                                        </div>
+                                    ) : (
+                                        suggestions.map((s, idx) => {
+                                            const mainAddress = [
+                                                s.address?.house_number, 
+                                                s.address?.road,
+                                                s.address?.suburb || s.address?.city || s.address?.town
+                                            ].filter(Boolean).join(' ');
+                                            
+                                            return (
+                                                <div 
+                                                    key={idx} 
+                                                    className="p-3 text-sm text-slate-700 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-0"
+                                                    onClick={() => handleSelectSuggestion(s)}
+                                                >
+                                                    {mainAddress && (
+                                                        <div className="font-semibold text-slate-900 truncate">
+                                                            {mainAddress}
+                                                        </div>
+                                                    )}
+                                                    <div className={`text-xs truncate ${mainAddress ? 'text-slate-500' : 'font-semibold text-slate-900'}`}>
+                                                        {s.display_name}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    )}
+                                </div>
+                            )}
                         </div>
                         <div className="flex gap-2 pt-1">
                             <button 
