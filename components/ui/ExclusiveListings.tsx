@@ -48,7 +48,7 @@ export function ExclusiveListings() {
     if (!properties.length) return null;
 
     return (
-        <section className="py-24 bg-white overflow-hidden relative">
+        <section className="pt-24 pb-12 bg-white overflow-hidden relative">
             <div className="container mx-auto px-6 max-w-7xl relative z-10">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                     <div className="max-w-2xl">

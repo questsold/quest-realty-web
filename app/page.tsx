@@ -30,7 +30,7 @@ export default function Home() {
       <ExclusiveListings />
 
       {/* The Quest Realty Difference Section */}
-      <section className="py-32 bg-white" id="About">
+      <section className="pt-12 pb-32 bg-white" id="About">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <motion.div
