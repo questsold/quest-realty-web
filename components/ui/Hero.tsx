@@ -297,10 +297,10 @@ export function Hero() {
                         className="flex flex-col sm:flex-row justify-center gap-6 mt-16"
                     >
                         <Link
-                            href="/buyers"
+                            href="/properties"
                             className="group relative overflow-hidden bg-primary px-12 py-5 rounded-full font-black text-xs uppercase tracking-[0.2em] text-white transition-all shadow-2xl shadow-primary/40 hover:scale-105 active:scale-95"
                         >
-                            <span className="relative z-10">Commission Savings</span>
+                            <span className="relative z-10">Search Homes</span>
                             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                         </Link>
                         <Link
