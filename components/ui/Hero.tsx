@@ -222,9 +222,14 @@ export function Hero() {
                                 <button
                                     type="submit"
                                     disabled={isNavigating}
-                                    className="bg-slate-900 duration-300 hover:bg-primary text-white px-10 py-4 md:py-5 rounded-[2rem] font-black text-xs md:text-sm uppercase tracking-widest transition-all shadow-xl shadow-slate-900/20 active:scale-95 flex items-center gap-2 disabled:bg-slate-400 disabled:scale-100 disabled:shadow-none"
+                                    className="bg-primary duration-300 hover:bg-emerald-600 text-white w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center transition-all shadow-xl shadow-primary/20 active:scale-95 disabled:bg-slate-400 disabled:scale-100 disabled:shadow-none shrink-0 mr-2"
+                                    aria-label="Search"
                                 >
-                                    {isNavigating ? "Searching" : "Search"}
+                                    {isNavigating ? (
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        <ArrowRight className="w-5 h-5" />
+                                    )}
                                 </button>
                             </form>
                         </div>
