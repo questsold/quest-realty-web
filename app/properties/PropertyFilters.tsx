@@ -178,14 +178,14 @@ function FiltersContent() {
 
     return (
         <div className="bg-white border-b border-slate-200 z-[1001] shadow-sm transition-all duration-300 relative shrink-0">
-            <div className="container mx-auto px-6 py-3 flex flex-col md:flex-row gap-6 items-center justify-between relative">
+            <div className="container mx-auto px-4 py-2 md:px-6 md:py-3 flex flex-col md:flex-row gap-3 md:gap-6 items-center justify-between relative">
 
                 {/* Left side: Advanced Search Bar */}
                 <div className="relative w-full md:flex-1 md:max-w-3xl group">
                     <form onSubmit={handleSearch} className="relative z-[60]">
-                        <button type="submit" className="absolute left-5 top-1/2 -translate-y-1/2">
+                        <button type="submit" className="absolute left-4 md:left-5 top-1/2 -translate-y-1/2">
                             {isLoading ? (
-                                <div className="w-5 h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+                                <div className="w-4 h-4 md:w-5 md:h-5 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
                             ) : (
                                 <Search className="w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                             )}
@@ -197,7 +197,7 @@ function FiltersContent() {
                             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                             onFocus={() => q.length >= 2 && setShowSuggestions(true)}
                             placeholder="Search by City, County, Zip, or Address..."
-                            className="w-full pl-12 pr-4 py-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary text-sm bg-slate-50/50 font-bold placeholder:text-slate-400 placeholder:font-medium transition-all hover:bg-white"
+                            className="w-full pl-10 md:pl-12 pr-4 py-3 md:py-4 rounded-xl md:rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary text-sm bg-slate-50/50 font-bold placeholder:text-slate-400 placeholder:font-medium transition-all hover:bg-white"
                         />
                     </form>
 
@@ -251,12 +251,12 @@ function FiltersContent() {
                 </div>
 
                 {/* Right side: Filter Controls */}
-                <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
+                <div className="flex items-center gap-2 w-full md:w-auto mt-0">
 
                     {/* Filter Pills */}
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className={`flex-1 md:flex-none flex justify-center items-center gap-2 px-4 py-3.5 sm:px-10 sm:py-4 rounded-2xl text-[11px] sm:text-[12px] font-bold uppercase tracking-wider transition-all border-2
+                        className={`flex-1 md:flex-none flex justify-center items-center gap-2 px-3 py-2.5 sm:px-10 sm:py-4 rounded-xl md:rounded-2xl text-[11px] sm:text-[12px] font-bold uppercase tracking-wider transition-all border-2
                             ${activeFilterCount > 0 ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-900/20' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-900 hover:text-slate-900'}
                         `}
                     >
@@ -270,7 +270,7 @@ function FiltersContent() {
                     </button>
 
                     <button
-                        className="flex-1 md:flex-none flex justify-center items-center gap-2 px-4 py-3.5 sm:px-10 sm:py-4 bg-primary text-white border-2 border-primary rounded-2xl text-[11px] sm:text-[12px] font-bold uppercase tracking-wider hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 hover:shadow-primary/40 active:scale-95 whitespace-nowrap"
+                        className="flex-1 md:flex-none flex justify-center items-center gap-2 px-3 py-2.5 sm:px-10 sm:py-4 bg-primary text-white border-2 border-primary rounded-xl md:rounded-2xl text-[11px] sm:text-[12px] font-bold uppercase tracking-wider hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 hover:shadow-primary/40 active:scale-95 whitespace-nowrap"
                     >
                         Save Search
                     </button>
@@ -278,9 +278,9 @@ function FiltersContent() {
                     <button
                         onClick={clearFilters}
                         disabled={activeFilterCount === 0 && !q}
-                        className="p-3.5 text-slate-400 hover:text-slate-900 disabled:opacity-0 disabled:pointer-events-none transition-all"
+                        className="p-2 md:p-3.5 text-slate-400 hover:text-slate-900 disabled:opacity-0 disabled:pointer-events-none transition-all"
                     >
-                        <RotateCcw className="w-4 h-4" />
+                        <RotateCcw className="w-5 h-5 md:w-4 md:h-4" />
                     </button>
                 </div>
 

@@ -48,54 +48,56 @@ export default function PropertyViewContainer({ initialView, properties, searchB
     return (
         <>
             {/* Results Bar (Sticky/Persistent) */}
-            <div className="bg-slate-50/50 border-b border-slate-200 py-4 px-6 md:px-10 z-20 shadow-sm transition-all shrink-0">
-                <div className="max-w-[1700px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:gap-8">
-                        <div>
-                            <h1 className="text-xl md:text-2xl font-heading font-bold text-slate-900 tracking-tight flex items-center gap-3">
-                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                                {properties.length} Live Listings Found
+            <div className="bg-slate-50/50 border-b border-slate-200 py-2.5 px-3 md:py-4 md:px-10 z-20 shadow-sm transition-all shrink-0">
+                <div className="max-w-[1700px] mx-auto flex flex-row items-center justify-between gap-1 md:gap-6 w-full">
+                    {/* Left side: Results Count + Sort */}
+                    <div className="flex flex-row items-center gap-2 md:gap-8 overflow-hidden">
+                        <div className="shrink-0 flex items-center justify-center">
+                            <h1 className="text-sm md:text-2xl font-heading font-bold text-slate-900 tracking-tight flex items-center gap-1.5 md:gap-3">
+                                <span className="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                                {properties.length} <span className="hidden sm:inline">Live Listings Found</span><span className="sm:hidden">Listings</span>
                             </h1>
                         </div>
 
                         {/* Sort Dropdown */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
                             <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest hidden sm:inline">Sort By</span>
                             <div className="relative group">
                                 <select
                                     value={currentSort}
                                     onChange={(e) => handleSortChange(e.target.value)}
-                                    className="appearance-none bg-white border border-slate-200 rounded-xl px-4 py-2 pr-10 text-xs font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all cursor-pointer hover:border-slate-300"
+                                    className="appearance-none bg-white border border-slate-200 rounded-lg md:rounded-xl pl-2 pr-6 py-1.5 md:px-4 md:py-2 md:pr-10 text-[10px] md:text-xs font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all cursor-pointer hover:border-slate-300 w-24 sm:w-auto overflow-hidden text-ellipsis whitespace-nowrap"
                                 >
                                     {sortOptions.map(opt => (
-                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                        <option key={opt.value} value={opt.value}>{opt.label.replace('Price: ', '').replace('Size: ', '')}</option>
                                     ))}
                                 </select>
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-slate-900 transition-colors">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
+                                <div className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 group-hover:text-slate-900 transition-colors">
+                                    <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"></path></svg>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="flex bg-white rounded-2xl border border-slate-200 p-1.5 shadow-sm w-full md:w-auto">
+                    {/* Right side: List/Map Toggle */}
+                    <div className="flex bg-white rounded-lg md:rounded-2xl border border-slate-200 p-0.5 md:p-1.5 shadow-sm shrink-0 ml-1">
                         <button
                             onClick={() => handleViewChange('list')}
-                            className={`flex-1 md:flex-none flex justify-center items-center gap-2 px-4 py-3 sm:px-6 sm:py-2 rounded-xl text-xs font-bold transition-all ${view === 'list' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                            className={`flex justify-center items-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-6 md:py-2 rounded-[6px] md:rounded-xl text-[10px] md:text-xs font-bold transition-all ${view === 'list' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
                         >
-                            <List className="w-4 h-4" /> LIST
+                            <List className="w-3.5 h-3.5 md:w-4 md:h-4" /> <span className="hidden sm:inline">LIST</span>
                         </button>
                         <button
                             onClick={() => handleViewChange('split')}
-                            className={`hidden lg:flex flex-1 md:flex-none justify-center items-center gap-2 px-4 py-3 sm:px-6 sm:py-2 rounded-xl text-xs font-bold transition-all ${view === 'split' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                            className={`hidden lg:flex justify-center items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold transition-all ${view === 'split' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
                         >
                             <SlidersHorizontal className="w-4 h-4" /> SPLIT
                         </button>
                         <button
                             onClick={() => handleViewChange('map')}
-                            className={`flex-1 md:flex-none flex justify-center items-center gap-2 px-4 py-3 sm:px-6 sm:py-2 rounded-xl text-xs font-bold transition-all ${view === 'map' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                            className={`flex justify-center items-center gap-1.5 md:gap-2 px-2.5 py-1.5 md:px-6 md:py-2 rounded-[6px] md:rounded-xl text-[10px] md:text-xs font-bold transition-all ${view === 'map' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
                         >
-                            <MapIcon className="w-4 h-4" /> MAP
+                            <MapIcon className="w-3.5 h-3.5 md:w-4 md:h-4" /> <span className="hidden sm:inline">MAP</span>
                         </button>
                     </div>
                 </div>
