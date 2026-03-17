@@ -23,7 +23,7 @@ export async function GET() {
             baths: (p.BathroomsFull || 0) + (p.BathroomsHalf ? 0.5 : 0),
             sqft: p.LivingArea ? p.LivingArea.toLocaleString() : 'N/A',
             type: p.PropertySubType || p.PropertyType || 'Single Family',
-            image: (p.Media && p.Media.length > 0) ? p.Media[0].MediaURL : null,
+            image: (p.Media && p.Media.length > 0) ? [...p.Media].sort((a: any, b: any) => (a.Order || 999) - (b.Order || 999))[0].MediaURL : null,
             status: p.StandardStatus
         }));
 
