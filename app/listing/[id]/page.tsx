@@ -190,6 +190,13 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
                             </div>
                         </div>
 
+                        {/* Commute Widget */}
+                        <CommuteWidget 
+                            propertyAddress={`${property.address}, ${property.city}, MI ${property.zip}`}
+                            propertyLat={property.lat}
+                            propertyLng={property.lng}
+                        />
+
                     </div>
 
                     {/* Right Column: Sticky Sidebar */}
@@ -223,13 +230,6 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Commute Widget */}
-                            <CommuteWidget 
-                                propertyAddress={`${property.address}, ${property.city}, MI ${property.zip}`}
-                                propertyLat={property.lat}
-                                propertyLng={property.lng}
-                            />
 
                         </div>
                     </div>
