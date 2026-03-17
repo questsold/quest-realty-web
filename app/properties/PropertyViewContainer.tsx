@@ -49,8 +49,8 @@ export default function PropertyViewContainer({ initialView, properties, searchB
         <>
             {/* Results Bar (Sticky/Persistent) */}
             <div className="bg-slate-50/50 border-b border-slate-200 py-4 px-6 md:px-10 z-20 shadow-sm transition-all shrink-0">
-                <div className="max-w-[1700px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8">
+                <div className="max-w-[1700px] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:gap-8">
                         <div>
                             <h1 className="text-xl md:text-2xl font-heading font-bold text-slate-900 tracking-tight flex items-center gap-3">
                                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
@@ -59,7 +59,7 @@ export default function PropertyViewContainer({ initialView, properties, searchB
                         </div>
 
                         {/* Sort Dropdown */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
                             <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest hidden sm:inline">Sort By</span>
                             <div className="relative group">
                                 <select
@@ -78,22 +78,22 @@ export default function PropertyViewContainer({ initialView, properties, searchB
                         </div>
                     </div>
 
-                    <div className="flex bg-white rounded-2xl border border-slate-200 p-1.5 shadow-sm">
+                    <div className="flex bg-white rounded-2xl border border-slate-200 p-1.5 shadow-sm w-full md:w-auto">
                         <button
                             onClick={() => handleViewChange('list')}
-                            className={`flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold transition-all ${view === 'list' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                            className={`flex-1 md:flex-none flex justify-center items-center gap-2 px-4 py-3 sm:px-6 sm:py-2 rounded-xl text-xs font-bold transition-all ${view === 'list' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
                         >
                             <List className="w-4 h-4" /> LIST
                         </button>
                         <button
                             onClick={() => handleViewChange('split')}
-                            className={`hidden lg:flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold transition-all ${view === 'split' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                            className={`hidden lg:flex flex-1 md:flex-none justify-center items-center gap-2 px-4 py-3 sm:px-6 sm:py-2 rounded-xl text-xs font-bold transition-all ${view === 'split' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
                         >
                             <SlidersHorizontal className="w-4 h-4" /> SPLIT
                         </button>
                         <button
                             onClick={() => handleViewChange('map')}
-                            className={`flex items-center gap-2 px-6 py-2 rounded-xl text-xs font-bold transition-all ${view === 'map' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
+                            className={`flex-1 md:flex-none flex justify-center items-center gap-2 px-4 py-3 sm:px-6 sm:py-2 rounded-xl text-xs font-bold transition-all ${view === 'map' ? "bg-slate-900 text-white shadow-lg" : "text-slate-500 hover:text-slate-900"}`}
                         >
                             <MapIcon className="w-4 h-4" /> MAP
                         </button>

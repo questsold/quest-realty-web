@@ -251,12 +251,12 @@ function FiltersContent() {
                 </div>
 
                 {/* Right side: Filter Controls */}
-                <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto no-scrollbar pb-1 md:pb-0">
+                <div className="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
 
                     {/* Filter Pills */}
                     <button
                         onClick={() => setIsModalOpen(true)}
-                        className={`flex items-center gap-2 px-10 py-4 rounded-2xl text-[12px] font-bold uppercase tracking-wider transition-all border-2
+                        className={`flex-1 md:flex-none flex justify-center items-center gap-2 px-4 py-3.5 sm:px-10 sm:py-4 rounded-2xl text-[11px] sm:text-[12px] font-bold uppercase tracking-wider transition-all border-2
                             ${activeFilterCount > 0 ? 'bg-slate-900 border-slate-900 text-white shadow-xl shadow-slate-900/20' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-900 hover:text-slate-900'}
                         `}
                     >
@@ -270,7 +270,7 @@ function FiltersContent() {
                     </button>
 
                     <button
-                        className="flex items-center gap-2 px-10 py-4 bg-primary text-white border-2 border-primary rounded-2xl text-[12px] font-bold uppercase tracking-wider hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 hover:shadow-primary/40 active:scale-95 whitespace-nowrap"
+                        className="flex-1 md:flex-none flex justify-center items-center gap-2 px-4 py-3.5 sm:px-10 sm:py-4 bg-primary text-white border-2 border-primary rounded-2xl text-[11px] sm:text-[12px] font-bold uppercase tracking-wider hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 hover:shadow-primary/40 active:scale-95 whitespace-nowrap"
                     >
                         Save Search
                     </button>
