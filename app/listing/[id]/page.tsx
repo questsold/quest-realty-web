@@ -27,7 +27,7 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
         sqft: realcompData.LivingArea || 0,
         yearBuilt: 0, // Realcomp may have YearBuilt
         status: realcompData.StandardStatus || 'Active',
-        daysOnMarket: 0,
+        daysOnMarket: realcompData.DaysOnMarket || 0,
         description: realcompData.PublicRemarks || 'No description available for this property.',
         features: [
             `${realcompData.PropertySubType || realcompData.PropertyType || 'Residential'}`,
@@ -138,6 +138,10 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
                                     <div className="text-center bg-white p-4 rounded-xl border border-slate-100 shadow-sm min-w-[100px]">
                                         <span className="block text-2xl font-bold text-slate-900">{property.sqft.toLocaleString()}</span>
                                         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sq Ft</span>
+                                    </div>
+                                    <div className="text-center bg-white p-4 rounded-xl border border-slate-100 shadow-sm min-w-[100px]">
+                                        <span className="block text-2xl font-bold text-slate-900">{property.daysOnMarket}</span>
+                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">DOM</span>
                                     </div>
                                 </div>
                             </div>

@@ -14,7 +14,16 @@ export function ListingGallery({ images, status, daysOnMarket }: ListingGalleryP
     const [isOpen, setIsOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    const checkPhotoLimit = () => {
+        // Skip tracking if we are in a bypassed session (set by LeadCaptureModal)
+        if ((window as any).__noreg_bypass) return;
+        
+        // Signal the LeadCaptureModal to increment the count and check limits
+        window.dispatchEvent(new CustomEvent("increment-photo-view"));
+    };
+
     const openGallery = (index: number) => {
+        checkPhotoLimit();
         setCurrentIndex(index);
         setIsOpen(true);
         // Prevent scrolling when modal is open
@@ -29,11 +38,13 @@ export function ListingGallery({ images, status, daysOnMarket }: ListingGalleryP
 
     const nextImage = (e: React.MouseEvent) => {
         e.stopPropagation();
+        checkPhotoLimit();
         setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     };
 
     const prevImage = (e: React.MouseEvent) => {
         e.stopPropagation();
+        checkPhotoLimit();
         setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     };
 

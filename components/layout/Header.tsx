@@ -22,7 +22,7 @@ export function Header() {
         handleScroll(); // Check on mount
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    }, [pathname]);
 
     const navItems = [
         {

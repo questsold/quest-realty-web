@@ -13,19 +13,41 @@ export function LeadCaptureModal() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        // Check local storage for view count
-        const storedCount = parseInt(localStorage.getItem("property_view_count") || "0");
-        const isRegistered = localStorage.getItem("is_registered") === "true";
+        // 1. Check for 'noreg' bypass in the URL
+        const isBypassed = window.location.search.toLowerCase().includes('noreg') || 
+                          window.location.hash.toLowerCase().includes('noreg') ||
+                          window.location.href.toLowerCase().includes('noreg');
 
-        // Increment count
-        const newCount = storedCount + 1;
-        localStorage.setItem("property_view_count", newCount.toString());
-        setViewCount(newCount);
-
-        // Trigger modal on 4th view if not registered
-        if (newCount >= 4 && !isRegistered) {
-            setIsOpen(true);
+        // 2. If bypassed, we clear the tracking so the next house is "fresh"
+        if (isBypassed) {
+            localStorage.setItem("photo_view_count", "0");
+            localStorage.setItem("is_registered", "false");
+            // We set a window property so the Gallery knows to skip tracking for this specific page
+            (window as any).__noreg_bypass = true;
+            return;
         }
+
+        (window as any).__noreg_bypass = false;
+
+        // 3. Define the trigger logic
+        const checkCountAndTrigger = () => {
+            const isRegistered = localStorage.getItem("is_registered") === "true";
+            const currentCount = parseInt(localStorage.getItem("photo_view_count") || "0");
+            
+            if (!isRegistered && currentCount >= 3) {
+                setIsOpen(true);
+            }
+        };
+
+        // 4. Listen for photo view increments
+        const handlePhotoView = () => {
+            const currentCount = parseInt(localStorage.getItem("photo_view_count") || "0");
+            localStorage.setItem("photo_view_count", (currentCount + 1).toString());
+            checkCountAndTrigger();
+        };
+
+        window.addEventListener("increment-photo-view", handlePhotoView);
+        return () => window.removeEventListener("increment-photo-view", handlePhotoView);
     }, []);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

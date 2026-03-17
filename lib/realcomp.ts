@@ -62,6 +62,7 @@ export interface RealcompProperty {
     PropertySubType: string;
     StandardStatus: string;
     MlsStatus: string;
+    DaysOnMarket?: number;
     Media?: Array<{
         MediaURL: string;
         Order: number;
