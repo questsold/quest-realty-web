@@ -4,6 +4,8 @@ import { LeadCaptureModal } from "@/components/ui/LeadCaptureModal";
 import { getPropertyBySlug } from "@/lib/realcomp";
 import { LeadForm } from "./LeadForm";
 import { ListingGallery } from "./ListingGallery";
+import { CommuteWidget } from "@/components/ui/CommuteWidget";
+
 export default async function ListingDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = await params;
 
@@ -41,7 +43,9 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
         },
         images: realcompData.Media ? realcompData.Media.sort((a: any, b: any) => a.Order - b.Order).map((m: any) => m.MediaURL) : [
             "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80"
-        ]
+        ],
+        lat: realcompData.Latitude,
+        lng: realcompData.Longitude
     } : {
         id: resolvedParams.id,
         address: "1042 Waddington Rd",
@@ -62,7 +66,7 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
             "3-Car Attached Garage",
             "Heated Primary Bathroom Floors",
             "Outdoor Kitchen & Entertaining Space",
-            "Custom Wine Cellar"
+            "Smart Home Technology"
         ],
         agent: {
             name: "Ali Berry",
@@ -72,11 +76,13 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
         },
         images: [
             "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80",
-            "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-            "https://images.unsplash.com/photo-1600607687931-cebfad2114ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-            "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-            "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80"
-        ]
+            "https://images.unsplash.com/photo-1600607687931-cecebd80d0d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80",
+            "https://images.unsplash.com/photo-1600607686527-6fb886090705?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80",
+            "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80",
+            "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80"
+        ],
+        lat: 42.5467,
+        lng: -83.2113
     };
 
     return (
@@ -217,6 +223,13 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Commute Widget */}
+                            <CommuteWidget 
+                                propertyAddress={`${property.address}, ${property.city}, MI ${property.zip}`}
+                                propertyLat={property.lat}
+                                propertyLng={property.lng}
+                            />
 
                         </div>
                     </div>
