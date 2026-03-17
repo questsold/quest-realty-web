@@ -175,7 +175,7 @@ export function Hero() {
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                         </span>
                         <span className="text-[10px] md:text-xs uppercase tracking-[0.3em] font-black text-white/90">
-                            Metro Detroit Luxury Real Estate
+                            Your real estate experts
                         </span>
                     </motion.div>
 
