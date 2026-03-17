@@ -116,30 +116,30 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
 
                         {/* Header Details */}
                         <div className="border-b border-slate-200 pb-8">
-                            <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-6 mb-8">
-                                <div>
+                            <div className="flex flex-col xl:flex-row xl:justify-between xl:items-end gap-6 mb-8">
+                                <div className="w-full xl:w-auto">
                                     <h1 className="text-4xl lg:text-5xl font-heading font-bold text-slate-900 mb-2">
                                         ${property.price.toLocaleString()}
                                     </h1>
-                                    <h2 className="text-xl text-slate-600 flex items-center gap-2">
-                                        <MapPin className="w-5 h-5 text-primary" />
-                                        {property.address}, {property.city}, {property.state} {property.zip}
+                                    <h2 className="text-xl text-slate-600 flex items-center gap-2 flex-wrap">
+                                        <MapPin className="w-5 h-5 text-primary shrink-0" />
+                                        <span>{property.address}, {property.city}, {property.state} {property.zip}</span>
                                     </h2>
                                 </div>
-                                <div className="flex gap-4">
-                                    <div className="text-center bg-white p-4 rounded-xl border border-slate-100 shadow-sm min-w-[100px]">
+                                <div className="grid grid-cols-2 sm:grid-cols-4 xl:flex gap-3 w-full xl:w-auto">
+                                    <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
                                         <span className="block text-2xl font-bold text-slate-900">{property.beds}</span>
                                         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Beds</span>
                                     </div>
-                                    <div className="text-center bg-white p-4 rounded-xl border border-slate-100 shadow-sm min-w-[100px]">
+                                    <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
                                         <span className="block text-2xl font-bold text-slate-900">{property.baths}</span>
                                         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Baths</span>
                                     </div>
-                                    <div className="text-center bg-white p-4 rounded-xl border border-slate-100 shadow-sm min-w-[100px]">
+                                    <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
                                         <span className="block text-2xl font-bold text-slate-900">{property.sqft.toLocaleString()}</span>
                                         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sq Ft</span>
                                     </div>
-                                    <div className="text-center bg-white p-4 rounded-xl border border-slate-100 shadow-sm min-w-[100px]">
+                                    <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
                                         <span className="block text-2xl font-bold text-slate-900">{property.daysOnMarket}</span>
                                         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">DOM</span>
                                     </div>
