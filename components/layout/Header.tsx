@@ -24,6 +24,18 @@ export function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [pathname]);
 
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (mobileMenuOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [mobileMenuOpen]);
+
     const navItems = [
         {
             name: "Buyers",
@@ -57,6 +69,7 @@ export function Header() {
     ];
 
     return (
+        <>
         <motion.header
             initial={{ y: "-100%" }}
             animate={{ y: 0 }}
@@ -134,6 +147,8 @@ export function Header() {
                 </button>
             </div>
 
+            </motion.header>
+
             {/* Mobile Menu Overlay */}
             <AnimatePresence>
                 {mobileMenuOpen && (
@@ -142,9 +157,9 @@ export function Header() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: "100%" }}
                         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                        className="fixed inset-0 bg-slate-900 z-50 flex flex-col p-6 text-white"
+                        className="fixed inset-0 bg-slate-900 z-[100] flex flex-col h-[100dvh] w-full text-white overflow-y-auto"
                     >
-                        <div className="flex justify-between items-center mb-12">
+                        <div className="flex justify-between items-center p-6 mb-4 shrink-0">
                             <Link href="/" onClick={() => setMobileMenuOpen(false)}>
                                 <img
                                     src="https://assets.thesparksite.com/uploads/templates/header-q-2/Quest-Logo-gradient-white-250xAUTO.fit.png"
@@ -156,7 +171,8 @@ export function Header() {
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
-                        <nav className="flex flex-col gap-8 text-2xl font-heading">
+                        <div className="px-6 pb-12 flex-1">
+                            <nav className="flex flex-col gap-8 text-2xl font-heading">
                             {navItems.map((item) => (
                                 <div key={item.name} className="flex flex-col gap-4">
                                     <Link
@@ -190,10 +206,11 @@ export function Header() {
                             >
                                 Let's Talk
                             </Link>
-                        </nav>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </motion.header>
+                                </nav>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+        </>
     );
 }
