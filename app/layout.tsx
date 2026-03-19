@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import GoogleTracking from "@/components/analytics/GoogleAnalytics";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -92,6 +93,19 @@ export default function RootLayout({
             ads_id={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID}
           />
         </Suspense>
+        
+        {/* Follow Up Boss Tracking Pixel */}
+        <Script id="fub-pixel" strategy="afterInteractive" dangerouslySetInnerHTML={{
+          __html: `
+            (function(w,i,d,g,e,t){w["WidgetTrackerObject"]=g;(w[g]=w[g]||function()
+            {(w[g].q=w[g].q||[]).push(arguments);}),(w[g].ds=1*new Date());(e="script"),
+            (t=d.createElement(e)),(e=d.getElementsByTagName(e)[0]);t.async=1;t.src=i;
+            e.parentNode.insertBefore(t,e);})
+            (window,"https://widgetbe.com/agent",document,"widgetTracker");
+            window.widgetTracker("create", "WT-JZAGZAIY");
+            window.widgetTracker("send", "pageview");
+          `
+        }} />
         <Header />
         <main className="flex-grow">
           {children}
