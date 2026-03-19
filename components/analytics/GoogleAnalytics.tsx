@@ -8,6 +8,7 @@ declare global {
     interface Window {
         gtag: (...args: any[]) => void;
         dataLayer: any[];
+        widgetTracker: (...args: any[]) => void;
     }
 }
 
@@ -26,6 +27,11 @@ export default function GoogleTracking({ ga_id, ads_id }: { ga_id?: string; ads_
             if (ga_id && ads_id) {
                 window.gtag("config", ads_id);
             }
+        }
+
+        // Send Follow Up Boss dynamic pageview on client-side router navigation
+        if (typeof window !== "undefined" && window.widgetTracker && pathname) {
+            window.widgetTracker("send", "pageview");
         }
     }, [pathname, searchParams, ga_id, ads_id, primaryId]);
 
@@ -53,6 +59,18 @@ export default function GoogleTracking({ ga_id, ads_id }: { ga_id?: string; ads_
           `,
                 }}
             />
+            {/* Follow Up Boss Tracking Pixel (Included here so it integrates natively with NextJS Client Router) */}
+            <Script id="fub-pixel" strategy="afterInteractive" dangerouslySetInnerHTML={{
+              __html: `
+                (function(w,i,d,g,e,t){w["WidgetTrackerObject"]=g;(w[g]=w[g]||function()
+                {(w[g].q=w[g].q||[]).push(arguments);}),(w[g].ds=1*new Date());(e="script"),
+                (t=d.createElement(e)),(e=d.getElementsByTagName(e)[0]);t.async=1;t.src=i;
+                e.parentNode.insertBefore(t,e);})
+                (window,"https://widgetbe.com/agent",document,"widgetTracker");
+                window.widgetTracker("create", "WT-JZAGZAIY");
+                window.widgetTracker("send", "pageview");
+              `
+            }} />
         </>
     );
 }
