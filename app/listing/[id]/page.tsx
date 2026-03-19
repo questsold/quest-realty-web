@@ -148,14 +148,14 @@ export default async function ListingDetailsPage({ params }: Props) {
         <main className="min-h-screen bg-slate-50 pt-[88px] pb-24">
             {/* Top Navigation Bar */}
             <div className="bg-white border-b border-slate-200">
-                <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center min-w-0">
                     <BackToSearchButton />
-                    <div className="flex gap-4">
-                        <button className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors font-medium">
-                            <Share2 className="w-4 h-4" /> Share
+                    <div className="flex gap-2 sm:gap-4 shrink-0">
+                        <button className="flex items-center gap-1.5 sm:gap-2 text-slate-600 hover:text-slate-900 transition-colors font-medium shrink-0">
+                            <Share2 className="w-4 h-4 shrink-0" /> <span className="hidden sm:inline">Share</span>
                         </button>
-                        <button className="flex items-center gap-2 text-slate-600 hover:text-red-500 transition-colors font-medium">
-                            <Heart className="w-4 h-4" /> Save
+                        <button className="flex items-center gap-1.5 sm:gap-2 text-slate-600 hover:text-red-500 transition-colors font-medium shrink-0">
+                            <Heart className="w-4 h-4 shrink-0" /> <span className="hidden sm:inline">Save</span>
                         </button>
                     </div>
                 </div>
@@ -178,18 +178,18 @@ export default async function ListingDetailsPage({ params }: Props) {
                     <div className="lg:col-span-2 space-y-12">
 
                         {/* Header Details */}
-                        <div className="border-b border-slate-200 pb-8">
-                            <div className="flex flex-col xl:flex-row xl:justify-between xl:items-end gap-6 mb-8">
-                                <div className="w-full xl:w-auto">
-                                    <h1 className="text-4xl lg:text-5xl font-heading font-bold text-slate-900 mb-2">
+                        <div className="border-b border-slate-200 pb-8 min-w-0">
+                            <div className="flex flex-col xl:flex-row xl:justify-between xl:items-end gap-6 mb-8 min-w-0">
+                                <div className="w-full xl:w-auto min-w-0">
+                                    <h1 className="text-4xl lg:text-5xl font-heading font-bold text-slate-900 mb-2 truncate sm:whitespace-normal">
                                         ${property.price.toLocaleString()}
                                     </h1>
-                                    <h2 className="text-xl text-slate-600 flex items-center gap-2 flex-wrap">
-                                        <MapPin className="w-5 h-5 text-primary shrink-0" />
-                                        <span>{property.address}, {property.city}, {property.state} {property.zip}</span>
+                                    <h2 className="text-xl text-slate-600 flex items-start sm:items-center gap-2 flex-wrap min-w-0">
+                                        <MapPin className="w-5 h-5 text-primary shrink-0 mt-1 sm:mt-0" />
+                                        <span className="min-w-0 break-words w-[calc(100%-2rem)] sm:w-auto">{property.address}, {property.city}, {property.state} {property.zip}</span>
                                     </h2>
                                 </div>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 xl:flex gap-3 w-full xl:w-auto">
+                                <div className="grid grid-cols-2 sm:grid-cols-4 xl:flex gap-3 w-full xl:w-auto min-w-0">
                                     <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
                                         <span className="block text-2xl font-bold text-slate-900">{property.beds}</span>
                                         <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Beds</span>
