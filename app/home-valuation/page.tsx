@@ -58,7 +58,10 @@ export default function HomeValuationPage() {
                                 <p className="text-slate-400 mb-6 text-sm">
                                     Automated tools are great starting points, but they can't see the renovations you've made. Connect with an agent for a full comparative market analysis (CMA).
                                 </p>
-                                <button className="w-full border border-slate-700 hover:bg-slate-800 py-3 rounded-lg font-bold text-sm transition-colors">
+                                <button 
+                                    onClick={() => trackConversion("valuation_requested")}
+                                    className="w-full border border-slate-700 hover:bg-slate-800 py-3 rounded-lg font-bold text-sm transition-colors"
+                                >
                                     Request In-Person Valuation
                                 </button>
                             </div>

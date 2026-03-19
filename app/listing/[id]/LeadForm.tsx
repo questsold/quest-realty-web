@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { submitLeadAction } from "@/app/actions/leads";
 import { CheckCircle2 } from "lucide-react";
+import { trackConversion } from "@/components/analytics/GoogleAnalytics";
 
 export function LeadForm({ city, address }: { city: string, address: string }) {
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -26,6 +27,11 @@ export function LeadForm({ city, address }: { city: string, address: string }) {
             const result = await submitLeadAction(data);
             if (result.success) {
                 setStatus("success");
+                trackConversion("contact_form_submission", {
+                    event_category: "Leads",
+                    event_label: "Property Inquiry",
+                    property_address: address
+                });
             } else {
                 setStatus("error");
             }

@@ -5,9 +5,15 @@ import { getPropertyBySlug } from "@/lib/realcomp";
 import { LeadForm } from "./LeadForm";
 import { ListingGallery } from "./ListingGallery";
 import { CommuteWidget } from "@/components/ui/CommuteWidget";
+import { cookies } from "next/headers";
+import { getAgentBySubdomain } from "@/lib/team";
 
 export default async function ListingDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = await params;
+
+    const cookieStore = await cookies();
+    const agentReferrer = cookieStore.get('agentReferrer')?.value;
+    const assignedAgent = getAgentBySubdomain(agentReferrer);
 
     let realcompData = null;
     try {
@@ -35,12 +41,7 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
             `${realcompData.PropertySubType || realcompData.PropertyType || 'Residential'}`,
             "Updates coming soon"
         ],
-        agent: {
-            name: "Ali Berry",
-            role: "Broker/Owner",
-            phone: "(248) 955-1403",
-            image: "https://assets.thesparksite.com/uploads/sites/6037/2025/06/Ali-Berry-900x900.fit.png"
-        },
+        agent: assignedAgent,
         images: realcompData.Media ? realcompData.Media.sort((a: any, b: any) => a.Order - b.Order).map((m: any) => m.MediaURL) : [
             "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80"
         ],
@@ -68,12 +69,7 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
             "Outdoor Kitchen & Entertaining Space",
             "Smart Home Technology"
         ],
-        agent: {
-            name: "Ali Berry",
-            role: "Broker/Owner",
-            phone: "(248) 955-1403",
-            image: "https://assets.thesparksite.com/uploads/sites/6037/2025/06/Ali-Berry-900x900.fit.png"
-        },
+        agent: assignedAgent,
         images: [
             "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80",
             "https://images.unsplash.com/photo-1600607687931-cecebd80d0d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=2850&q=80",
