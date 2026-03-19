@@ -171,11 +171,11 @@ export default async function ListingDetailsPage({ params }: Props) {
             </div>
 
             {/* Main Content Area */}
-            <div className="container mx-auto px-6 max-w-7xl">
-                <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-start">
-
+            <div className="container mx-auto px-6 max-w-7xl min-w-0">
+                <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-start min-w-0 w-full">
+                    
                     {/* Left Column: Details */}
-                    <div className="lg:col-span-2 space-y-12">
+                    <div className="lg:col-span-2 space-y-12 min-w-0 w-full overflow-hidden">
 
                         {/* Header Details */}
                         <div className="border-b border-slate-200 pb-8 min-w-0">
@@ -259,8 +259,8 @@ export default async function ListingDetailsPage({ params }: Props) {
                     </div>
 
                     {/* Right Column: Sticky Sidebar */}
-                    <div className="lg:col-span-1">
-                        <div className="sticky top-32 space-y-8">
+                    <div className="lg:col-span-1 min-w-0 w-full">
+                        <div className="sticky top-32 space-y-8 min-w-0">
 
                             {/* Contact Card */}
                             <div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100">

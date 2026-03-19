@@ -28,6 +28,12 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
+  formatDetection: {
+    telephone: false,
+    date: false,
+    address: false,
+    email: false,
+  },
   title: {
     default: "Quest Realty | Metro Detroit Real Estate Experts",
     template: "%s | Quest Realty"
