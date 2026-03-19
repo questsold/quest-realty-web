@@ -12,6 +12,15 @@ export async function submitLeadAction(data: {
     type?: 'Buyer' | 'Seller' | 'General';
     message?: string;
     tags?: string[];
+    property?: {
+        street: string;
+        city: string;
+        state: string;
+        code: string;
+        mlsNumber: string;
+        price: number;
+        url: string;
+    };
 }) {
     try {
         const cookieStore = await cookies();

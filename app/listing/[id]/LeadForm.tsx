@@ -5,7 +5,7 @@ import { submitLeadAction } from "@/app/actions/leads";
 import { CheckCircle2 } from "lucide-react";
 import { trackConversion } from "@/components/analytics/GoogleAnalytics";
 
-export function LeadForm({ city, address, agent }: { city: string, address: string, agent: { name: string, role: string, phone: string, image: string } }) {
+export function LeadForm({ property, agent }: { property: any, agent: { name: string, role: string, phone: string, image: string } }) {
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,7 +20,17 @@ export function LeadForm({ city, address, agent }: { city: string, address: stri
             phone: formData.get("phone") as string,
             message: formData.get("message") as string,
             source: "Website",
-            tags: ["Property Inquiry", city]
+            type: "Buyer" as "Buyer" | "Seller" | "General", // Explicitly setting this helps FUB categorize it right
+            tags: ["Property Inquiry", property.city],
+            property: {
+                street: property.address,
+                city: property.city,
+                state: property.state || "MI",
+                code: property.zip,
+                mlsNumber: property.id,
+                price: property.price,
+                url: window.location.href // Send the listing URL directly to FUB
+            }
         };
 
         try {
@@ -30,7 +40,7 @@ export function LeadForm({ city, address, agent }: { city: string, address: stri
                 trackConversion("contact_form_submission", {
                     event_category: "Leads",
                     event_label: "Property Inquiry",
-                    property_address: address
+                    property_address: property.address
                 });
             } else {
                 setStatus("error");
@@ -98,7 +108,7 @@ export function LeadForm({ city, address, agent }: { city: string, address: stri
                 <textarea
                     required
                     name="message"
-                    defaultValue={`I am interested in ${address}`}
+                    defaultValue={`I am interested in ${property.address}`}
                     rows={4}
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent bg-slate-50 text-sm resize-none"
                 ></textarea>

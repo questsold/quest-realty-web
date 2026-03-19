@@ -15,6 +15,15 @@ interface FUBLead {
     type?: 'Buyer' | 'Seller' | 'General';
     message?: string;
     tags?: string[];
+    property?: {
+        street: string;
+        city: string;
+        state: string;
+        code: string;
+        mlsNumber: string;
+        price: number;
+        url: string;
+    };
 }
 
 export async function sendLeadToFUB(lead: FUBLead) {
@@ -32,7 +41,7 @@ export async function sendLeadToFUB(lead: FUBLead) {
             },
             body: JSON.stringify({
                 source: lead.source || "Quest Realty Website",
-                type: lead.type === 'Seller' ? 'Seller Lead' : 'Inquiry',
+                type: lead.type === 'Seller' ? 'Seller Lead' : (lead.property ? 'Property Inquiry' : 'Inquiry'),
                 person: {
                     firstName: lead.firstName,
                     lastName: lead.lastName,
@@ -40,7 +49,8 @@ export async function sendLeadToFUB(lead: FUBLead) {
                     phones: lead.phone ? [{ value: lead.phone }] : []
                 },
                 message: lead.message || "",
-                tags: lead.tags || ["Website Lead"]
+                tags: lead.tags || ["Website Lead"],
+                property: lead.property
             })
         });
 
