@@ -2,8 +2,9 @@ import { MapPin, Bed, Bath, Square, Calendar, Heart, Share2, CheckCircle2 } from
 import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { LeadCaptureModal } from "@/components/ui/LeadCaptureModal";
-import { getPropertyBySlug } from "@/lib/realcomp";
+import { getPropertyBySlug, getProperties } from "@/lib/realcomp";
 import { BackToSearchButton } from "@/components/ui/BackToSearchButton";
+import { SimilarPropertiesSlider } from "@/components/ui/SimilarPropertiesSlider";
 import { LeadForm } from "./LeadForm";
 import { ListingGallery } from "./ListingGallery";
 import { CommuteWidget } from "@/components/ui/CommuteWidget";
@@ -109,6 +110,39 @@ export default async function ListingDetailsPage({ params }: Props) {
         lat: 42.5467,
         lng: -83.2113
     };
+
+    let similarListings: any[] = [];
+    if (realcompData && realcompData.City && realcompData.ListPrice) {
+        const minPrice = Math.floor(realcompData.ListPrice * 0.75);
+        const maxPrice = Math.ceil(realcompData.ListPrice * 1.25);
+        const type = realcompData.PropertyType || 'Residential';
+        const city = realcompData.City;
+        const safeCity = city.replace(/'/g, "''");
+        
+        try {
+            const rawSimilar = await getProperties({
+                top: 10,
+                filter: `City eq '${safeCity}' and PropertyType eq '${type}' and ListPrice ge ${minPrice} and ListPrice le ${maxPrice} and ListingId ne '${realcompData.ListingId}'`,
+                orderby: 'ModificationTimestamp desc'
+            });
+
+            if (rawSimilar && rawSimilar.length > 0) {
+                similarListings = rawSimilar.map((p: any) => ({
+                    id: p.ListingId || '',
+                    address: p.InternetAddressDisplayYN === false ? 'Address Withheld' : (p.UnparsedAddress || [p.StreetNumber, p.StreetName, p.StreetSuffix].filter(Boolean).join(' ') || 'Address Withheld'),
+                    city: `${p.OriginalCity || p.City || ''}, MI ${p.PostalCode || ''}`.trim(),
+                    price: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(p.ListPrice || 0),
+                    beds: p.BedroomsTotal || 0,
+                    baths: (p.BathroomsFull || 0) + (p.BathroomsHalf ? 0.5 : 0),
+                    sqft: p.LivingArea ? p.LivingArea.toLocaleString() : 'N/A',
+                    image: (p.Media && p.Media.length > 0) ? [...p.Media].sort((a: any, b: any) => (a.Order || 999) - (b.Order || 999))[0].MediaURL : "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                    status: p.StandardStatus || 'Active',
+                }));
+            }
+        } catch (e) {
+            console.error("Failed to fetch similar listings", e);
+        }
+    }
 
     return (
         <main className="min-h-screen bg-slate-50 pt-[88px] pb-24">
@@ -220,6 +254,8 @@ export default async function ListingDetailsPage({ params }: Props) {
                             propertyLng={property.lng}
                         />
 
+                        {/* Similar Properties */}
+                        <SimilarPropertiesSlider properties={similarListings} />
                     </div>
 
                     {/* Right Column: Sticky Sidebar */}
