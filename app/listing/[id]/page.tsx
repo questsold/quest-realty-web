@@ -1,4 +1,5 @@
 import { MapPin, Bed, Bath, Square, Calendar, Heart, Share2, CheckCircle2 } from "lucide-react";
+import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { LeadCaptureModal } from "@/components/ui/LeadCaptureModal";
 import { getPropertyBySlug } from "@/lib/realcomp";
@@ -9,7 +10,34 @@ import { CommuteWidget } from "@/components/ui/CommuteWidget";
 import { cookies } from "next/headers";
 import { getAgentBySubdomain } from "@/lib/team";
 
-export default async function ListingDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+type Props = {
+    params: Promise<{ id: string }>
+};
+
+export async function generateMetadata(
+    { params }: Props,
+    parent: ResolvingMetadata
+): Promise<Metadata> {
+    const resolvedParams = await params;
+    let property = null;
+    try {
+        property = await getPropertyBySlug(resolvedParams.id);
+    } catch (e) {
+        return { title: 'Listing Details | Quest Realty' };
+    }
+
+    if (!property) return { title: 'Property Not Found | Quest Realty' };
+
+    const address = property.UnparsedAddress || [property.StreetNumber, property.StreetName, property.StreetSuffix].filter(Boolean).join(' ') || 'Listing Details';
+    const city = property.OriginalCity || property.City || 'Metro Detroit';
+
+    return {
+        title: `${address}, ${city} | Quest Realty`,
+        description: property.PublicRemarks || `Real estate listing for ${address}, MI. View pricing, photos, and schedule a tour.`
+    };
+}
+
+export default async function ListingDetailsPage({ params }: Props) {
     const resolvedParams = await params;
 
     const cookieStore = await cookies();

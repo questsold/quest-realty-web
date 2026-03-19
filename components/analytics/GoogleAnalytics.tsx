@@ -30,8 +30,12 @@ export default function GoogleTracking({ ga_id, ads_id }: { ga_id?: string; ads_
         }
 
         // Send Follow Up Boss dynamic pageview on client-side router navigation
-        if (typeof window !== "undefined" && window.widgetTracker && pathname) {
-            window.widgetTracker("send", "pageview");
+        // ONLY if the user is explicitly viewing a specific property listing page!
+        if (typeof window !== "undefined" && window.widgetTracker && pathname?.startsWith('/listing/')) {
+            // Slight delay ensures the new dynamic page <title> has finished rendering in Next.js
+            setTimeout(() => {
+                window.widgetTracker("send", "pageview");
+            }, 500);
         }
     }, [pathname, searchParams, ga_id, ads_id, primaryId]);
 
