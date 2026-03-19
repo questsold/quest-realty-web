@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Lock, CheckCircle2, ArrowRight } from "lucide-react";
 import { submitLeadAction } from "@/app/actions/leads";
 
-export function LeadCaptureModal() {
+export function LeadCaptureModal({ property }: { property?: any }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +63,21 @@ export function LeadCaptureModal() {
             phone: formData.get("phone") as string,
             source: "Website",
             tags: ["Website Registration", "AdWords Target"]
-        };
+        } as any;
+
+        if (property) {
+            data.type = "Buyer" as "Buyer" | "Seller" | "General";
+            data.tags.push("Property Inquiry", property.city);
+            data.property = {
+                street: property.address,
+                city: property.city,
+                state: property.state || "MI",
+                code: property.zip,
+                mlsNumber: property.id,
+                price: property.price,
+                url: window.location.href
+            };
+        }
 
         try {
             const result = await submitLeadAction(data);
