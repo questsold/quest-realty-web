@@ -2,6 +2,7 @@ import { MapPin, Bed, Bath, Square, Calendar, Heart, Share2, CheckCircle2 } from
 import Link from "next/link";
 import { LeadCaptureModal } from "@/components/ui/LeadCaptureModal";
 import { getPropertyBySlug } from "@/lib/realcomp";
+import { BackToSearchButton } from "@/components/ui/BackToSearchButton";
 import { LeadForm } from "./LeadForm";
 import { ListingGallery } from "./ListingGallery";
 import { CommuteWidget } from "@/components/ui/CommuteWidget";
@@ -86,9 +87,7 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
             {/* Top Navigation Bar */}
             <div className="bg-white border-b border-slate-200">
                 <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-                    <Link href="/properties" className="flex items-center gap-2 text-slate-600 hover:text-primary transition-colors font-medium">
-                        <span className="w-4 h-4 flex"><svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"></path></svg></span> Back to Search
-                    </Link>
+                    <BackToSearchButton />
                     <div className="flex gap-4">
                         <button className="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors font-medium">
                             <Share2 className="w-4 h-4" /> Share
