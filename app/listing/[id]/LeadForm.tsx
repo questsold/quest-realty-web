@@ -5,7 +5,7 @@ import { submitLeadAction } from "@/app/actions/leads";
 import { CheckCircle2 } from "lucide-react";
 import { trackConversion } from "@/components/analytics/GoogleAnalytics";
 
-export function LeadForm({ city, address }: { city: string, address: string }) {
+export function LeadForm({ city, address, agent }: { city: string, address: string, agent: { name: string, role: string, phone: string, image: string } }) {
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -47,7 +47,7 @@ export function LeadForm({ city, address }: { city: string, address: string }) {
                     <CheckCircle2 className="w-8 h-8 text-green-600" />
                 </div>
                 <h4 className="font-bold text-slate-900 mb-2">Inquiry Received</h4>
-                <p className="text-sm text-slate-500">Ali Berry will be in touch with you shortly regarding this property.</p>
+                <p className="text-sm text-slate-500">{agent.name} will be in touch with you shortly regarding this property.</p>
                 <button
                     onClick={() => setStatus("idle")}
                     className="mt-6 text-primary font-bold text-sm hover:underline"
@@ -62,14 +62,14 @@ export function LeadForm({ city, address }: { city: string, address: string }) {
         <>
             <div className="flex items-center gap-4 mb-8">
                 <img
-                    src="https://assets.thesparksite.com/uploads/sites/6037/2025/06/Ali-Berry-900x900.fit.png"
-                    alt="Ali Berry"
+                    src={agent.image}
+                    alt={agent.name}
                     className="w-16 h-16 rounded-full object-cover shadow-md"
                 />
                 <div>
-                    <h4 className="font-bold text-slate-900">Ali Berry</h4>
-                    <p className="text-sm text-primary font-medium">Broker/Owner</p>
-                    <p className="text-xs text-slate-500 mt-1">(248) 955-1403</p>
+                    <h4 className="font-bold text-slate-900">{agent.name}</h4>
+                    <p className="text-sm text-primary font-medium">{agent.role}</p>
+                    <p className="text-xs text-slate-500 mt-1">{agent.phone}</p>
                 </div>
             </div>
 

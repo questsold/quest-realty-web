@@ -201,7 +201,7 @@ export default async function ListingDetailsPage({ params }: { params: Promise<{
 
                             {/* Contact Card */}
                             <div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100">
-                                <LeadForm city={property.city} address={property.address} />
+                                <LeadForm city={property.city} address={property.address} agent={property.agent} />
                             </div>
 
                             {/* Quick Facts */}
