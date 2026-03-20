@@ -112,17 +112,18 @@ export default async function ListingDetailsPage({ params }: Props) {
     };
 
     let similarListings: any[] = [];
-    if (realcompData && realcompData.City && realcompData.ListPrice) {
+    if (realcompData) {
+        // Build base variables
         const minPrice = Math.floor(realcompData.ListPrice * 0.75);
         const maxPrice = Math.ceil(realcompData.ListPrice * 1.25);
         const type = realcompData.PropertyType || 'Residential';
-        const city = realcompData.City;
+        const city = realcompData.OriginalCity || realcompData.City || '';
         const safeCity = city.replace(/'/g, "''");
         
         try {
             const rawSimilar = await getProperties({
                 top: 10,
-                filter: `City eq '${safeCity}' and PropertyType eq '${type}' and ListPrice ge ${minPrice} and ListPrice le ${maxPrice} and ListingId ne '${realcompData.ListingId}'`,
+                filter: `OriginalCity eq '${safeCity}' and PropertyType eq '${type}' and ListPrice ge ${minPrice} and ListPrice le ${maxPrice} and ListingId ne '${realcompData.ListingId}'`,
                 orderby: 'ModificationTimestamp desc'
             });
 

@@ -14,19 +14,19 @@ export default async function CommunityDetailsPage({ params }: { params: Promise
 
     const officeIds = ['368625', '6505368625'];
     const officeFilterStr = `(${officeIds.map(id => `ListOfficeMlsId eq '${id}'`).join(' or ')})`;
-    const cityFilterStr = `(City eq '${communityName}' or OriginalCity eq '${communityName}')`;
+    const cityFilterStr = `(OriginalCity eq '${communityName}')`;
 
     let realcompProperties = await getProperties({
         filter: `${cityFilterStr} and ${officeFilterStr}`,
         orderby: 'ListPrice desc',
-        top: 2
+        top: 4
     });
 
     if (!realcompProperties || realcompProperties.length === 0) {
         realcompProperties = await getProperties({
             filter: cityFilterStr,
             orderby: 'ModificationTimestamp desc',
-            top: 2
+            top: 4
         });
     }
 
