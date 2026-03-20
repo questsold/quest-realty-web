@@ -2,9 +2,10 @@ import { PageHero } from "@/components/ui/PageHero";
 import Link from "next/link";
 import { ArrowRight, MapPin, Home, Trees, Utensils, GraduationCap } from "lucide-react";
 
-export default function CommunityDetailsPage({ params }: { params: { slug: string } }) {
+export default async function CommunityDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
+    const resolvedParams = await params;
     // Format slug to readable name (e.g., 'bloomfield-hills' -> 'Bloomfield Hills')
-    const communityName = params.slug
+    const communityName = resolvedParams.slug
         .split('-')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
@@ -97,7 +98,7 @@ export default function CommunityDetailsPage({ params }: { params: { slug: strin
                         <div>
                             <div className="flex justify-between items-end mb-8 border-b border-slate-200 pb-4">
                                 <h3 className="text-2xl font-heading font-bold text-slate-900">Featured Homes in {communityName}</h3>
-                                <Link href={`/properties?city=${params.slug}`} className="text-primary font-bold hover:text-slate-900 transition-colors flex items-center gap-1 text-sm">
+                                <Link href={`/properties?city=${resolvedParams.slug}`} className="text-primary font-bold hover:text-slate-900 transition-colors flex items-center gap-1 text-sm">
                                     View All <ArrowRight className="w-4 h-4" />
                                 </Link>
                             </div>
