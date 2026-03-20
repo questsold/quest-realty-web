@@ -1,6 +1,8 @@
 import { PageHero } from "@/components/ui/PageHero";
 import Link from "next/link";
 import { ArrowRight, MapPin, Home, Trees, Utensils, GraduationCap } from "lucide-react";
+import { getProperties } from "@/lib/realcomp";
+import { PropertyCard } from "@/components/ui/PropertyCard";
 
 export default async function CommunityDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
     const resolvedParams = await params;
@@ -9,6 +11,37 @@ export default async function CommunityDetailsPage({ params }: { params: Promise
         .split('-')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ');
+
+    const officeIds = ['368625', '6505368625'];
+    const officeFilterStr = `(${officeIds.map(id => `ListOfficeMlsId eq '${id}'`).join(' or ')})`;
+    const cityFilterStr = `(City eq '${communityName}' or OriginalCity eq '${communityName}')`;
+
+    let realcompProperties = await getProperties({
+        filter: `${cityFilterStr} and ${officeFilterStr}`,
+        orderby: 'ListPrice desc',
+        top: 2
+    });
+
+    if (!realcompProperties || realcompProperties.length === 0) {
+        realcompProperties = await getProperties({
+            filter: cityFilterStr,
+            orderby: 'ModificationTimestamp desc',
+            top: 2
+        });
+    }
+
+    const featuredListings = (realcompProperties || []).map((p, idx) => ({
+        id: p.ListingId || `featured-${idx}`,
+        address: (p as any).InternetAddressDisplayYN === false ? 'Address Withheld' : (p.UnparsedAddress || [p.StreetNumber, p.StreetName, p.StreetSuffix].filter(Boolean).join(' ') || 'Address Withheld'),
+        city: `${p.OriginalCity || p.City || ''}, MI ${p.PostalCode || ''}`.trim(),
+        price: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(p.ListPrice || 0),
+        beds: p.BedroomsTotal || 0,
+        baths: (p.BathroomsFull || 0) + (p.BathroomsHalf ? 0.5 : 0),
+        sqft: p.LivingArea ? p.LivingArea.toLocaleString() : 'N/A',
+        type: p.PropertySubType || p.PropertyType || 'Single Family',
+        image: (p.Media && p.Media.length > 0) ? [...p.Media].sort((a: any, b: any) => (a.Order || 999) - (b.Order || 999))[0].MediaURL : 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+        status: p.StandardStatus
+    }));
 
     // Mock data for the layout structure
     const stats = [
@@ -104,34 +137,14 @@ export default async function CommunityDetailsPage({ params }: { params: Promise
                             </div>
 
                             <div className="grid sm:grid-cols-2 gap-6">
-                                {/* Mock Property Card 1 */}
-                                <div className="group bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 cursor-pointer">
-                                    <div className="h-48 overflow-hidden relative">
-                                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Home" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                        <div className="absolute top-3 left-3 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded">JUST LISTED</div>
+                                {featuredListings.map((property) => (
+                                    <PropertyCard key={property.id} {...property} />
+                                ))}
+                                {featuredListings.length === 0 && (
+                                    <div className="col-span-2 text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                        <p className="text-slate-500 font-medium">No active listings found in {communityName} at the moment.</p>
                                     </div>
-                                    <div className="p-4">
-                                        <div className="text-xl font-bold text-slate-900 mb-1">$1,250,000</div>
-                                        <p className="text-sm text-slate-500 mb-3 truncate">123 Example St, {communityName}</p>
-                                        <div className="flex gap-3 text-xs font-medium text-slate-600">
-                                            <span>4 Beds</span>•<span>3 Baths</span>•<span>3,100 Sqft</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Mock Property Card 2 */}
-                                <div className="group bg-white rounded-xl overflow-hidden shadow-sm border border-slate-100 cursor-pointer">
-                                    <div className="h-48 overflow-hidden relative">
-                                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Home" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                    </div>
-                                    <div className="p-4">
-                                        <div className="text-xl font-bold text-slate-900 mb-1">$899,000</div>
-                                        <p className="text-sm text-slate-500 mb-3 truncate">456 Sample Ln, {communityName}</p>
-                                        <div className="flex gap-3 text-xs font-medium text-slate-600">
-                                            <span>3 Beds</span>•<span>2.5 Baths</span>•<span>2,400 Sqft</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                )}
                             </div>
                         </div>
 
