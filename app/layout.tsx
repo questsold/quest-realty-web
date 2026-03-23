@@ -18,7 +18,7 @@ const outfit = Outfit({
   display: "swap",
 });
 
-const baseUrl = "https://questsold.com";
+const baseUrl = "https://www.questrealtymi.com";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -83,9 +83,6 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
-  },
-  alternates: {
-    canonical: "/",
   },
 };
 
