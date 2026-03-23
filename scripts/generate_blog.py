@@ -1,6 +1,7 @@
 import os
 import json
 import datetime
+import urllib.request
 import google.generativeai as genai
 
 # Configure the Gemini API
@@ -70,3 +71,22 @@ with open(file_path, "w") as f:
     json.dump(blogs, f, indent=4)
 
 print(f"Successfully generated and added new blog post: '{new_blog['title']}'")
+
+# Send Webhook to Zapier for Social Media Syndication
+webhook_url = "https://hooks.zapier.com/hooks/catch/754750/upcb31j/"
+payload = {
+    "title": new_blog["title"],
+    "excerpt": new_blog["excerpt"],
+    "url": f"https://www.questsold.com/blog/{new_blog['id']}"
+}
+
+try:
+    req = urllib.request.Request(
+        webhook_url, 
+        data=json.dumps(payload).encode('utf-8'), 
+        headers={'Content-Type': 'application/json'}
+    )
+    urllib.request.urlopen(req)
+    print("Zapier Webhook triggered successfully for social media syndication.")
+except Exception as e:
+    print(f"Failed to trigger Zapier webhook: {e}")
