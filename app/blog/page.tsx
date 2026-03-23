@@ -15,7 +15,7 @@ export default function BlogPage() {
             <PageHero
                 title="Real Estate Insights"
                 description="Market trends, local guides, and expert advice for navigating Metro Detroit real estate."
-                imageUrl="https://images.unsplash.com/photo-1450101499163-c8848c66cb85?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
+                imageUrl="https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80"
             />
 
             <section className="py-24">
