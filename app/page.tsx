@@ -155,7 +155,7 @@ export default function Home() {
                 title: "Invest",
                 desc: "Build your wealth with our expert insights into high-yield real estate investments.",
                 link: "/properties",
-                image: "https://images.unsplash.com/photo-1554585371-9ed98c579632?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                image: "/images/invest-kitchen-remodel.png"
               }
             ].map((item, idx) => (
               <motion.div
