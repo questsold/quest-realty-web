@@ -18,13 +18,17 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         };
     }
 
+    const imageUrl = post.image.startsWith('http') 
+        ? post.image 
+        : `https://www.questsold.com${post.image}`;
+
     return {
         title: `${post.title} | Quest Realty Blog`,
         description: post.excerpt,
         openGraph: {
             title: post.title,
             description: post.excerpt,
-            images: [post.image],
+            images: [imageUrl],
             type: "article",
             publishedTime: post.date,
             authors: [post.author]
