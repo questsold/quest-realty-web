@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
     const imageUrl = post.image.startsWith('http') 
         ? post.image 
-        : `https://www.questsold.com${post.image}`;
+        : `https://www.questrealtymi.com${post.image}`;
 
     return {
         title: `${post.title} | Quest Realty Blog`,
