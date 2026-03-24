@@ -11,10 +11,33 @@ interface ListingGalleryProps {
     address?: string;
 }
 
+const swipeConfidenceThreshold = 10000;
+const swipePower = (offset: number, velocity: number) => {
+  return Math.abs(offset) * velocity;
+};
+
+const variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 1000 : -1000,
+    opacity: 0
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? 1000 : -1000,
+    opacity: 0
+  })
+};
+
 export function ListingGallery({ images, status, daysOnMarket, address }: ListingGalleryProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [viewMode, setViewMode] = useState<'grid' | 'single'>('grid');
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [direction, setDirection] = useState(0);
 
     const checkPhotoLimit = () => {
         if ((window as any).__noreg_bypass) return;
@@ -48,12 +71,14 @@ export function ListingGallery({ images, status, daysOnMarket, address }: Listin
     const nextImage = (e?: React.MouseEvent) => {
         if (e) e.stopPropagation();
         checkPhotoLimit();
+        setDirection(1);
         setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     };
 
     const prevImage = (e?: React.MouseEvent) => {
         if (e) e.stopPropagation();
         checkPhotoLimit();
+        setDirection(-1);
         setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     };
 
@@ -173,31 +198,45 @@ export function ListingGallery({ images, status, daysOnMarket, address }: Listin
                                     </>
                                 )}
 
-                                <motion.div
-                                    key={currentIndex}
-                                    initial={{ opacity: 0, scale: 0.95 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.95 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="w-full h-full p-4 md:p-16 flex items-center justify-center cursor-grab active:cursor-grabbing"
-                                    onClick={(e) => e.stopPropagation()} 
-                                    drag="x"
-                                    dragConstraints={{ left: 0, right: 0 }}
-                                    dragElastic={0.8}
-                                    onDragEnd={(_, info) => {
-                                        if (info.offset.x < -75) {
-                                            nextImage();
-                                        } else if (info.offset.x > 75) {
-                                            prevImage();
-                                        }
-                                    }}
-                                >
-                                    <img
-                                        src={images[currentIndex]}
-                                        alt={`Property full view ${currentIndex + 1}`}
-                                        className="max-w-full max-h-full object-contain select-none pointer-events-none"
-                                    />
-                                </motion.div>
+                                <div className="absolute inset-0 flex items-center justify-center p-4 md:p-16 overflow-hidden">
+                                  <AnimatePresence initial={false} custom={direction}>
+                                      <motion.div
+                                          key={currentIndex}
+                                          custom={direction}
+                                          variants={variants}
+                                          initial="enter"
+                                          animate="center"
+                                          exit="exit"
+                                          transition={{
+                                              x: { type: "spring", stiffness: 300, damping: 30 },
+                                              opacity: { duration: 0.2 }
+                                          }}
+                                          className="absolute w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing p-4 md:p-16"
+                                          onClick={(e) => e.stopPropagation()} 
+                                          drag="x"
+                                          dragConstraints={{ left: 0, right: 0 }}
+                                          dragElastic={1}
+                                          onDragEnd={(e, { offset, velocity }) => {
+                                              const swipe = swipePower(offset.x, velocity.x);
+                                              if (swipe < -swipeConfidenceThreshold) {
+                                                  nextImage();
+                                              } else if (swipe > swipeConfidenceThreshold) {
+                                                  prevImage();
+                                              } else if (offset.x < -75) {
+                                                  nextImage();
+                                              } else if (offset.x > 75) {
+                                                  prevImage();
+                                              }
+                                          }}
+                                      >
+                                          <img
+                                              src={images[currentIndex]}
+                                              alt={`Property full view ${currentIndex + 1}`}
+                                              className="max-w-full max-h-full object-contain select-none pointer-events-none"
+                                          />
+                                      </motion.div>
+                                  </AnimatePresence>
+                                </div>
                             </div>
                         )}
                     </motion.div>
