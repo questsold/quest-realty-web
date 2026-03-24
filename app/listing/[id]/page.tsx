@@ -63,7 +63,7 @@ export default async function ListingDetailsPage({ params }: Props) {
         beds: realcompData.BedroomsTotal || 0,
         baths: (realcompData.BathroomsFull || 0) + (realcompData.BathroomsHalf ? 0.5 : 0),
         sqft: realcompData.LivingArea || 0,
-        yearBuilt: 0, // Realcomp may have YearBuilt
+        yearBuilt: realcompData.YearBuilt || 0,
         status: realcompData.StandardStatus || 'Active',
         daysOnMarket: realcompData.DaysOnMarket || 0,
         description: realcompData.PublicRemarks || 'No description available for this property.',
