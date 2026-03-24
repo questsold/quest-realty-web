@@ -119,15 +119,15 @@ export function ListingGallery({ images, status, daysOnMarket }: ListingGalleryP
 
                         {viewMode === 'grid' ? (
                             /* Grid / List View */
-                            <div className="w-full max-w-5xl mx-auto py-12 px-4 flex flex-col gap-8" onClick={(e) => e.stopPropagation()}>
-                                <div className="text-white text-center mb-4">
-                                    <h2 className="text-3xl font-bold">Property Photos</h2>
+                            <div className="w-full max-w-5xl mx-auto py-6 md:py-12 px-0 sm:px-4 flex flex-col gap-2 md:gap-8" onClick={(e) => e.stopPropagation()}>
+                                <div className="text-white text-center mb-4 mt-6 md:mt-0">
+                                    <h2 className="text-2xl md:text-3xl font-bold">Property Photos</h2>
                                     <p className="text-slate-400 mt-2">{images.length} Photos</p>
                                 </div>
                                 {images.map((img, idx) => (
                                     <div 
                                         key={idx} 
-                                        className="w-full rounded-xl overflow-hidden cursor-pointer hover:ring-4 hover:ring-primary transition-all duration-300 relative group"
+                                        className="w-full sm:rounded-xl overflow-hidden cursor-pointer hover:ring-4 hover:ring-primary transition-all duration-300 relative group"
                                         onClick={() => openSingleView(idx)}
                                     >
                                         <img 
