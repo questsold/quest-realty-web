@@ -84,7 +84,7 @@ export function ListingGallery({ images, status, daysOnMarket, address }: Listin
 
     return (
         <>
-            <div className="grid grid-cols-4 grid-rows-2 gap-4 h-[60vh] min-h-[500px] rounded-3xl overflow-hidden shadow-lg">
+            <div className="grid grid-cols-4 grid-rows-2 gap-4 aspect-[4/3] md:aspect-[16/9] lg:aspect-auto lg:h-[60vh] lg:min-h-[500px] rounded-3xl overflow-hidden shadow-lg">
                 <div
                     className="col-span-4 lg:col-span-2 row-span-2 relative group cursor-pointer"
                     onClick={() => openGallery(0)}
