@@ -191,22 +191,33 @@ export default async function ListingDetailsPage({ params }: Props) {
                                         <span className="min-w-0 break-words w-[calc(100%-2rem)] sm:w-auto">{property.address}, {property.city}, {property.state} {property.zip}</span>
                                     </h2>
                                 </div>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 xl:flex gap-3 w-full xl:w-auto min-w-0">
-                                    <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
-                                        <span className="block text-2xl font-bold text-slate-900">{property.beds}</span>
-                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Beds</span>
+                                <div className="flex flex-col xl:items-end w-full xl:w-auto min-w-0">
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 xl:flex gap-3 w-full xl:w-auto min-w-0">
+                                        <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
+                                            <span className="block text-2xl font-bold text-slate-900">{property.beds}</span>
+                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Beds</span>
+                                        </div>
+                                        <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
+                                            <span className="block text-2xl font-bold text-slate-900">{property.baths}</span>
+                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Baths</span>
+                                        </div>
+                                        <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
+                                            <span className="block text-2xl font-bold text-slate-900">{property.sqft.toLocaleString()}</span>
+                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sq Ft</span>
+                                        </div>
+                                        <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
+                                            <span className="block text-2xl font-bold text-slate-900">{property.daysOnMarket}</span>
+                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">DOM</span>
+                                        </div>
                                     </div>
-                                    <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
-                                        <span className="block text-2xl font-bold text-slate-900">{property.baths}</span>
-                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Baths</span>
-                                    </div>
-                                    <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
-                                        <span className="block text-2xl font-bold text-slate-900">{property.sqft.toLocaleString()}</span>
-                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sq Ft</span>
-                                    </div>
-                                    <div className="text-center bg-white p-3 md:p-4 rounded-xl border border-slate-100 shadow-sm xl:min-w-[100px]">
-                                        <span className="block text-2xl font-bold text-slate-900">{property.daysOnMarket}</span>
-                                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">DOM</span>
+                                    <div className="mt-4 flex xl:justify-end w-full">
+                                        <button 
+                                            onClick={() => document.getElementById('property-facts')?.scrollIntoView({ behavior: 'smooth' })}
+                                            className="text-primary hover:text-primary-dark font-medium underline-offset-4 hover:underline transition-colors py-2 flex items-center gap-1"
+                                        >
+                                            See all details
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -270,12 +281,12 @@ export default async function ListingDetailsPage({ params }: Props) {
                             </div>
 
                             {/* Quick Facts */}
-                            <div className="bg-slate-900 rounded-3xl p-8 text-white">
+                            <div id="property-facts" className="bg-slate-900 rounded-3xl p-8 text-white scroll-mt-24">
                                 <h4 className="font-heading font-bold text-lg mb-6">Property Facts</h4>
                                 <div className="space-y-4">
                                     <div className="flex justify-between items-center py-2 border-b border-slate-800">
                                         <span className="text-slate-400">Year Built</span>
-                                        <span className="font-medium">{property.yearBuilt}</span>
+                                        <span className="font-medium">{property.yearBuilt || "Unknown"}</span>
                                     </div>
                                     <div className="flex justify-between items-center py-2 border-b border-slate-800">
                                         <span className="text-slate-400">Property Type</span>
