@@ -211,13 +211,13 @@ export default async function ListingDetailsPage({ params }: Props) {
                                         </div>
                                     </div>
                                     <div className="mt-4 flex xl:justify-end w-full">
-                                        <button 
-                                            onClick={() => document.getElementById('property-facts')?.scrollIntoView({ behavior: 'smooth' })}
+                                        <a 
+                                            href="#property-facts"
                                             className="text-primary hover:text-primary-dark font-medium underline-offset-4 hover:underline transition-colors py-2 flex items-center gap-1"
                                         >
                                             See all details
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
