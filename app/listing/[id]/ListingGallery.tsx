@@ -44,14 +44,14 @@ export function ListingGallery({ images, status, daysOnMarket }: ListingGalleryP
         setViewMode('grid');
     };
 
-    const nextImage = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const nextImage = (e?: React.MouseEvent) => {
+        if (e) e.stopPropagation();
         checkPhotoLimit();
         setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     };
 
-    const prevImage = (e: React.MouseEvent) => {
-        e.stopPropagation();
+    const prevImage = (e?: React.MouseEvent) => {
+        if (e) e.stopPropagation();
         checkPhotoLimit();
         setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     };
@@ -157,14 +157,14 @@ export function ListingGallery({ images, status, daysOnMarket }: ListingGalleryP
                                 {images.length > 1 && (
                                     <>
                                         <button
-                                            className="absolute left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-black/50 hover:bg-black/80 rounded-full p-3 transition-colors z-[110]"
+                                            className="hidden md:block absolute left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-black/50 hover:bg-black/80 rounded-full p-3 transition-colors z-[110]"
                                             onClick={prevImage}
                                         >
                                             <ChevronLeft className="w-8 h-8" />
                                         </button>
 
                                         <button
-                                            className="absolute right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-black/50 hover:bg-black/80 rounded-full p-3 transition-colors z-[110]"
+                                            className="hidden md:block absolute right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-black/50 hover:bg-black/80 rounded-full p-3 transition-colors z-[110]"
                                             onClick={nextImage}
                                         >
                                             <ChevronRight className="w-8 h-8" />
@@ -178,13 +178,23 @@ export function ListingGallery({ images, status, daysOnMarket }: ListingGalleryP
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
                                     transition={{ duration: 0.2 }}
-                                    className="w-full h-full p-4 md:p-16 flex items-center justify-center"
-                                    onClick={(e) => e.stopPropagation()} // Prevent going back to grid when clicking image
+                                    className="w-full h-full p-4 md:p-16 flex items-center justify-center cursor-grab active:cursor-grabbing"
+                                    onClick={(e) => e.stopPropagation()} 
+                                    drag="x"
+                                    dragConstraints={{ left: 0, right: 0 }}
+                                    dragElastic={0.8}
+                                    onDragEnd={(_, info) => {
+                                        if (info.offset.x < -75) {
+                                            nextImage();
+                                        } else if (info.offset.x > 75) {
+                                            prevImage();
+                                        }
+                                    }}
                                 >
                                     <img
                                         src={images[currentIndex]}
                                         alt={`Property full view ${currentIndex + 1}`}
-                                        className="max-w-full max-h-full object-contain select-none"
+                                        className="max-w-full max-h-full object-contain select-none pointer-events-none"
                                     />
                                 </motion.div>
                             </div>
