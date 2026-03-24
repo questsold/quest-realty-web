@@ -8,9 +8,10 @@ interface ListingGalleryProps {
     images: string[];
     status: string;
     daysOnMarket: number;
+    address?: string;
 }
 
-export function ListingGallery({ images, status, daysOnMarket }: ListingGalleryProps) {
+export function ListingGallery({ images, status, daysOnMarket, address }: ListingGalleryProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [viewMode, setViewMode] = useState<'grid' | 'single'>('grid');
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -120,8 +121,8 @@ export function ListingGallery({ images, status, daysOnMarket }: ListingGalleryP
                         {viewMode === 'grid' ? (
                             /* Grid / List View */
                             <div className="w-full max-w-5xl mx-auto py-6 md:py-12 px-0 sm:px-4 flex flex-col gap-2 md:gap-8" onClick={(e) => e.stopPropagation()}>
-                                <div className="text-white text-center mb-4 mt-6 md:mt-0">
-                                    <h2 className="text-2xl md:text-3xl font-bold">Property Photos</h2>
+                                <div className="text-white text-center mb-4 mt-6 md:mt-0 px-12">
+                                    <h2 className="text-xl md:text-3xl font-bold line-clamp-2 md:truncate">{address || "Property Photos"}</h2>
                                     <p className="text-slate-400 mt-2">{images.length} Photos</p>
                                 </div>
                                 {images.map((img, idx) => (

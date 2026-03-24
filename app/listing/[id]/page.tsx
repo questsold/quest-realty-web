@@ -168,6 +168,7 @@ export default async function ListingDetailsPage({ params }: Props) {
                     images={property.images}
                     status={property.status}
                     daysOnMarket={property.daysOnMarket}
+                    address={property.address}
                 />
             </div>
 
