@@ -42,6 +42,11 @@ export function LeadForm({ property, agent }: { property: any, agent: { name: st
                     event_label: "Property Inquiry",
                     property_address: property.address
                 });
+                trackConversion("conversion", {
+                    send_to: process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-933801495",
+                    event_category: "Leads",
+                    event_label: "Property Inquiry"
+                });
             } else {
                 setStatus("error");
             }
