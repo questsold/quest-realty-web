@@ -22,8 +22,8 @@ export const teamMembers = [
     { img: 'https://assets.thesparksite.com/uploads/sites/6037/2025/06/Headshot-900x900.fit.png', name: 'Neil Dobson', email: 'neildobson@questsold.com', role: 'Real Estate Advisor', phone: '(248) 927-1280' },
     { img: 'https://assets.thesparksite.com/uploads/sites/6037/2025/06/Gabbi-Dubuque-900x900.fit.png', name: 'Gabbi Dubuque', email: 'gabbi@questsold.com', role: 'Real Estate Advisor', phone: '(248) 800-8617' },
     { img: 'https://assets.thesparksite.com/uploads/sites/6037/2025/06/Marci-Foglietta-900x900.fit.jpeg', name: 'Marci Foglietta', email: 'marci@questsold.com', role: 'Real Estate Advisor', phone: '(586) 300-4380' },
-    { img: 'https://assets.thesparksite.com/uploads/sites/6037/2025/06/Headshot-900x900.fit.png', name: 'Paul Semhere', email: 'paul@questsold.com', role: 'Real Estate Advisor', phone: '(734) 275-2403' },
-    { img: 'https://assets.thesparksite.com/uploads/sites/6037/2025/06/Headshot-900x900.fit.png', name: 'Tina Moore', email: 'tina@questsold.com', role: 'Real Estate Advisor', phone: '(586) 474-4117' }
+    { img: 'https://ui-avatars.com/api/?name=Paul+Semhere&size=900&background=F1F5F9&color=0f172a', name: 'Paul Semhere', email: 'paul@questsold.com', role: 'Real Estate Advisor', phone: '(734) 275-2403' },
+    { img: 'https://ui-avatars.com/api/?name=Tina+Moore&size=900&background=F1F5F9&color=0f172a', name: 'Tina Moore', email: 'tina@questsold.com', role: 'Real Estate Advisor', phone: '(586) 474-4117' }
 ];
 
 export function getAgentBySubdomain(subdomain?: string | null) {
