@@ -21,7 +21,9 @@ export function LeadForm({ property, agent }: { property: any, agent: { name: st
             message: formData.get("message") as string,
             source: "Website",
             type: "Buyer" as "Buyer" | "Seller" | "General", // Explicitly setting this helps FUB categorize it right
-            tags: ["Property Inquiry", property.city],
+            tags: formData.get("smsOptIn") === "on" 
+                ? ["Property Inquiry", property.city, "AI Active"]
+                : ["Property Inquiry", property.city],
             property: {
                 street: property.address,
                 city: property.city,
@@ -117,6 +119,18 @@ export function LeadForm({ property, agent }: { property: any, agent: { name: st
                     rows={4}
                     className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent bg-slate-50 text-sm resize-none"
                 ></textarea>
+
+                <div className="flex items-start gap-2.5 text-xs text-slate-500 mt-2 mb-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                    <input
+                        id="smsOptIn"
+                        name="smsOptIn"
+                        type="checkbox"
+                        className="mt-0.5 rounded border-slate-300 text-slate-900 focus:ring-slate-900"
+                    />
+                    <label htmlFor="smsOptIn" className="leading-normal">
+                        I agree to receive text messages from Quest Realty. Message and data rates may apply. Message frequency varies. Consent is not a condition of purchase. You can opt-out at any time by replying STOP. View our <a href="https://ai-isa-service.vercel.app/terms" target="_blank" rel="noopener noreferrer" className="underline font-medium hover:text-slate-900">Terms</a> and <a href="https://ai-isa-service.vercel.app/terms" target="_blank" rel="noopener noreferrer" className="underline font-medium hover:text-slate-900">Privacy Policy</a>.
+                    </label>
+                </div>
 
                 {status === "error" && (
                     <p className="text-red-500 text-xs text-center">Something went wrong. Please try again.</p>

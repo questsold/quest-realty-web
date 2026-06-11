@@ -148,6 +148,18 @@ export default function JoinUsPage() {
                                             </select>
                                         </div>
 
+                                         <div className="flex items-start gap-2.5 text-xs text-slate-400 mt-2 mb-4 bg-slate-800/50 p-3 rounded-lg border border-slate-700/50">
+                                             <input
+                                                 id="smsOptIn"
+                                                 name="smsOptIn"
+                                                 type="checkbox"
+                                                 className="mt-0.5 rounded border-slate-700 bg-transparent text-primary focus:ring-primary"
+                                             />
+                                             <label htmlFor="smsOptIn" className="leading-normal">
+                                                 I agree to receive text messages from Quest Realty. Message and data rates may apply. Message frequency varies. Consent is not a condition of purchase. You can opt-out at any time by replying STOP. View our <a href="https://ai-isa-service.vercel.app/terms" target="_blank" rel="noopener noreferrer" className="underline font-medium hover:text-white">Terms</a> and <a href="https://ai-isa-service.vercel.app/terms" target="_blank" rel="noopener noreferrer" className="underline font-medium hover:text-white">Privacy Policy</a>.
+                                             </label>
+                                         </div>
+
                                         {status === "error" && <p className="text-red-400 text-sm text-center">Something went wrong. Please try again.</p>}
 
                                         <button

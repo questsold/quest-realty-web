@@ -12,6 +12,11 @@ export default function AgentContactForm({ agentName }: { agentName: string }) {
         setStatus("loading");
 
         const formData = new FormData(e.currentTarget);
+        const tags = ["Agent Profile Lead"];
+        if (formData.get("smsOptIn") === "on") {
+            tags.push("AI Active");
+        }
+
         const data = {
             firstName: formData.get("firstName") as string,
             lastName: formData.get("lastName") as string,
@@ -19,7 +24,7 @@ export default function AgentContactForm({ agentName }: { agentName: string }) {
             phone: formData.get("phone") as string,
             message: formData.get("message") as string,
             source: `Subdomain - ${agentName.split(" ")[0]}`,
-            tags: ["Agent Profile Lead"]
+            tags: tags
         };
 
         try {
@@ -108,6 +113,18 @@ export default function AgentContactForm({ agentName }: { agentName: string }) {
                     rows={4}
                     className="w-full bg-transparent border-b-2 border-zinc-700 py-3 px-0 focus:outline-none focus:border-white text-white transition-colors text-sm resize-none rounded-none font-medium"
                 ></textarea>
+            </div>
+
+            <div className="flex items-start gap-3 text-[10px] text-zinc-500 mt-6 bg-zinc-900/50 p-4 border border-zinc-800">
+                <input
+                    id="smsOptIn"
+                    name="smsOptIn"
+                    type="checkbox"
+                    className="mt-0.5 rounded border-zinc-700 bg-transparent text-white focus:ring-zinc-700 focus:ring-offset-zinc-900"
+                />
+                <label htmlFor="smsOptIn" className="leading-relaxed uppercase tracking-[0.1em]">
+                    I agree to receive text messages from Quest Realty. Message and data rates may apply. Message frequency varies. Consent is not a condition of purchase. You can opt-out at any time by replying STOP. View our <a href="https://ai-isa-service.vercel.app/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">Terms</a> and <a href="https://ai-isa-service.vercel.app/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">Privacy Policy</a>.
+                </label>
             </div>
 
             {status === "error" && (
