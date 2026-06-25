@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Lock, CheckCircle2, ArrowRight } from "lucide-react";
 import { submitLeadAction } from "@/app/actions/leads";
+import { trackConversion } from "@/components/analytics/GoogleAnalytics";
 
 export function LeadCaptureModal({ property }: { property?: any }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -85,6 +86,12 @@ export function LeadCaptureModal({ property }: { property?: any }) {
             if (result.success) {
                 setIsSubmitted(true);
                 localStorage.setItem("is_registered", "true");
+                
+                const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-933801495";
+                trackConversion("conversion", {
+                    send_to: `${adsId}/RUIXCKztzoAcEJfcor0D`
+                });
+
                 setTimeout(() => {
                     setIsOpen(false);
                 }, 2000);

@@ -59,7 +59,13 @@ export default function HomeValuationPage() {
                                     Automated tools are great starting points, but they can't see the renovations you've made. Connect with an agent for a full comparative market analysis (CMA).
                                 </p>
                                 <button 
-                                    onClick={() => trackConversion("valuation_requested")}
+                                    onClick={() => {
+                                        const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-933801495";
+                                        trackConversion("valuation_requested");
+                                        trackConversion("conversion", {
+                                            send_to: `${adsId}/RUIXCKztzoAcEJfcor0D`
+                                        });
+                                    }}
                                     className="w-full border border-slate-700 hover:bg-slate-800 py-3 rounded-lg font-bold text-sm transition-colors"
                                 >
                                     Request In-Person Valuation

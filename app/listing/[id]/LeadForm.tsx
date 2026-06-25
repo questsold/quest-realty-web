@@ -44,8 +44,9 @@ export function LeadForm({ property, agent }: { property: any, agent: { name: st
                     event_label: "Property Inquiry",
                     property_address: property.address
                 });
+                const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-933801495";
                 trackConversion("conversion", {
-                    send_to: process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-933801495",
+                    send_to: `${adsId}/RUIXCKztzoAcEJfcor0D`,
                     event_category: "Leads",
                     event_label: "Property Inquiry"
                 });

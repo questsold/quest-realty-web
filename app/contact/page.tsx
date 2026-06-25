@@ -37,6 +37,12 @@ export default function ContactPage() {
                     event_category: "Leads",
                     event_label: "Contact Page",
                 });
+                const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-933801495";
+                trackConversion("conversion", {
+                    send_to: `${adsId}/RUIXCKztzoAcEJfcor0D`,
+                    event_category: "Leads",
+                    event_label: "Contact Page"
+                });
             } else {
                 setStatus("error");
             }

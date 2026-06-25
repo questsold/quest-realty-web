@@ -35,6 +35,12 @@ export default function AgentContactForm({ agentName }: { agentName: string }) {
                     event_category: "Leads",
                     event_label: `Agent Profile - ${agentName}`,
                 });
+                const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-933801495";
+                trackConversion("conversion", {
+                    send_to: `${adsId}/RUIXCKztzoAcEJfcor0D`,
+                    event_category: "Leads",
+                    event_label: `Agent Profile - ${agentName}`
+                });
             } else {
                 setStatus("error");
             }
