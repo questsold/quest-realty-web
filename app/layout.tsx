@@ -99,7 +99,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <GoogleTracking
             ga_id={process.env.NEXT_PUBLIC_GA_ID}
-            ads_id={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID}
+            ads_id={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || "AW-933801495"}
           />
         </Suspense>
         <Header />
