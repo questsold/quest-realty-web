@@ -53,7 +53,8 @@ export default function GoogleTracking({ ga_id, ads_id }: { ga_id?: string; ads_
                 dangerouslySetInnerHTML={{
                     __html: `
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
+            window.gtag = function(){window.dataLayer.push(arguments);};
+            function gtag(){window.dataLayer.push(arguments);}
             gtag('js', new Date());
 
             gtag('config', '${primaryId}', {
@@ -83,7 +84,11 @@ export default function GoogleTracking({ ga_id, ads_id }: { ga_id?: string; ads_
  * Utility function to track conversions
  */
 export const trackConversion = (eventName: string, params?: object) => {
-    if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", eventName, params);
+    if (typeof window !== "undefined") {
+        if (typeof window.gtag === "function") {
+            window.gtag("event", eventName, params);
+        } else if (Array.isArray(window.dataLayer)) {
+            window.dataLayer.push(["event", eventName, params]);
+        }
     }
 };
