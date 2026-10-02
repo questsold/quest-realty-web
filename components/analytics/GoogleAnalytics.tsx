@@ -20,6 +20,25 @@ export default function GoogleTracking({ ga_id, ads_id }: { ga_id?: string; ads_
     const primaryId = ga_id || ads_id;
 
     useEffect(() => {
+        if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            const gclid = params.get("gclid");
+            const utmSource = params.get("utm_source");
+            const utmCampaign = params.get("utm_campaign");
+            const utmTerm = params.get("utm_term");
+            const utmMedium = params.get("utm_medium");
+
+            const setCookie = (name: string, val: string) => {
+                document.cookie = `${name}=${encodeURIComponent(val)};path=/;max-age=${30 * 24 * 60 * 60};SameSite=Lax`;
+            };
+
+            if (gclid) setCookie("adwords_gclid", gclid);
+            if (utmSource) setCookie("utm_source", utmSource);
+            if (utmCampaign) setCookie("utm_campaign", utmCampaign);
+            if (utmTerm) setCookie("utm_term", utmTerm);
+            if (utmMedium) setCookie("utm_medium", utmMedium);
+        }
+
         if (pathname && window.gtag && primaryId) {
             window.gtag("config", primaryId, {
                 page_path: pathname,

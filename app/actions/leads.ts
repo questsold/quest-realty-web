@@ -34,6 +34,38 @@ export async function submitLeadAction(data: {
             data.tags = [...(data.tags || []), agentSourceString];
         }
 
+        // Check for Google Ads traffic (gclid or UTM tags)
+        const gclid = cookieStore.get('adwords_gclid')?.value;
+        const utmSource = cookieStore.get('utm_source')?.value;
+        const utmCampaign = cookieStore.get('utm_campaign')?.value;
+        const utmTerm = cookieStore.get('utm_term')?.value;
+
+        const isGoogleAds = Boolean(
+            gclid ||
+            utmSource?.toLowerCase() === 'google' ||
+            utmCampaign?.toLowerCase().includes('adwords') ||
+            utmCampaign?.toLowerCase().includes('buyer')
+        );
+
+        if (isGoogleAds) {
+            if (!agentReferrer) {
+                data.source = "Google AdWords";
+            }
+
+            const rawCampaign = utmCampaign ? decodeURIComponent(utmCampaign) : "Quest Realty - Buyer Leads Search";
+            const tagsToAdd = [
+                "Google Ads",
+                "AdWords Target",
+                rawCampaign
+            ];
+
+            if (utmTerm) {
+                tagsToAdd.push(`Keyword: ${decodeURIComponent(utmTerm)}`);
+            }
+
+            data.tags = Array.from(new Set([...(data.tags || []), ...tagsToAdd]));
+        }
+
         const result = await sendLeadToFUB(data);
         return result;
     } catch (error) {

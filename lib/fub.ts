@@ -46,7 +46,8 @@ export async function sendLeadToFUB(lead: FUBLead) {
                     firstName: lead.firstName,
                     lastName: lead.lastName,
                     emails: [{ value: lead.email }],
-                    phones: lead.phone ? [{ value: lead.phone }] : []
+                    phones: lead.phone ? [{ value: lead.phone }] : [],
+                    tags: lead.tags || ["Website Lead"]
                 },
                 message: lead.message || "",
                 tags: lead.tags || ["Website Lead"],
